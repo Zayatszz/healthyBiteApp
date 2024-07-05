@@ -1,50 +1,25 @@
-import React, { useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  TextInput,
-  Alert
-} from 'react-native';
+
+import React, { useState, useContext } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
+import { AuthContext } from '../context/AuthContext';
+import { login as loginApi } from '../api/user.js';
 
 const logoImg = require('../assets/emu-logo.png');
 
-const HomeScreen = ({ navigation }) => {
+const LoginScreen = ({ navigation }) => {
+  const { login } = useContext(AuthContext);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
 
   const handleLogin = async () => {
     try {
-      const response = await fetch('http://192.168.100.37:3003/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({
-          email,
-          password,
-        }),
-      });
-
-      if (response.ok) {
-        const data = await response.json();
-      
-          Alert.alert('Success', 'Login successful', [
-            { text: 'OK', onPress: () => navigation.navigate('Main') }
-          ]);
-        // Navigate to another screen or handle login success
-      } else {
-        const errorText = await response.text();
-        console.log('Error response:', errorText); // Log the error response for debugging
-        Alert.alert('Error', 'Failed to login');
-      }
+      const data = await loginApi(email, password);
+      await login(data.token);
+      navigation.navigate('Main');
     } catch (error) {
-      console.error('Fetch error:', error);
-      Alert.alert('Error', 'An error occurred. Please try again.');
+      Alert.alert('Error', 'Амжилтгүй. Та мэдээллээ шалгаад дахин оруулна уу.');
     }
   };
 
@@ -169,4 +144,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default LoginScreen;
