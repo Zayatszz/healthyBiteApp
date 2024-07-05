@@ -3,10 +3,10 @@ import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { AuthContext } from '../context/AuthContext';
-import { login as loginApi } from '../api/user.js';
+import { AuthContext } from '../../context/AuthContext.js';
+import { login as loginApi } from '../../api/user.js';
 
-const logoImg = require('../assets/emu-logo.png');
+const logoImg = require('../../assets/emu-logo.png');
 
 const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
@@ -28,7 +28,7 @@ const LoginScreen = ({ navigation }) => {
       <Image style={styles.logoImg} source={logoImg} />
       <View style={[styles.section1]}>
         <Text style={styles.sectionTitle}>Нэвтрэх</Text>
-        <Image style={styles.userImg} source={require('../assets/user.png')} />
+        <Image style={styles.userImg} source={require('../../assets/user.png')} />
       </View>
       <View style={styles.inputContainer}>
         <FontAwesome name='user-o' style={styles.icon} />

@@ -1,16 +1,17 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, Text, StyleSheet } from 'react-native';
+import { View, StyleSheet } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-import HomeScreen from '../components/screens/HomeScreen';
-import ProfileScreen from '../components/screens/ProfileScreen';
+import HomeScreen from '../screens/HomeScreen';
+import ProfileScreen from '../screens/ProfileScreen';
 
 const Tab = createBottomTabNavigator();
+
 const MainNav = () => {
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
-        tabBarIcon: ({ focused, color, size }) => {
+        tabBarIcon: ({ focused }) => {
           let iconName;
 
           if (route.name === 'Home') {
@@ -20,18 +21,13 @@ const MainNav = () => {
           }
 
           return (
-            <View style={[styles.footerCont, { backgroundColor: focused ? '#EDB20E' : '#FFF' }]}>
+            <View style={[styles.footerCont, focused && styles.focusedFooterCont]}>
               <FontAwesome name={iconName} style={styles.footerIcon} />
             </View>
           );
         },
         tabBarShowLabel: false,
-        tabBarStyle: {
-          height: 80,
-          backgroundColor: '#066BCF',
-          borderColor: '#000',
-          borderTopWidth: 1,
-        },
+        tabBarStyle: styles.tabBarStyle,
       })}
     >
       <Tab.Screen name="Home" component={HomeScreen} options={{ headerShown: false }} />
@@ -41,22 +37,28 @@ const MainNav = () => {
 };
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-  },
   footerCont: {
     width: 60,
     height: 60,
-    backgroundColor: '#fff',
+    backgroundColor: '#FFF',
     borderRadius: 60,
     justifyContent: 'center',
     alignItems: 'center',
     borderColor: '#000',
     borderWidth: 1,
   },
+  focusedFooterCont: {
+    backgroundColor: '#EDB20E',
+  },
   footerIcon: {
     color: 'black',
     fontSize: 30,
+  },
+  tabBarStyle: {
+    height: 80,
+    backgroundColor: '#066BCF',
+    borderColor: '#000',
+    borderTopWidth: 1,
   },
 });
 

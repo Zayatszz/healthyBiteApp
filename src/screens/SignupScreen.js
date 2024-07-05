@@ -13,9 +13,9 @@ import Ionicons from 'react-native-vector-icons/Ionicons';
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import SubmitButton from '../components/SubmitButton';
-import { signup as signupApi } from '../api/user';
+import { signup as signupApi } from '../../api/user';
 
-const logoImg = require('../assets/emu-logo.png');
+const logoImg = require('../../assets/emu-logo.png');
 
 const SignupScreen = ({ navigation }) => {
 

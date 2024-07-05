@@ -195,7 +195,7 @@
 
 
 import React from 'react';
-import AppNavigation from './navigation/appNavigation';
+import AppNavigation from './src/navigation/appNavigation';
 
 const App = () => {
   return (

@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from 'react';
 import { View, Text, Button, TextInput, TouchableOpacity, StyleSheet, } from 'react-native';
-import { AuthContext } from '../context/AuthContext';
+import { AuthContext } from '../../context/AuthContext';
 
 const ProfileScreen = () => {
   const [users, setUsers] = useState([]);

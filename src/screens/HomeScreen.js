@@ -1,18 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  Image,
-  TouchableOpacity,
-  FlatList,
-} from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CarWashItem from '../components/CarWashItem';
-// import BottomTabNavigator from '../navigation/BottomTabNavigator';
+import { fetchCarwashList as fetchCarwashListApi } from '../../api/user';
 
-const logoImg = require('../assets/emu-logo.png');
+const logoImg = require('../../assets/emu-logo.png');
 
 const HomeScreen = () => {
   const [carwashList, setCarwashList] = useState([]);
@@ -23,8 +16,7 @@ const HomeScreen = () => {
 
   const fetchCarwashList = async () => {
     try {
-      const response = await fetch('http://192.168.100.37:3003/carwashes');
-      const data = await response.json();
+      const data = await fetchCarwashListApi();
       setCarwashList(data);
     } catch (error) {
       console.error(error);

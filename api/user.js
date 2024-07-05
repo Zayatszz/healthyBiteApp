@@ -38,3 +38,8 @@ export const login = (email, password) => {
 export const signup = (userData) => {
   return request('/users', 'POST', userData);
 };
+
+
+export const fetchCarwashList = () => {
+  return request('/carwashes', 'GET');
+};

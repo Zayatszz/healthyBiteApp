@@ -1,13 +1,13 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-const carwashImg = require("../assets/carwashApp1.png")
+const carwashImg = require("../../assets/carwashApp1.png")
 const CarWashItem =({ carwash })=>{
 
   
     const images = {
-        'carwashApp1.png': require("../assets/carwashApp1.png"),
-        'carwashApp2.jpg': require("../assets/carwashApp2.jpg"),
-        'carwashApp3.jpg': require("../assets/carwashApp3.jpg"),
+        'carwashApp1.png': require("../../assets/carwashApp1.png"),
+        'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
+        'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
         
       };
     return (
