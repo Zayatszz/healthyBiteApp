@@ -25,32 +25,15 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.flexHeader}>
-        <Image style={styles.logoImg} source={logoImg} />
-        <View style={styles.addWrapper}>
-          <Text>
-            <Icon name='bell-ring-outline' style={{ color: 'black', fontSize: 30 }} />
-          </Text>
-        </View>
-      </View>
-      <View style={[styles.section1]}>
-        <Text style={styles.sectionTitle}>EMU</Text>
-        <Text style={styles.paragraph}>Машин угаалгын апп</Text>
-      </View>
-      <View style={styles.searchBar}>
-        <Text style={styles.parText}>Угаалгын газар хайх</Text>
-      </View>
+    
       <View style={styles.flex}>
         <Text style={styles.parText}>Угаалгын газрууд</Text>
-        <TouchableOpacity onPress={()=>navigation.navigate('AllCarwash')} style={[styles.allBtn, styles.flexz]}>
-          <Text style={styles.addText}>Бүгд</Text>
-          <MaterialIcons name='navigate-next' style={{ color: 'black', fontSize: 25 }} />
-        </TouchableOpacity>
+       
       </View>
       <View style={styles.CarWashItem}>
         <FlatList 
           data={carwashList} 
-          horizontal={true}
+          horizontal={false}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
           keyExtractor={item => item.id}

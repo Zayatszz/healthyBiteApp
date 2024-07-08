@@ -1,4 +1,3 @@
-
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -16,10 +15,11 @@ const LoginScreen = ({ navigation }) => {
   const handleLogin = async () => {
     try {
       const data = await loginApi(email, password);
-      await login(data.token);
+      await login(data.token, data.user);
       navigation.navigate('Main');
     } catch (error) {
       Alert.alert('Error', 'Амжилтгүй. Та мэдээллээ шалгаад дахин оруулна уу.');
+      console.log('Error msg:', error)
     }
   };
 

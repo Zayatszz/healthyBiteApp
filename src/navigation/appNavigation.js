@@ -6,6 +6,9 @@ import SignupScreen from '../screens/SignupScreen';
 import { AuthContext, AuthProvider } from '../../context/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
 import mainNavigation from './mainNavigation';
+import CarwashDetailScreen from '../screens/CarwashDetailScreen';
+import AllCarwashScreen from '../screens/AllCarwashScreen';
+import OrderScreen from '../screens/OrderScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -25,6 +28,9 @@ const AppNavigator = () => {
       {token ? (
         <>
           <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
+          <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen}/>
+          <Stack.Screen name="AllCarwash" component={AllCarwashScreen}/>
+          <Stack.Screen name="Order" component={OrderScreen}/>
         </>
       ) : (
         <>

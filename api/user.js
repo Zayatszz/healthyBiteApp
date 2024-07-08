@@ -43,3 +43,17 @@ export const signup = (userData) => {
 export const fetchCarwashList = () => {
   return request('/carwashes', 'GET');
 };
+
+
+// api/user.js
+
+// export const updateUser = async (token, userData) => {
+//   return request(`/${userData.id}`, 'PUT', userData);
+ 
+// };
+export const updateUser = async (token, userData) => {
+  console.log(userData, "userdatagaa shalgachihy")
+  return request(`/users/${userData.id}`, 'PUT', userData, {
+    'Authorization': `Bearer ${token}`,
+  });
+};

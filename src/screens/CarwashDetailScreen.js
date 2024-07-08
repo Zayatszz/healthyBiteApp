@@ -7,7 +7,14 @@ import { fetchCarwashList as fetchCarwashListApi } from '../../api/user';
 
 const logoImg = require('../../assets/emu-logo.png');
 
-const HomeScreen = ({navigation}) => {
+const CarwashDetailScreen = ({ route, navigation }) => {
+    const images = {
+        'carwashApp1.png': require("../../assets/carwashApp1.png"),
+        'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
+        'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
+        
+      };
+    const {carwash} = route.params;
   const [carwashList, setCarwashList] = useState([]);
   
   useEffect(() => {
@@ -25,44 +32,27 @@ const HomeScreen = ({navigation}) => {
 
   return (
     <View style={styles.container}>
-      <View style={styles.flexHeader}>
-        <Image style={styles.logoImg} source={logoImg} />
-        <View style={styles.addWrapper}>
-          <Text>
-            <Icon name='bell-ring-outline' style={{ color: 'black', fontSize: 30 }} />
-          </Text>
-        </View>
-      </View>
-      <View style={[styles.section1]}>
-        <Text style={styles.sectionTitle}>EMU</Text>
-        <Text style={styles.paragraph}>Машин угаалгын апп</Text>
-      </View>
-      <View style={styles.searchBar}>
-        <Text style={styles.parText}>Угаалгын газар хайх</Text>
-      </View>
-      <View style={styles.flex}>
-        <Text style={styles.parText}>Угаалгын газрууд</Text>
-        <TouchableOpacity onPress={()=>navigation.navigate('AllCarwash')} style={[styles.allBtn, styles.flexz]}>
-          <Text style={styles.addText}>Бүгд</Text>
-          <MaterialIcons name='navigate-next' style={{ color: 'black', fontSize: 25 }} />
-        </TouchableOpacity>
-      </View>
-      <View style={styles.CarWashItem}>
-        <FlatList 
-          data={carwashList} 
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
-          keyExtractor={item => item.id}
-          
-        />
-      </View>
-      {/* <BottomTabNavigator /> */}
-    </View>
+    <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
+    <Text style={styles.title}>{carwash.name}</Text>
+    <Text style={styles.paragraph}>{carwash.description}</Text>
+    <Text style={styles.paragraph}>Location: {carwash.location}</Text>
+    <Text style={styles.paragraph}>Phone: {carwash.phoneNumber}</Text>
+    <Text style={styles.paragraph}>Capacity: {carwash.capacity}</Text>
+    <Text style={styles.paragraph}>Stars: {carwash.stars}</Text>
+    <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Order', {carwash, navigation})}>
+        <Text style={styles.buttonText}>Захиалах</Text>
+      </TouchableOpacity>
+  </View>
   );
 };
 
 const styles = StyleSheet.create({
+    carwashImg:{
+        // width:280,
+        height:200,
+        borderTopLeftRadius:10,
+        borderTopRightRadius:10,
+    },
   searchBar: {
     padding: 10,
     marginRight: 30,
@@ -152,6 +142,21 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 18,
   },
+
+  button: {
+    width: '100%',
+    height: 45,
+    backgroundColor: '#1E90FF',
+    borderRadius: 30,
+    alignItems: 'center',
+    justifyContent: 'center',
+    marginVertical: 10,
+  },
+  buttonText: {
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
+  },
 });
 
-export default HomeScreen;
+export default CarwashDetailScreen;

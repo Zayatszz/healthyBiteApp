@@ -1,23 +1,53 @@
-import React, { useEffect, useState, useContext } from 'react';
-import { View, Text, Button, TextInput, TouchableOpacity, StyleSheet, } from 'react-native';
+import React, { useEffect, useState, useContext, useRef } from 'react';
+import {
+  View,
+  Text,
+  TextInput,
+  TouchableOpacity,
+  StyleSheet,
+  Alert,
+} from 'react-native';
 import { AuthContext } from '../../context/AuthContext';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import { updateUser as updateUserApi } from '../../api/user';
 
 const ProfileScreen = () => {
-  const [users, setUsers] = useState([]);
-  // const logout = useContext(AuthContext);
-  const { token, logout } = useContext(AuthContext);
-  useEffect(() => {
-    fetchUsers();
-  }, []);
+  const { token, logout, userInfo, setUserInfo } = useContext(AuthContext);
+  const [email, setEmail] = useState(userInfo.email);
+  const [firstName, setFirstName] = useState(userInfo.firstName);
+  const [lastName, setLastName] = useState(userInfo.lastName);
+  const [phoneNumber, setPhoneNumber] = useState(userInfo.phoneNumber);
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
 
-  const fetchUsers = async () => {
+  const emailRef = useRef(null);
+  const firstNameRef = useRef(null);
+  const lastNameRef = useRef(null);
+  const phoneNumberRef = useRef(null);
+  const passwordRef = useRef(null);
+  const confirmPasswordRef = useRef(null);
+
+  const handleUpdate = async () => {
+    if (password !== confirmPassword) {
+      Alert.alert('Error', 'Passwords do not match');
+      return;
+    }
+
     try {
-      const response = await fetch('http://192.168.100.37:3003/users');
-      const data = await response.json();
-      console.log(data);
-      setUsers(data);
+      const updatedUser = await updateUserApi(token, {
+        id: userInfo.id,
+        email,
+        firstName,
+        lastName,
+        phoneNumber,
+        password,
+      });
+      setUserInfo(updatedUser);
+      Alert.alert('Success', 'User information updated successfully');
     } catch (error) {
-      console.error(error);
+      Alert.alert('Error', 'Failed to update user information');
+      console.log("Error msg update hiihed:", error)
     }
   };
 
@@ -25,53 +55,147 @@ const ProfileScreen = () => {
     try {
       await logout(token);
     } catch (error) {
-     
+      Alert.alert('Error', 'Failed to logout');
     }
   };
 
- 
   return (
-    <View>
-      <Text>Users:</Text>
-      {users.map((user) => (
-        <Text key={user.id}>{user.email}</Text>
-      ))}
-  
-  <TouchableOpacity style={styles.button} onPress={handleLogout}>
+    <View style={styles.container}>
+      <Text style={styles.sectionTitle}>Profile</Text>
+
+      <View style={styles.labelContainer}>
+        <Text>Email</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <FontAwesome name='user-o' style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Email"
+          value={email}
+          onChangeText={setEmail}
+          keyboardType="email-address"
+          autoCapitalize="none"
+          placeholderTextColor="#A9A9A9"
+          returnKeyType="next"
+          onSubmitEditing={() => firstNameRef.current.focus()}
+          ref={emailRef}
+        />
+      </View>
+
+      <View style={styles.labelContainer}>
+        <Text>First Name</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <FontAwesome name='user-o' style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="First Name"
+          value={firstName}
+          onChangeText={setFirstName}
+          placeholderTextColor="#A9A9A9"
+          returnKeyType="next"
+          onSubmitEditing={() => lastNameRef.current.focus()}
+          ref={firstNameRef}
+        />
+      </View>
+
+      <View style={styles.labelContainer}>
+        <Text>Last Name</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <FontAwesome name='user-o' style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Last Name"
+          value={lastName}
+          onChangeText={setLastName}
+          placeholderTextColor="#A9A9A9"
+          returnKeyType="next"
+          onSubmitEditing={() => phoneNumberRef.current.focus()}
+          ref={lastNameRef}
+        />
+      </View>
+
+      <View style={styles.labelContainer}>
+        <Text>Phone Number</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <FontAwesome name='phone' style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Phone Number"
+          value={phoneNumber}
+          onChangeText={setPhoneNumber}
+          keyboardType="phone-pad"
+          placeholderTextColor="#A9A9A9"
+          returnKeyType="next"
+          onSubmitEditing={() => passwordRef.current.focus()}
+          ref={phoneNumberRef}
+        />
+      </View>
+
+      <View style={styles.labelContainer}>
+        <Text>Password</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <Ionicons name='lock-closed-outline' style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Password"
+          value={password}
+          onChangeText={setPassword}
+          secureTextEntry
+          placeholderTextColor="#A9A9A9"
+          returnKeyType="next"
+          onSubmitEditing={() => confirmPasswordRef.current.focus()}
+          ref={passwordRef}
+        />
+      </View>
+
+      <View style={styles.labelContainer}>
+        <Text>Confirm Password</Text>
+      </View>
+      <View style={styles.inputContainer}>
+        <Ionicons name='lock-closed-outline' style={styles.icon} />
+        <TextInput
+          style={styles.input}
+          placeholder="Confirm Password"
+          value={confirmPassword}
+          onChangeText={setConfirmPassword}
+          secureTextEntry
+          placeholderTextColor="#A9A9A9"
+          returnKeyType="done"
+          ref={confirmPasswordRef}
+        />
+      </View>
+
+      <TouchableOpacity style={styles.button} onPress={handleUpdate}>
+        <Text style={styles.buttonText}>Шинэчлэх</Text>
+      </TouchableOpacity>
+
+      <TouchableOpacity style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Гарах</Text>
       </TouchableOpacity>
     </View>
   );
 };
+
 const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
     padding: 15,
   },
-  section1: {
-    alignItems: 'center',
-    paddingTop: 30,
-    paddingBottom: 60,
-    paddingHorizontal: 20,
-  },
   sectionTitle: {
-    fontSize: 50,
+    fontSize: 30,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#000',
     paddingBottom: 20,
   },
-  logoImg: {
-    width: 70,
-    height: 60,
-    borderRadius: 10,
-  },
-  userImg: {
-    width: 100,
-    height: 110,
-    borderRadius: 10,
-    textAlign: 'center',
+  labelContainer: {
+    marginBottom: 10,
+    marginLeft: 10,
   },
   inputContainer: {
     flexDirection: 'row',
@@ -82,7 +206,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 15,
     marginBottom: 10,
     width: '100%',
-    height: 60,
+    height: 45,
   },
   icon: {
     fontSize: 20,
@@ -93,26 +217,14 @@ const styles = StyleSheet.create({
     flex: 1,
     height: '100%',
   },
-  registerContainer: {
-    marginTop: 10,
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 30,
-  },
-  registerText: {
-    color: '#888',
-  },
-  registerLink: {
-    color: '#1E90FF',
-    marginLeft: 5,
-  },
   button: {
     width: '100%',
-    height: 50,
+    height: 45,
     backgroundColor: '#1E90FF',
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
+    marginVertical: 10,
   },
   buttonText: {
     color: '#fff',
@@ -120,4 +232,5 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
   },
 });
+
 export default ProfileScreen;

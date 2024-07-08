@@ -1,7 +1,7 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 const carwashImg = require("../../assets/carwashApp1.png")
-const CarWashItem =({ carwash })=>{
+const CarWashItem =({ carwash, navigation })=>{
 
   
     const images = {
@@ -11,26 +11,25 @@ const CarWashItem =({ carwash })=>{
         
       };
     return (
-        // <View style={styles.item}>
-        //     <Image style={styles.carwashImg} source={carwashImg}/>
-        //     <View style={styles.flex}>
-        //         <Text style={styles.paragraph}>{carwash.name}</Text>
-        //         <Text style={styles.paragraph}>20к-50к</Text>
-
-        //     </View>
-        //     <Text style={styles.paragraph}>УБ, Баянзүрх, 5-р хороо</Text>
-        // </View>
-        <View style={styles.item}>
-            
-            {/* <Image style={styles.carwashImg} source={"../assets/carwashApp1.png"} /> */}
-            <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
-      <View style={styles.flex}>
+    //     <View style={styles.item}>
+    //         <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
+    //   <View style={styles.flex}>
         
-        <Text style={styles.paragraph}>{carwash.name} {carwash.imageUrl}</Text>
-        {/* <Text style={styles.paragraph}>{carwash.price}</Text> */}
+        
+    //     <Text onPress={() => navigation.navigate('DetailCarwash')} style={styles.paragraph}>{carwash.name} {carwash.imageUrl}</Text>
+    //     {/* <Text style={styles.paragraph}>{carwash.price}</Text> */}
+    //   </View>
+    //   <Text style={styles.paragraph}>{carwash.location}</Text>
+    // </View>
+    <TouchableOpacity onPress={() => navigation.navigate('DetailCarwash', { carwash, navigation })}>
+      <View style={styles.item}>
+        <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
+        <View style={styles.flex}>
+          <Text style={styles.paragraph}>{carwash.name}</Text>
+        </View>
+        <Text style={styles.paragraph}>{carwash.location}</Text>
       </View>
-      <Text style={styles.paragraph}>{carwash.location}</Text>
-    </View>
+    </TouchableOpacity>
     )
 }
 
