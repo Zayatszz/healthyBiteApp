@@ -1,6 +1,6 @@
 // api.js
 
-const API_URL = 'http://192.168.100.37:3003';
+const API_URL = 'http://172.20.10.3:3003';
 
 const request = async (endpoint, method, body) => {
   const headers = {
@@ -31,8 +31,8 @@ const request = async (endpoint, method, body) => {
   }
 };
 
-export const login = (email, password) => {
-  return request('/login', 'POST', { email, password });
+export const login = (emailOrPhoneNumber, password) => {
+  return request('/login', 'POST', { emailOrPhoneNumber, password });
 };
 
 export const signup = (userData) => {

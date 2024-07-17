@@ -1,4 +1,4 @@
-import React, { useContext } from 'react';
+import React, { useContext, useState, useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import LoginScreen from '../screens/LoginScreen';
@@ -9,11 +9,21 @@ import mainNavigation from './mainNavigation';
 import CarwashDetailScreen from '../screens/CarwashDetailScreen';
 import AllCarwashScreen from '../screens/AllCarwashScreen';
 import OrderScreen from '../screens/OrderScreen';
+import SplashScreen from '../screens/SplashScreen';
 
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
   const { token, loading } = useContext(AuthContext);
+  const [isShowSplash, setShowSplash] = useState(true);
+
+  useEffect(() => {
+    const splashTimeout = setTimeout(() => {
+      setShowSplash(false);
+    }, 3000);
+
+    return () => clearTimeout(splashTimeout);
+  }, []);
 
   if (loading) {
     return (
@@ -25,18 +35,25 @@ const AppNavigator = () => {
 
   return (
     <Stack.Navigator>
-      {token ? (
-        <>
-          <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
-          <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen}/>
-          <Stack.Screen name="AllCarwash" component={AllCarwashScreen}/>
-          <Stack.Screen name="Order" component={OrderScreen}/>
-        </>
+      {isShowSplash ? (
+        <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+       
       ) : (
-        <>
+       
+         token ? (
+          <>
+          <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
+          <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen} />
+          <Stack.Screen name="AllCarwash" component={AllCarwashScreen} />
+          <Stack.Screen name="Order" component={OrderScreen} />
+        </>
+          
+        ) : (
+          <>
           <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
           <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
         </>
+        )
       )}
     </Stack.Navigator>
   );

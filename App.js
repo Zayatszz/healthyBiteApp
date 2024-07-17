@@ -194,12 +194,15 @@
 
 
 
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import AppNavigation from './src/navigation/appNavigation';
+import SplashScreen from './src/screens/SplashScreen';
 
 const App = () => {
+
   return (
     <AppNavigation />
+    // <SplashScreen/>
   );
 };
 

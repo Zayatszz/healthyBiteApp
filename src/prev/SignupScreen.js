@@ -63,15 +63,19 @@ const SignupScreen = ({ navigation }) => {
     >
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <View style={styles.container}>
-       
+          <Image style={styles.logoImg} source={logoImg} />
           <View style={[styles.section1]}>
             <Text style={styles.sectionTitle}>Бүртгүүлэх</Text>
-            <Text style={styles.paragraph}>Та мэдээллээ бөглөн бүртгүүлнэ үү.</Text>
-            
+            <View style={styles.loginContainer}>
+              <Text style={styles.loginText}>Аль хэдийн бүртгүүлчихсэн үү?</Text>
+              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
+                <Text style={styles.loginLink}>Нэвтрэх</Text>
+              </TouchableOpacity>
+            </View>
           </View>
 
-          {/* <View style={styles.labelContainer}>
-            <Text  style={styles.labelText}>Овог</Text>
+          <View style={styles.labelContainer}>
+            <Text>Овог</Text>
           </View>
           <View style={styles.inputContainer}>
             <FontAwesome name='user-o' style={styles.icon} />
@@ -86,16 +90,16 @@ const SignupScreen = ({ navigation }) => {
           </View>
           {errors.lastName && touched.lastName ? (
             <Text style={styles.errorText}>{errors.lastName}</Text>
-          ) : null} */}
+          ) : null}
 
           <View style={styles.labelContainer}>
-            <Text  style={styles.labelText}>Нэр</Text>
+            <Text>Нэр</Text>
           </View>
           <View style={styles.inputContainer}>
-          
+            <FontAwesome name='user-o' style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="Нэр бичих"
+              placeholder="Нэр"
               onChangeText={handleChange('firstName')}
               onBlur={handleBlur('firstName')}
               value={values.firstName}
@@ -106,32 +110,14 @@ const SignupScreen = ({ navigation }) => {
             <Text style={styles.errorText}>{errors.firstName}</Text>
           ) : null}
 
-
           <View style={styles.labelContainer}>
-            <Text  style={styles.labelText}>Дугаар</Text>
+            <Text>И-мэйл</Text>
           </View>
           <View style={styles.inputContainer}>
-         
+            <FontAwesome name='user-o' style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="Утасны дугаар бичих"
-              onChangeText={handleChange('phoneNumber')}
-              onBlur={handleBlur('phoneNumber')}
-              value={values.phoneNumber}
-              keyboardType="phone-pad"
-              placeholderTextColor="#A9A9A9"
-            />
-          </View>
-          {errors.phoneNumber && touched.phoneNumber ? (
-            <Text style={styles.errorText}>{errors.phoneNumber}</Text>
-          ) : null}
-          <View style={styles.labelContainer}>
-            <Text  style={styles.labelText}>И-мэйл</Text>
-          </View>
-          <View style={styles.inputContainer}>
-            <TextInput
-              style={styles.input}
-              placeholder="И-мэйлээ бичих"
+              placeholder="И-мэйлээ оруулна уу."
               onChangeText={handleChange('email')}
               onBlur={handleBlur('email')}
               value={values.email}
@@ -145,13 +131,32 @@ const SignupScreen = ({ navigation }) => {
           ) : null}
 
           <View style={styles.labelContainer}>
-            <Text  style={styles.labelText}>Нууц үг</Text>
+            <Text>Дугаар</Text>
           </View>
           <View style={styles.inputContainer}>
-
+            <FontAwesome name='user-o' style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="Нууц үг бичих"
+              placeholder="Дугаараа оруулна уу."
+              onChangeText={handleChange('phoneNumber')}
+              onBlur={handleBlur('phoneNumber')}
+              value={values.phoneNumber}
+              keyboardType="phone-pad"
+              placeholderTextColor="#A9A9A9"
+            />
+          </View>
+          {errors.phoneNumber && touched.phoneNumber ? (
+            <Text style={styles.errorText}>{errors.phoneNumber}</Text>
+          ) : null}
+
+          <View style={styles.labelContainer}>
+            <Text>Нууц үг</Text>
+          </View>
+          <View style={styles.inputContainer}>
+            <Ionicons name='lock-closed-outline' style={styles.icon} />
+            <TextInput
+              style={styles.input}
+              placeholder="Нууц үг"
               onChangeText={handleChange('password')}
               onBlur={handleBlur('password')}
               value={values.password}
@@ -164,13 +169,13 @@ const SignupScreen = ({ navigation }) => {
           ) : null}
 
           <View style={styles.labelContainer}>
-            <Text  style={styles.labelText}>Нууц үг давтах</Text>
+            <Text>Нууц үгээ дахин оруулна уу.</Text>
           </View>
           <View style={styles.inputContainer}>
-           
+            <Ionicons name='lock-closed-outline' style={styles.icon} />
             <TextInput
               style={styles.input}
-              placeholder="Нууц үг бичих"
+              placeholder="Нууц үг"
               onChangeText={handleChange('confirmPassword')}
               onBlur={handleBlur('confirmPassword')}
               value={values.confirmPassword}
@@ -187,12 +192,6 @@ const SignupScreen = ({ navigation }) => {
           <TouchableOpacity style={styles.button} onPress={handleSubmit}>
             <Text style={styles.buttonText}>Бүртгүүлэх</Text>
           </TouchableOpacity>
-          <View style={styles.loginContainer}>
-              <Text style={styles.loginText}>Бүртгэлтэй хэрэглэгч үү?</Text>
-              <TouchableOpacity onPress={() => navigation.navigate('Login')}>
-                <Text style={styles.loginLink}>Нэвтрэх</Text>
-              </TouchableOpacity>
-            </View>
         </View>
       )}
     </Formik>
@@ -203,47 +202,46 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    padding: 20,
+    padding: 15,
   },
   section1: {
     alignItems: 'center',
-    paddingTop: 35,
-    paddingBottom: 20,
+    paddingTop: 30,
+    paddingBottom: 10,
     paddingHorizontal: 20,
   },
   sectionTitle: {
-    fontSize: 28,
+    fontSize: 40,
     fontWeight: 'bold',
     textAlign: 'center',
     color: '#000',
     paddingBottom: 20
   },
-  paragraph: {
-    
-    fontSize: 14,
-    textAlign: 'center',
-    color: '#474747',
-    paddingBottom: 15,
-    paddingHorizontal:20
+  logoImg: {
+    width: 70,
+    height: 60,
+    borderRadius: 10,
   },
-
+  userImg: {
+    width: 100,
+    height: 110,
+    borderRadius: 10,
+    textAlign: 'center',
+  },
   labelContainer: {
     marginBottom: 10,
-  },
-  labelText: {
-   fontSize:13,
-    color:'#000'
+    marginLeft: 10
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 10,
+    borderRadius: 30,
     paddingHorizontal: 15,
     marginBottom: 10,
     width: '100%',
-    height: 50,
+    height: 45,
   },
   icon: {
     fontSize: 20,
@@ -255,32 +253,27 @@ const styles = StyleSheet.create({
     height: '100%',
   },
   loginContainer: {
-    
-    marginTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 30,
-    justifyContent: 'center', 
   },
   loginText: {
-    color: '#8B8E95',
+    color: '#888',
   },
   loginLink: {
-    color: '#008BDC',
-    fontWeight:"bold",
+    color: '#1E90FF',
     marginLeft: 5,
   },
   button: {
     width: '100%',
-    height: 50,
-    backgroundColor: '#262626',
-    borderRadius: 10,
+    height: 45,
+    backgroundColor: '#1E90FF',
+    borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginTop:20
   },
   buttonText: {
-    color: '#F5F5F5',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
