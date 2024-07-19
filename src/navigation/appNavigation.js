@@ -10,6 +10,8 @@ import CarwashDetailScreen from '../screens/CarwashDetailScreen';
 import AllCarwashScreen from '../screens/AllCarwashScreen';
 import OrderScreen from '../screens/OrderScreen';
 import SplashScreen from '../screens/SplashScreen';
+import PaymentScreen from '../screens/PaymentScreen';
+import MyOrdersScreen from '../screens/MyOrdersScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -46,6 +48,8 @@ const AppNavigator = () => {
           <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen} />
           <Stack.Screen name="AllCarwash" component={AllCarwashScreen} />
           <Stack.Screen name="Order" component={OrderScreen} />
+          <Stack.Screen name="Payment" component={PaymentScreen} />
+          <Stack.Screen name="MyOrders" component={MyOrdersScreen} />
         </>
           
         ) : (

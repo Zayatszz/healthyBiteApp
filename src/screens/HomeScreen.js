@@ -1,22 +1,32 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import Feather from 'react-native-vector-icons/Feather';
 import CarWashItem from '../components/CarWashItem';
-import { fetchCarwashList as fetchCarwashListApi } from '../../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../../api/user';
+import { Dropdown } from 'react-native-element-dropdown';
 
-const logoImg = require('../../assets/emu-logo.png');
+const logoImg = require('../../assets/logoo.png');
 
-const HomeScreen = ({navigation}) => {
+const HomeScreen = ({ navigation }) => {
   const [carwashList, setCarwashList] = useState([]);
-  
+  const [selectedCarType, setSelectedCarType] = useState(null);
+  const [selectedWashType, setSelectedWashType] = useState(null);
+  const [selectedProvince, setSelectedProvince] = useState(null);
+  const [selectedDistrict, setSelectedDistrict] = useState(null);
+
+  const carTypes = [
+    { label: '10-11', value: '10-11' },
+    { label: '11-12', value: '11-12' },
+    { label: '12-13', value: '12-13' },
+  ];
+
   useEffect(() => {
     fetchCarwashList();
   }, []);
 
   const fetchCarwashList = async () => {
     try {
-      const data = await fetchCarwashListApi();
+      const data = await fetchCarwashServiceListApi();
       setCarwashList(data);
     } catch (error) {
       console.error(error);
@@ -24,27 +34,80 @@ const HomeScreen = ({navigation}) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.flexHeader}>
         <Image style={styles.logoImg} source={logoImg} />
-        <View style={styles.addWrapper}>
-          <Text>
-            <Icon name='bell-ring-outline' style={{ color: 'black', fontSize: 30 }} />
-          </Text>
-        </View>
+        <Text>
+          <Feather name='bell' style={styles.bellIcon} />
+        </Text>
       </View>
-      <View style={[styles.section1]}>
-        <Text style={styles.sectionTitle}>EMU</Text>
-        <Text style={styles.paragraph}>Машин угаалгын апп</Text>
+      <View style={styles.section1}>
+        <Text style={styles.sectionTitle}>Бага хай. Илүү амьдар.</Text>
       </View>
-      <View style={styles.searchBar}>
-        <Text style={styles.parText}>Угаалгын газар хайх</Text>
+      <View style={styles.searchSection}>
+        <Dropdown
+          style={styles.dropdown}
+          data={carTypes}
+          labelField="label"
+          valueField="value"
+          placeholder="Машины хэмжээ"
+          value={selectedCarType}
+          onChange={item => {
+            setSelectedCarType(item.value);
+          }}
+        />
+        <Dropdown
+          style={styles.dropdown}
+          data={carTypes}
+          labelField="label"
+          valueField="value"
+          placeholder="Угаалгах төрөл"
+          value={selectedWashType}
+          onChange={item => {
+            setSelectedWashType(item.value);
+          }}
+        />
+        <Dropdown
+          style={styles.dropdown}
+          data={carTypes}
+          labelField="label"
+          valueField="value"
+          placeholder="Аймаг, хот"
+          value={selectedProvince}
+          onChange={item => {
+            setSelectedProvince(item.value);
+          }}
+        />
+        <Dropdown
+          style={styles.dropdown}
+          data={carTypes}
+          labelField="label"
+          valueField="value"
+          placeholder="Сум, дүүрэг"
+          value={selectedDistrict}
+          onChange={item => {
+            setSelectedDistrict(item.value);
+          }}
+        />
+        <TouchableOpacity style={[styles.button, styles.flexz]}>
+          <Feather name='search' style={{ color: '#FFF', fontSize: 25 }} />
+          <Text style={styles.buttonText}>Угаалгын газар хайх</Text>
+        </TouchableOpacity>
       </View>
+      {/* <View style={styles.searchSection}>
+       
+     
+     
+        <TouchableOpacity style={[styles.button, styles.flexz]}>
+          <Feather name='search' style={{ color: '#FFF', fontSize: 25 }} />
+          <Text style={styles.buttonText}>Угаалгын газар хайх</Text>
+        </TouchableOpacity>
+      </View> */}
       <View style={styles.flex}>
         <Text style={styles.parText}>Угаалгын газрууд</Text>
-        <TouchableOpacity onPress={()=>navigation.navigate('AllCarwash')} style={[styles.allBtn, styles.flexz]}>
-          <Text style={styles.addText}>Бүгд</Text>
-          <MaterialIcons name='navigate-next' style={{ color: 'black', fontSize: 25 }} />
+        <TouchableOpacity onPress={()=>navigation.navigate('AllCarwash')} >
+
+        <Text style={styles.addText}>Бүгдийг харах</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.CarWashItem}>
@@ -53,28 +116,17 @@ const HomeScreen = ({navigation}) => {
           horizontal={true}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
-          keyExtractor={item => item.id}
-          
+          keyExtractor={item => item.id.toString()}
         />
       </View>
-      {/* <BottomTabNavigator /> */}
-    </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
-  searchBar: {
-    padding: 10,
-    marginRight: 30,
-    backgroundColor: '#000',
-    width: '100%',
-  },
-  view: {
-    margin: 10,
-  },
   container: {
     flex: 1,
-    backgroundColor: '#066BCF',
+    backgroundColor: '#FFF',
   },
   section1: {
     paddingTop: 60,
@@ -82,26 +134,19 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
   },
   sectionTitle: {
-    fontSize: 50,
+    fontSize: 28,
     fontWeight: 'bold',
     textAlign: 'center',
-    color: '#FFF',
-  },
-  paragraph: {
-    fontSize: 20,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#FFF',
+    color: '#000',
   },
   parText: {
-    fontSize: 20,
+    fontSize: 18,
     textAlign: 'center',
-    color: '#FFF',
+    color: '#000',
   },
   flexHeader: {
     padding: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#066BCF',
+    backgroundColor: '#E0E0E0',
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -120,37 +165,51 @@ const styles = StyleSheet.create({
     padding: 5,
     alignItems: 'center',
   },
-  allBtn: {
-    width: 120,
-    height: 40,
-    backgroundColor: '#58B3F0',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#C0C0C0',
+  searchSection: {
+    paddingHorizontal: 20,
+    marginBottom:10
+  },
+  dropdown: {
+    height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
+    borderRadius: 8,
+    paddingHorizontal: 8,
+    marginBottom: 15,
+  },
+  CarWashItem: {
+    paddingTop:15,
+    paddingBottom:30,
+    paddingHorizontal: 20,
   },
   logoImg: {
-    width: 70,
+    width: 60,
     height: 60,
     borderRadius: 10,
   },
-  CarWashItem: {
-    paddingHorizontal: 20,
+  bellIcon: {
+    color: 'black', 
+    fontSize: 25,
   },
-  addWrapper: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#58B3F0',
-    borderRadius: 60,
-    justifyContent: 'center',
+  button: {
+    width: '100%',
+    height: 50,
+    backgroundColor: '#268AE6',
+    borderRadius: 10,
     alignItems: 'center',
-    borderColor: '#18A0FB',
-    borderWidth: 1,
+    justifyContent: 'center',
+    marginVertical: 10,
+  
+  },
+  buttonText: {
+    paddingLeft: 10,
+    color: '#fff',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
   addText: {
-    fontWeight: 'bold',
-    color: '#000',
-    fontSize: 18,
+    color: '#8B8E95',
+    fontSize: 16,
   },
 });
 

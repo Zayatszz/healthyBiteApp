@@ -23,9 +23,7 @@ const SignupScreen = ({ navigation }) => {
     email: Yup.string()
       .email('Invalid email')
       .required('Required'),
-    firstName: Yup.string()
-      .required('Required'),
-    lastName: Yup.string()
+    userName: Yup.string()
       .required('Required'),
     phoneNumber: Yup.string()
       .required('Required'),
@@ -52,8 +50,7 @@ const SignupScreen = ({ navigation }) => {
     <Formik
       initialValues={{
         email: '',
-        firstName: '',
-        lastName: '',
+        userName: '',
         phoneNumber: '',
         password: '',
         confirmPassword: '',
@@ -96,14 +93,14 @@ const SignupScreen = ({ navigation }) => {
             <TextInput
               style={styles.input}
               placeholder="Нэр бичих"
-              onChangeText={handleChange('firstName')}
-              onBlur={handleBlur('firstName')}
-              value={values.firstName}
+              onChangeText={handleChange('userName')}
+              onBlur={handleBlur('userName')}
+              value={values.userName}
               placeholderTextColor="#A9A9A9"
             />
           </View>
-          {errors.firstName && touched.firstName ? (
-            <Text style={styles.errorText}>{errors.firstName}</Text>
+          {errors.userName && touched.userName ? (
+            <Text style={styles.errorText}>{errors.userName}</Text>
           ) : null}
 
 

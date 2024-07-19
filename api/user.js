@@ -1,6 +1,6 @@
 // api.js
 
-const API_URL = 'http://172.20.10.3:3003';
+const API_URL = 'http://192.168.100.37:3003';
 
 const request = async (endpoint, method, body) => {
   const headers = {
@@ -43,7 +43,16 @@ export const signup = (userData) => {
 export const fetchCarwashList = () => {
   return request('/carwashes', 'GET');
 };
+export const fetchCarwashServiceList = () => {
+  return request('/carwashservices', 'GET');
+};
+export const orderCarwash = (orderDetails) => {
+  return request('/bookings', 'POST', orderDetails);
+};
 
+export const fetchUserOrders = (userId) => {
+  return request(`/user-orders/${userId}`, 'GET');
+};
 
 // api/user.js
 

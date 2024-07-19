@@ -1,9 +1,10 @@
 import React from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { View, StyleSheet } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import AntDesign from 'react-native-vector-icons/AntDesign';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
+import LinearGradient from 'react-native-linear-gradient';
 
 const Tab = createBottomTabNavigator();
 
@@ -21,12 +22,19 @@ const MainNav = () => {
           }
 
           return (
-            <View style={[styles.footerCont, focused && styles.focusedFooterCont]}>
-              <FontAwesome name={iconName} style={styles.footerIcon} />
-            </View>
+            <View style={styles.iconContainer}>
+            {focused && <View style={styles.yellowCircle} />}
+            <AntDesign name={iconName} style={[styles.icon, focused && styles.focusedIcon]} />
+          </View>
           );
         },
         tabBarShowLabel: false,
+        tabBarBackground: () => (
+          <LinearGradient
+            colors={['#66BBCC', '#4EA6CD', '#4EA6CD', '#1D7ECE', '#066BCF']}
+            style={[StyleSheet.absoluteFill, styles.gradientStyle]}
+          />
+        ),
         tabBarStyle: styles.tabBarStyle,
       })}
     >
@@ -37,28 +45,57 @@ const MainNav = () => {
 };
 
 const styles = StyleSheet.create({
-  footerCont: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#FFF',
-    borderRadius: 60,
+  iconContainer: {
     justifyContent: 'center',
     alignItems: 'center',
-    borderColor: '#000',
-    borderWidth: 1,
   },
-  focusedFooterCont: {
-    backgroundColor: '#EDB20E',
+  yellowCircle: {
+    width: 10,
+    height: 10,
+    borderRadius: 5,
+    backgroundColor: '#FFCC33',
+    position: 'absolute',
+    top: -15,
+    // left: '50%',
+    // marginLeft: -5, 
   },
+  icon: {
+    fontSize: 30,
+    color: '#FFF',
+  },
+ 
+ 
   footerIcon: {
-    color: 'black',
+    color: '#FFF',
     fontSize: 30,
   },
+  
   tabBarStyle: {
-    height: 80,
-    backgroundColor: '#066BCF',
-    borderColor: '#000',
-    borderTopWidth: 1,
+    backgroundColor:"#000",
+    marginHorizontal:20,
+    height: 75,
+    borderRadius: 50,
+    position: 'absolute',
+    // left: 10,
+    // right: 10,
+    bottom: 16,
+    // borderColor: 'transparent',
+    // shadowColor: '#000',
+    // shadowOffset: {
+    //   width: 0,
+    //   height: 10,
+    // },
+    // shadowOpacity: 0.25,
+    // shadowRadius: 3.5,
+    // elevation: 5,
+  },
+  gradientStyle:{
+    borderRadius: 50,
+  },
+  gradientBackground: {
+    flex: 1,
+    borderTopLeftRadius: 30,
+    borderTopRightRadius: 30,
   },
 });
 

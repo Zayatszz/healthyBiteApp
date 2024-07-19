@@ -12,18 +12,16 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { updateUser as updateUserApi } from '../../api/user';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({navigation}) => {
   const { token, logout, userInfo, setUserInfo } = useContext(AuthContext);
   const [email, setEmail] = useState(userInfo.email);
-  const [firstName, setFirstName] = useState(userInfo.firstName);
-  const [lastName, setLastName] = useState(userInfo.lastName);
+  const [userName, setUserName] = useState(userInfo.userName);
   const [phoneNumber, setPhoneNumber] = useState(userInfo.phoneNumber);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
 
   const emailRef = useRef(null);
-  const firstNameRef = useRef(null);
-  const lastNameRef = useRef(null);
+  const userNameRef = useRef(null);
   const phoneNumberRef = useRef(null);
   const passwordRef = useRef(null);
   const confirmPasswordRef = useRef(null);
@@ -38,8 +36,7 @@ const ProfileScreen = () => {
       const updatedUser = await updateUserApi(token, {
         id: userInfo.id,
         email,
-        firstName,
-        lastName,
+        userName,
         phoneNumber,
         password,
       });
@@ -83,36 +80,19 @@ const ProfileScreen = () => {
       </View>
 
       <View style={styles.labelContainer}>
-        <Text>First Name</Text>
+        <Text>User Name</Text>
       </View>
       <View style={styles.inputContainer}>
         <FontAwesome name='user-o' style={styles.icon} />
         <TextInput
           style={styles.input}
-          placeholder="First Name"
-          value={firstName}
-          onChangeText={setFirstName}
-          placeholderTextColor="#A9A9A9"
-          returnKeyType="next"
-          onSubmitEditing={() => lastNameRef.current.focus()}
-          ref={firstNameRef}
-        />
-      </View>
-
-      <View style={styles.labelContainer}>
-        <Text>Last Name</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome name='user-o' style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Last Name"
-          value={lastName}
-          onChangeText={setLastName}
+          placeholder="User Name"
+          value={userName}
+          onChangeText={setUserName}
           placeholderTextColor="#A9A9A9"
           returnKeyType="next"
           onSubmitEditing={() => phoneNumberRef.current.focus()}
-          ref={lastNameRef}
+          ref={userNameRef}
         />
       </View>
 
@@ -175,6 +155,9 @@ const ProfileScreen = () => {
 
       <TouchableOpacity style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Гарах</Text>
+      </TouchableOpacity>
+      <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('MyOrders')}>
+        <Text style={styles.buttonText}>Миний захиалгууд</Text>
       </TouchableOpacity>
     </View>
   );

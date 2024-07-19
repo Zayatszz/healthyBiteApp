@@ -1,99 +1,84 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
-const carwashImg = require("../../assets/carwashApp1.png")
-const CarWashItem =({ carwash, navigation })=>{
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+const CarWashItem = ({ carwash, navigation }) => {
+  const images = {
+    'carwashApp1.png': require("../../assets/carwashApp1.png"),
+    'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
+    'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
+  };
 
-  
-    const images = {
-        'carwashApp1.png': require("../../assets/carwashApp1.png"),
-        'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
-        'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
-        
-      };
-    return (
-    //     <View style={styles.item}>
-    //         <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
-    //   <View style={styles.flex}>
-        
-        
-    //     <Text onPress={() => navigation.navigate('DetailCarwash')} style={styles.paragraph}>{carwash.name} {carwash.imageUrl}</Text>
-    //     {/* <Text style={styles.paragraph}>{carwash.price}</Text> */}
-    //   </View>
-    //   <Text style={styles.paragraph}>{carwash.location}</Text>
-    // </View>
+  return (
     <TouchableOpacity onPress={() => navigation.navigate('DetailCarwash', { carwash, navigation })}>
       <View style={styles.item}>
         <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
         <View style={styles.flex}>
-          <Text style={styles.paragraph}>{carwash.name}</Text>
+          <Text style={styles.name}>{carwash.name}</Text>
+          <View style={styles.flexz}>
+
+          <FontAwesome name='star' style={{ color: '#FCBB45', fontSize: 20 }} />
+          <Text style={styles.paragraph}>{carwash.stars}</Text>
+          </View>
         </View>
-        <Text style={styles.paragraph}>{carwash.location}</Text>
+        <Text style={styles.paragraph}>{carwash.location} </Text>
+        <Text style={styles.price}> ₮20,000 - ₮60,000</Text>
       </View>
     </TouchableOpacity>
-    )
+  );
 }
 
 const styles = StyleSheet.create({
-    item:{
-        backgroundColor:"#FFF",
-        paddingBottom: 15,
-        width:280,
-        borderRadius: 10,
-        // flexDirection:'row',
-        // alignItems:'center',
-        // justifyContent:'space-between',
-        marginBottom:20,
-        marginRight:20
-    },
-    carwashImg:{
-        width:280,
-        height:200,
-        borderTopLeftRadius:10,
-        borderTopRightRadius:10,
-    },
-    flex:{
-        // padding:10,
-        // paddingLeft:10,
-        // paddingHorizontal:20,
-         width:'100%',
-         flexDirection:'row',
-         justifyContent:'space-between',
-         alignItems:'center',
-         
-       },
-       paragraph:{
-        paddingTop:10,
-        paddingHorizontal:10,
-        // fontSize:20,
-        fontWeight:'bold',
-        // textAlign: 'center', 
-        // color:'#FFF'
-      },
-    itemLeft:{
-        flexDirection:'row',
-        alignItems:'center',
-        flexWrap:'wrap',
-    },
-    square:{
-        width: 24,
-        height: 24,
-        backgroundColor: "#55BCF6",
-        opacity: 0.4,
-        borderRadius: 5,
-        marginRight:15,
-    },
-    itemText:{
-        maxWidth:'80%',
-    },
-    circular:{
-        width:12,
-        height:12,
-        borderColor:'#55BCF6',
-        borderWidth:2,
-        borderRadius:5,
-    },
-
+  item: {
+    backgroundColor: "#FFF",
+    paddingBottom: 15,
+    width: 280,
+    borderRadius: 10,
+    borderColor: "#EBEBEB",
+    borderWidth: 1,
+    marginBottom: 80,
+    marginRight: 20,
+    overflow: 'hidden', // Ensure children respect border radius
+  },
+  carwashImg: {
     
+    width: 255,
+    height: 200,
+    borderRadius: 10,
+    alignSelf: 'center', // Center the image
+    margin:15,
+
+  },
+  flex: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  flexz: {
+    flexDirection: 'row',
+    padding: 5,
+    alignItems: 'center',
+  },
+  paragraph: {
+    paddingHorizontal: 10,
+    // fontWeight: 'bold',
+    fontSize:16
+    
+  },
+  name:{
+    // paddingTop: 5,
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    fontSize:17,
+    color:"#000"
+  },
+  price:{
+    paddingTop:15,
+    paddingHorizontal: 10,
+    fontWeight: 'bold',
+    fontSize:17,
+    color:"#000"
+  }
 });
 
 export default CarWashItem;

@@ -31,21 +31,7 @@ const SplitAnimation = () => {
           duration: 400, // Duration for the triangle icon movement
           useNativeDriver: true,
         }),
-        Animated.timing(moveValue, {
-          toValue: 1,
-          duration: 400, // Duration for the remove icon movement
-          useNativeDriver: true,
-        }),
-        Animated.timing(moveValue, {
-          toValue: 1,
-          duration: 400, // Duration for the remove icon movement
-          useNativeDriver: true,
-        }),
-        Animated.timing(moveValue, {
-          toValue: 1,
-          duration: 400, // Duration for the remove icon movement
-          useNativeDriver: true,
-        })
+        
       ])
     ]).start();
 

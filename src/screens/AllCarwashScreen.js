@@ -4,6 +4,7 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CarWashItem from '../components/CarWashItem';
 import { fetchCarwashList as fetchCarwashListApi } from '../../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../../api/user';
 
 const logoImg = require('../../assets/emu-logo.png');
 
@@ -16,7 +17,8 @@ const HomeScreen = ({navigation}) => {
 
   const fetchCarwashList = async () => {
     try {
-      const data = await fetchCarwashListApi();
+      // const data = await fetchCarwashListApi();
+      const data = await fetchCarwashServiceListApi();
       setCarwashList(data);
     } catch (error) {
       console.error(error);
