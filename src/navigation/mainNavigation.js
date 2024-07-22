@@ -1,31 +1,62 @@
-import React from 'react';
+import React, { useRef, useEffect, useState, useCallback } from 'react';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { View, StyleSheet } from 'react-native';
+import { View, StyleSheet, Animated, Dimensions } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import LinearGradient from 'react-native-linear-gradient';
+import { useFocusEffect } from '@react-navigation/native';
 
 const Tab = createBottomTabNavigator();
+const { width } = Dimensions.get('window');
 
 const MainNav = () => {
+  const translateX = useRef(new Animated.Value(0)).current; // Initial position for 'home'
+  const [currentIcon, setCurrentIcon] = useState('home'); // Track current icon in state
+
+  const handleIconChange = (iconName) => {
+    console.log("orj bnuda", iconName)
+    let toValue;
+    if (iconName === 'home') {
+      toValue = -width / 2.2;
+    } else if (iconName === 'user') {
+      toValue = width / 2.2;
+    }
+    Animated.timing(translateX, {
+      toValue,
+      duration: 100,
+      useNativeDriver: true,
+    }).start();
+  };
+
+  useEffect(() => {
+    handleIconChange(currentIcon);
+  }, [currentIcon]);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
         tabBarIcon: ({ focused }) => {
-          let iconName;
+          const iconName = route.name === 'Home' ? 'home' : 'user';
 
-          if (route.name === 'Home') {
-            iconName = 'home';
-          } else if (route.name === 'Profile') {
-            iconName = 'user';
-          }
+          useFocusEffect(
+            useCallback(() => {
+              setCurrentIcon(iconName)
+
+              // console.log(currentIcon, "-current Icon in callback")
+              // console.log(iconName, "-ymar icon deer darav")
+              // if (currentIcon !== iconName) {
+              //   setCurrentIcon(iconName); // Update state when focused and icon name changes
+              // }
+            }, [focused, iconName])
+          );
 
           return (
             <View style={styles.iconContainer}>
-            {focused && <View style={styles.yellowCircle} />}
-            <AntDesign name={iconName} style={[styles.icon, focused && styles.focusedIcon]} />
-          </View>
+              <Animated.View style={[ styles.yellowCircle, { transform: [{ translateX }] }]} />
+              {/* <Animated.View style={[!focused && styles.yellowCircle, { transform: [{ translateX }] }]} /> */}
+              <AntDesign name={iconName} style={[styles.icon, focused && styles.focusedIcon]} />
+            </View>
           );
         },
         tabBarShowLabel: false,
@@ -56,40 +87,23 @@ const styles = StyleSheet.create({
     backgroundColor: '#FFCC33',
     position: 'absolute',
     top: -15,
-    // left: '50%',
-    // marginLeft: -5, 
   },
   icon: {
     fontSize: 30,
     color: '#FFF',
   },
- 
- 
-  footerIcon: {
-    color: '#FFF',
-    fontSize: 30,
+  focusedIcon: {
+    color: '#FFD700', // Change color when focused
   },
-  
   tabBarStyle: {
-    backgroundColor:"#000",
-    marginHorizontal:20,
+    backgroundColor: "#000",
+    marginHorizontal: 20,
     height: 75,
     borderRadius: 50,
     position: 'absolute',
-    // left: 10,
-    // right: 10,
     bottom: 16,
-    // borderColor: 'transparent',
-    // shadowColor: '#000',
-    // shadowOffset: {
-    //   width: 0,
-    //   height: 10,
-    // },
-    // shadowOpacity: 0.25,
-    // shadowRadius: 3.5,
-    // elevation: 5,
   },
-  gradientStyle:{
+  gradientStyle: {
     borderRadius: 50,
   },
   gradientBackground: {
