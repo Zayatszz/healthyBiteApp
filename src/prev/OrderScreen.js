@@ -1,21 +1,15 @@
-import React, { useState, useEffect, useCallback, useContext } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput } from 'react-native-paper';
-import { AuthContext } from '../../context/AuthContext';
-import { getToken as getTokenApi } from '../../api/user';
-import { createInvoive as createInvoiveApi } from '../../api/user';
-
-
 import dayjs from 'dayjs';
 import utc from 'dayjs-plugin-utc';
 dayjs.extend(utc);
 const logoImg = require('../../assets/emu-logo.png');
 
 const OrderScreen = ({ route, navigation }) => {
-  const { userInfo } = useContext(AuthContext);
   const { carwash } = route.params;
   const [selectedCarType, setSelectedCarType] = useState(null);
   const [selectedCarTypeId, setSelectedCarTypeId] = useState(null);
@@ -31,12 +25,7 @@ const OrderScreen = ({ route, navigation }) => {
   const [timeSlots, setTimeSlots] = useState([]);
   const [scheduleId, setScheduleId] = useState();
   const [bookings, setBookings] = useState(carwash?.bookings);
-  const [bookingId, setBookingId] = useState(null);
   const capacity = carwash?.capacity;
-
-  const [loading, setLoading] = useState(false);
-
-  const [invoiceResponse, setInvoiceResponse] = useState(null);
 
   const holidays = carwash?.schedules?.holidays || [];
   const getFirstAvailableDay = () => {
@@ -172,8 +161,6 @@ const OrderScreen = ({ route, navigation }) => {
     }
   }, [carwash.carWashTypes]);
 
-
-  ///shuud payment ruu damjuulj bsan
   const handleOrder = () => {
     const orderDetails = {
       carType: selectedCarType,
@@ -188,66 +175,6 @@ const OrderScreen = ({ route, navigation }) => {
     };
 
     navigation.navigate('Payment', { orderDetails });
-  };
-
-  const handleInvoice = async () => {
-
-    // setLoading(true);
-    const orderDetailsData = {
-      scheduledTime: dayjs(`${selectedDay}T${selectedTime.split(" - ")[0]}`).toISOString(),
-      carSize: selectedCarType,
-      washType: selectedWashType,
-      date: dayjs(`${selectedDay}T${selectedTime.split(" - ")[0]}`).toISOString(),
-      endTime: dayjs(`${selectedDay}T${selectedTime.split(" - ")[1]}`).toISOString(),
-      price,
-      userId: userInfo.id,
-      timetable: scheduleId,
-      CarWashService: carwash.id,
-      // carNumber,
-    };
-    // Log the orderDetails for debugging
-    console.log("Order Details:", orderDetailsData);
-
-    try {
-      // Step 1: Create a new booking entry in the database
-      const bookingResponse = await orderCarwashApi(orderDetailsData);
-      const bookingId = bookingResponse.data.id;
-      setBookingId(bookingId);
-
-      // Log the orderDetailsData for debugging
-      console.log("Order Details Data:", orderDetailsData);
-
-      // Step 2: Get token from QPay
-      const tokenResponse = await getTokenApi();
-      const token = tokenResponse.data.access_token;
-      Cookies.set("token", token, { expires: 2, path: "/" });
-  
-      // Step 3: Create invoice using the token
-      const invoiceDetails = {
-        service: carwash.emuCode,
-        token,
-        bookingId,
-        amount: price,
-        description: `Payment for ${selectedWashType} (${selectedCarType}) on ${selectedDay} at ${selectedHour}`,
-        userId: userInfo.id,
-      };
-      const invoiceResponse = await createInvoiveApi(invoiceDetails);
-  
-      setOrderDetails(orderDetailsData);
-      setInvoiceResponse(invoiceResponse.data);
-      setQRCode(invoiceResponse.data.qrCode.qr_image);
-
-      // const response = await orderCarwashApi(orderDetailsData);
-
-      // Alert.alert('Success', 'Booking created successfully');
-      navigation.navigate('Payment', invoiceResponse,orderDetailsData, navigation);
-      // navigation.navigate('MyOrders');
-    } catch (error) {
-      console.error(error);
-      Alert.alert('Error', 'Failed to create booking');
-    } finally {
-      setLoading(false);
-    }
   };
 
   return (
@@ -342,7 +269,7 @@ const OrderScreen = ({ route, navigation }) => {
         <Text style={styles.paragraph}>Үнийн мэдээлэл: {price}</Text>
         <Text style={styles.paragraph}>Duration: {duration} mins</Text>
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleInvoice} disabled={loading}>
+      <TouchableOpacity style={styles.button} onPress={handleOrder}>
         <Text style={styles.buttonText}>Захиалах</Text>
       </TouchableOpacity>
     </View>

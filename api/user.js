@@ -47,14 +47,28 @@ export const fetchCarwashList = () => {
 export const fetchCarwashServiceList = () => {
   return request('/carwashservices', 'GET');
 };
+
 export const orderCarwash = (orderDetails) => {
   return request('/bookings', 'POST', orderDetails);
+};
+export const getBookings = (orderDetails) => {
+  return request('/bookings', 'POST', orderDetails);
+};
+export const getBookingStatus = (bookingId) => {
+
+  return request(`/bookings/status/${bookingId}`, 'GET');
 };
 
 export const fetchUserOrders = (userId) => {
   return request(`/user-orders/${userId}`, 'GET');
 };
 
+export const getToken = () => {
+  return request('/qpay/token', 'POST');
+};
+export const createInvoive = (invoiceDetails) => {
+  return request('/qpay/invoice', 'POST', invoiceDetails);
+};
 // api/user.js
 
 // export const updateUser = async (token, userData) => {
