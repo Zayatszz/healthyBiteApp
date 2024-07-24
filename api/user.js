@@ -1,6 +1,6 @@
 // api.js
 
-const API_URL = 'https://d381-202-70-37-32.ngrok-free.app/';
+const API_URL = 'https://d381-202-70-37-32.ngrok-free.app';
 // const API_URL = 'http://192.168.100.37:3003';
 // const API_URL = 'http://172.20.10.3:3003';
 
