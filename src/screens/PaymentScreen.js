@@ -234,27 +234,20 @@
 
 // export default PaymentScreen;
 
-import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import CarWashItem from '../components/CarWashItem';
-import { getBookingStatus as getBookingStatusApi } from '../../api/user';
-import { Dropdown } from 'react-native-element-dropdown';
-import { AuthContext } from '../../context/AuthContext';
-import { orderCarwash as orderCarwashApi } from '../../api/user';
-
-const logoImg = require('../../assets/emu-logo.png');
 
 
 
 
-const PaymentScreen = ({ route, navigation }) => {
-  const { userInfo } = useContext(AuthContext);
-  const { orderDetails } = route.params;
-  const [loading, setLoading] = useState(false);
 
-  const [paymentStatus, setPaymentStatus] = useState("unpaid");
+
+
+
+
+
+
+
+
+
 
   // const handleInvoice = async () => {
   //   setLoading(true);
@@ -307,12 +300,28 @@ const PaymentScreen = ({ route, navigation }) => {
   // };
 
 
+
+  import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, Alert, Image } from 'react-native';
+import { AuthContext } from '../../context/AuthContext';
+import { getBookingStatus as getBookingStatusApi } from '../../api/user';
+
+const PaymentScreen = ({ route, navigation }) => {
+  const { userInfo } = useContext(AuthContext);
+  const { invoiceResponse, orderDetails, bookingId } = route.params;
+
+  const [loading, setLoading] = useState(false);
+  const [paymentStatus, setPaymentStatus] = useState("unpaid");
+  const [qrCode, setQRCode] = useState("");
+
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
-        const bookingStatus = getBookingStatusApi(bookingId) ;
+        console.log("Checking booking status for booking ID:", bookingId);
+        const bookingStatus = await getBookingStatusApi(bookingId);
+        console.log("Booking status:", bookingStatus);
         if (bookingStatus === "paid") {
-          Alert("Төлбөр амжилттай төлөгдлөө.");
+          Alert.alert("Төлбөр амжилттай төлөгдлөө.");
           setPaymentStatus("paid"); // Update paymentStatus to "paid"
           clearInterval(interval);
         }
@@ -322,18 +331,28 @@ const PaymentScreen = ({ route, navigation }) => {
     }, 5000); // Check every 5 seconds
 
     return () => clearInterval(interval);
-  }, );
+  }, [bookingId]);
 
+  useEffect(() => {
+    if (invoiceResponse && invoiceResponse.qrCode) {
+      try {
+        const qrDataUrl = `data:image/png;base64,${invoiceResponse.qrCode.qr_image}`;
+        setQRCode(qrDataUrl);
+      } catch (error) {
+        console.error("Error decoding QR code:", error);
+      }
+    }
+  }, [invoiceResponse]);
 
   return (
     <View style={styles.container}>
       <View style={styles.section}>
-        <Text style={styles.paragraph}>Угаалгын газрын нэр: {orderDetails.carwash.name}</Text>
-        <Text style={styles.paragraph}>Location: {orderDetails.carwash.location}</Text>
+        <Text style={styles.paragraph}>Угаалгын газрын нэр: {orderDetails?.name}</Text>
+        <Text style={styles.paragraph}>Location: {orderDetails?.location}</Text>
       </View>
       <View style={styles.section}>
         <Text style={styles.paragraph}>Машины төрөл</Text>
-        <Text style={styles.paragraph}>{orderDetails.carType}</Text>
+        <Text style={styles.paragraph}>{orderDetails.carSize}</Text>
         <Text style={styles.paragraph}>Угаалгах төрөл</Text>
         <Text style={styles.paragraph}>{orderDetails.washType}</Text>
       </View>
@@ -341,23 +360,21 @@ const PaymentScreen = ({ route, navigation }) => {
         <Text style={styles.paragraph}>Угаалгах огноо</Text>
         <Text style={styles.paragraph}>{orderDetails.date}</Text>
         <Text style={styles.paragraph}>Цаг</Text>
-        <Text style={styles.paragraph}>{orderDetails.time}</Text>
+        <Text style={styles.paragraph}>{orderDetails.date} - {orderDetails.endTime}</Text>
         <Text style={styles.paragraph}>Үнэ</Text>
         <Text style={styles.paragraph}>{orderDetails.price}</Text>
       </View>
       <View style={styles.section}>
         <Text style={styles.paragraph}>Банкны qpay үйлчилгээ ашиглан төлбөр төлөх холбоосууд харагдана.</Text>
+        {qrCode ? (
+          <Image source={{ uri: qrCode }} style={styles.qrCode} />
+        ) : (
+          <Text>Loading QR Code...</Text>
+        )}
       </View>
-      {/* <TouchableOpacity style={styles.button} onPress={handleInvoice} disabled={loading}>
-        <Text style={styles.buttonText}>{loading ? 'Loading...' : 'okkkk'}</Text>
-      </TouchableOpacity> */}
     </View>
   );
 };
-
-
-
-
 
 
 
@@ -451,6 +468,11 @@ const styles = StyleSheet.create({
     width: 70,
     height: 60,
     borderRadius: 10,
+  },
+  qrCode: {
+    width: 200,
+    height: 200,
+    alignSelf: 'center',
   },
   CarWashItem: {
     paddingHorizontal: 20,

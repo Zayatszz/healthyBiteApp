@@ -8,9 +8,11 @@ import { AuthContext } from '../../context/AuthContext';
 import { getToken as getTokenApi } from '../../api/user';
 import { createInvoive as createInvoiveApi } from '../../api/user';
 
-
+import { orderCarwash as orderCarwashApi } from '../../api/user';
 import dayjs from 'dayjs';
 import utc from 'dayjs-plugin-utc';
+import Cookies from "js-cookie";
+
 dayjs.extend(utc);
 const logoImg = require('../../assets/emu-logo.png');
 
@@ -33,6 +35,9 @@ const OrderScreen = ({ route, navigation }) => {
   const [bookings, setBookings] = useState(carwash?.bookings);
   const [bookingId, setBookingId] = useState(null);
   const capacity = carwash?.capacity;
+  const [qrCode, setQRCode] = useState("");
+
+  const [orderDetails, setOrderDetails] = useState(null);
 
   const [loading, setLoading] = useState(false);
 
@@ -191,57 +196,69 @@ const OrderScreen = ({ route, navigation }) => {
   };
 
   const handleInvoice = async () => {
-
-    // setLoading(true);
+    // Validate selectedDay and selectedTime
+    if (!selectedDay || !selectedTime) {
+      Alert.alert('Error', 'Please select a valid date and time.');
+      return;
+    }
+  
+    const startTime = selectedTime.split(" - ")[0];
+    const endTime = selectedTime.split(" - ")[1];
+    const selectedDayString = selectedDay.toISOString().split('T')[0];
+  
+    const scheduledTime = dayjs(`${selectedDayString}T${startTime}`);
+    const endDateTime = dayjs(`${selectedDayString}T${endTime}`);
+  
+    // Check if the dates are valid
+    if (!scheduledTime.isValid() || !endDateTime.isValid()) {
+      Alert.alert('Error', 'Invalid date or time selected.');
+      return;
+    }
+    console.log(carwash.id, "carwash id")
+    console.log(userInfo.id, "user id")
+  
     const orderDetailsData = {
-      scheduledTime: dayjs(`${selectedDay}T${selectedTime.split(" - ")[0]}`).toISOString(),
+      scheduledTime: scheduledTime.toISOString(),
       carSize: selectedCarType,
       washType: selectedWashType,
-      date: dayjs(`${selectedDay}T${selectedTime.split(" - ")[0]}`).toISOString(),
-      endTime: dayjs(`${selectedDay}T${selectedTime.split(" - ")[1]}`).toISOString(),
+      date: scheduledTime.toISOString(),
+      endTime: endDateTime.toISOString(),
       price,
       userId: userInfo.id,
       timetable: scheduleId,
       CarWashService: carwash.id,
-      // carNumber,
     };
-    // Log the orderDetails for debugging
+  
     console.log("Order Details:", orderDetailsData);
-
+  
     try {
-      // Step 1: Create a new booking entry in the database
       const bookingResponse = await orderCarwashApi(orderDetailsData);
-      const bookingId = bookingResponse.data.id;
+      console.log("Order Details:", bookingResponse);
+      const bookingId = bookingResponse.id;
       setBookingId(bookingId);
-
-      // Log the orderDetailsData for debugging
-      console.log("Order Details Data:", orderDetailsData);
-
-      // Step 2: Get token from QPay
+  
       const tokenResponse = await getTokenApi();
-      const token = tokenResponse.data.access_token;
+      console.log("Order Details:", tokenResponse);
+      const token = tokenResponse.access_token;
       Cookies.set("token", token, { expires: 2, path: "/" });
   
-      // Step 3: Create invoice using the token
       const invoiceDetails = {
         service: carwash.emuCode,
         token,
         bookingId,
         amount: price,
-        description: `Payment for ${selectedWashType} (${selectedCarType}) on ${selectedDay} at ${selectedHour}`,
+        description: `Payment for ${selectedWashType} (${selectedCarType}) on ${selectedDayString} at ${startTime}`,
         userId: userInfo.id,
       };
+  
       const invoiceResponse = await createInvoiveApi(invoiceDetails);
+      // console.log("end yu irj bna invoiceresponse -",invoiceResponse)
   
       setOrderDetails(orderDetailsData);
       setInvoiceResponse(invoiceResponse.data);
-      setQRCode(invoiceResponse.data.qrCode.qr_image);
-
-      // const response = await orderCarwashApi(orderDetailsData);
-
-      // Alert.alert('Success', 'Booking created successfully');
-      navigation.navigate('Payment', invoiceResponse,orderDetailsData, navigation);
-      // navigation.navigate('MyOrders');
+      setQRCode(invoiceResponse.qrCode.qr_image);
+  
+      navigation.navigate('Payment', { invoiceResponse: invoiceResponse, orderDetails: orderDetailsData, bookingId:bookingId });
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to create booking');
@@ -249,6 +266,8 @@ const OrderScreen = ({ route, navigation }) => {
       setLoading(false);
     }
   };
+  
+  
 
   return (
     <View style={styles.container}>
