@@ -7,10 +7,10 @@ import {
   StyleSheet,
   Alert,
 } from 'react-native';
-import { AuthContext } from '../../context/AuthContext';
+import { AuthContext } from '../context/AuthContext';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { updateUser as updateUserApi } from '../../api/user';
+import { updateUser as updateUserApi } from '../api/user';
 
 const ProfileScreen = ({navigation}) => {
   const { token, logout, userInfo, setUserInfo } = useContext(AuthContext);
@@ -156,7 +156,13 @@ const ProfileScreen = ({navigation}) => {
       <TouchableOpacity style={styles.button} onPress={handleLogout}>
         <Text style={styles.buttonText}>Гарах</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('MyOrders')}>
+      <TouchableOpacity style={styles.button} onPress={()=>
+        navigation.navigate('MyOrders')
+        // navigation.reset({
+        //   index: 0,
+        //   routes: [{ name: 'MyOrders' }],
+        // })
+        }>
         <Text style={styles.buttonText}>Миний захиалгууд</Text>
       </TouchableOpacity>
     </View>

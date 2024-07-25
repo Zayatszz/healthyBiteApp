@@ -4,11 +4,11 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput } from 'react-native-paper';
-import { AuthContext } from '../../context/AuthContext';
-import { getToken as getTokenApi } from '../../api/user';
-import { createInvoive as createInvoiveApi } from '../../api/user';
+import { AuthContext } from '../context/AuthContext';
+import { getToken as getTokenApi } from '../api/user';
+import { createInvoive as createInvoiveApi } from '../api/user';
 
-import { orderCarwash as orderCarwashApi } from '../../api/user';
+import { orderCarwash as orderCarwashApi } from '../api/user';
 import dayjs from 'dayjs';
 import utc from 'dayjs-plugin-utc';
 import Cookies from "js-cookie";

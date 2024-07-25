@@ -3,44 +3,60 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CarWashItem from '../components/CarWashItem';
-import { fetchCarwashList as fetchCarwashListApi } from '../../api/user';
-import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../../api/user';
+import { fetchCarwashList as fetchCarwashListApi } from '../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
 
 const logoImg = require('../../assets/emu-logo.png');
 
-const HomeScreen = ({navigation}) => {
+const AllCarwashScreen = ({route, navigation}) => {
   const [carwashList, setCarwashList] = useState([]);
+  const {filteredList} = route.params;
+
   
   useEffect(() => {
-    fetchCarwashList();
+    
+    // fetchCarwashList();
   }, []);
 
-  const fetchCarwashList = async () => {
-    try {
-      // const data = await fetchCarwashListApi();
-      const data = await fetchCarwashServiceListApi();
-      setCarwashList(data);
-    } catch (error) {
-      console.error(error);
-    }
-  };
+  // const fetchCarwashList = async () => {
+  //   try {
+  //     // const data = await fetchCarwashListApi();
+  //     const data = await fetchCarwashServiceListApi();
+  //     setCarwashList(data);
+  //   } catch (error) {
+  //     console.error(error);
+  //   }
+  // };
 
   return (
     <View style={styles.container}>
     
       <View style={styles.flex}>
         <Text style={styles.parText}>Угаалгын газрууд</Text>
+        
        
       </View>
       <View style={styles.CarWashItem}>
-        <FlatList 
-          data={carwashList} 
+
+      {filteredList.length === 0 ? (
+        <Text style={styles.noResults}>Угаалгын газар олдсонгүй.</Text>
+      ) : (
+        <FlatList
+        data={filteredList} 
+          horizontal={false}
+          showsHorizontalScrollIndicator={false}
+          renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
+          keyExtractor={item => item.id}
+        />
+      )}
+        {/* <FlatList 
+          data={filteredWashList} 
           horizontal={false}
           showsHorizontalScrollIndicator={false}
           renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
           keyExtractor={item => item.id}
           
-        />
+        /> */}
       </View>
       {/* <BottomTabNavigator /> */}
     </View>
@@ -139,4 +155,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default HomeScreen;
+export default AllCarwashScreen;

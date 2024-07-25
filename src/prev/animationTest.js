@@ -3,8 +3,8 @@ import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity,Animated, Dimensions, Easing } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
-import { AuthContext } from '../../context/AuthContext.js';
-import { login as loginApi } from '../../api/user.js';
+import { AuthContext } from '../context/AuthContext.js';
+import { login as loginApi } from '../api/user.js';
 import { opacity } from 'react-native-reanimated/lib/typescript/Colors.js';
 
 const logoImg = require('../../assets/logoo.png');

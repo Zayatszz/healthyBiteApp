@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import CarWashItem from '../components/CarWashItem';
-import { fetchCarwashList as fetchCarwashListApi } from '../../api/user';
+import { fetchCarwashList as fetchCarwashListApi } from '../api/user';
 
 const logoImg = require('../../assets/emu-logo.png');
 

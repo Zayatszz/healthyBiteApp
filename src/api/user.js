@@ -1,6 +1,6 @@
 // api.js
 
-const API_URL = 'https://d381-202-70-37-32.ngrok-free.app';
+const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
 // const API_URL = 'http://192.168.100.37:3003';
 // const API_URL = 'http://172.20.10.3:3003';
 
@@ -14,7 +14,10 @@ const request = async (endpoint, method, body) => {
     headers,
   };
 
-  if (body) {
+  // if (body) {
+  //   config.body = JSON.stringify(body);
+  // }
+  if (method === 'POST' && body) {
     config.body = JSON.stringify(body);
   }
 
@@ -70,6 +73,14 @@ export const getToken = () => {
 export const createInvoive = (invoiceDetails) => {
   return request('/qpay/invoice', 'POST', invoiceDetails);
 };
+
+export const filterCarwashes = async (filters) => {
+  console.log(filters, "aaaaaaaaaaaa")
+  const queryString = new URLSearchParams(filters).toString();
+  console.log(`/carwashservices/filter?${queryString}`)
+  return request(`/carwashservices/filter?${queryString}`, 'GET');
+};
+
 // api/user.js
 
 // export const updateUser = async (token, userData) => {

@@ -1,22 +1,40 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import { AuthContext } from '../../context/AuthContext';
-import { fetchUserOrders as fetchUserOrdersApi } from '../../api/user';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Dimensions } from 'react-native';
+import { AuthContext } from '../context/AuthContext';
+import { fetchUserOrders as fetchUserOrdersApi } from '../api/user';
 import OrderItem from '../components/OrderItem';
+import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 
-const OrderScreen = () => {
+const MyOrdersScreen = ({ navigation }) => {
   const { userInfo } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const [index, setIndex] = useState(0);
+  const [routes] = useState([
+    { key: 'successful', title: 'Амжилттай' },
+    { key: 'unsuccessful', title: 'Амжилтгүй' },
+  ]);
 
   useEffect(() => {
     fetchUserOrders();
   }, []);
 
+  // const fetchUserOrders = async () => {
+  //   try {
+  //     const data = await fetchUserOrdersApi(userInfo.id);
+  //     setOrders(data);
+  //   } catch (error) {
+  //     console.error('Failed to fetch orders:', error);
+  //   } finally {
+  //     setLoading(false);
+  //   }
+  // };
   const fetchUserOrders = async () => {
     try {
       const data = await fetchUserOrdersApi(userInfo.id);
-      setOrders(data);
+      // Sort orders by date in descending order (latest orders first)
+      const sortedOrders = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+      setOrders(sortedOrders);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
     } finally {
@@ -28,22 +46,67 @@ const OrderScreen = () => {
     <OrderItem order={item} />
   );
 
-  return (
+  const navigateToHome = () => {
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Main' }],
+    });
+  };
+
+  const SuccessfulOrders = () => (
     <View style={styles.container}>
-      <Text style={styles.title}>Миний захиалгууд:</Text>
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
         <FlatList
-          data={orders}
+          data={orders.filter(order => order.status === 'paid')}
           renderItem={renderOrderItem}
           keyExtractor={(item) => item.id.toString()}
         />
       )}
     </View>
   );
-};
 
+  const UnsuccessfulOrders = () => (
+    <View style={styles.container}>
+      {loading ? (
+        <ActivityIndicator size="large" color="#0000ff" />
+      ) : (
+        <FlatList
+          data={orders.filter(order => order.status !== 'paid')}
+          renderItem={renderOrderItem}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      )}
+    </View>
+  );
+
+  const renderScene = SceneMap({
+    successful: SuccessfulOrders,
+    unsuccessful: UnsuccessfulOrders,
+  });
+
+  return (
+    <View style={styles.container}>
+      <Text style={styles.title}>Миний захиалгууд:</Text>
+      <TabView
+        navigationState={{ index, routes }}
+        renderScene={renderScene}
+        onIndexChange={setIndex}
+        initialLayout={{ width: Dimensions.get('window').width }}
+        renderTabBar={props => (
+          <TabBar
+            {...props}
+            indicatorStyle={styles.indicator}
+            style={styles.tabBar}
+            labelStyle={styles.labelStyle}
+          />
+        )}
+      />
+      <Button title="Go to Home" onPress={navigateToHome} />
+    </View>
+  );
+};
 
 
 const styles = StyleSheet.create({
@@ -173,6 +236,17 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
+
+
+  tabBar: {
+    backgroundColor: '#ffffff',
+  },
+  indicator: {
+    // backgroundColor: '#0000ff',
+  },
+  labelStyle: {
+    color: '#000',
+  },
 });
 
-export default OrderScreen;
+export default MyOrdersScreen;
