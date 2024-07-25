@@ -1,5 +1,5 @@
 import React, { useState, useContext } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, ActivityIndicator } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../context/AuthContext.js';
@@ -11,8 +11,10 @@ const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
   const [emailOrPhoneNumber, setEmailOrPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
+  const [loading, setLoading] = useState(false); // Loading state
 
   const handleLogin = async () => {
+    setLoading(true); // Start loading indicator
     try {
       const data = await loginApi(emailOrPhoneNumber, password);
       await login(data.token, data.user);
@@ -20,6 +22,8 @@ const LoginScreen = ({ navigation }) => {
     } catch (error) {
       Alert.alert('Error', 'Амжилтгүй. Та мэдээллээ шалгаад дахин оруулна уу.');
       console.log('Error msg:', error);
+    } finally {
+      setLoading(false); // Stop loading indicator
     }
   };
 
@@ -58,8 +62,12 @@ const LoginScreen = ({ navigation }) => {
         />
       </View>
       <Text style={styles.forgetText}>Нууц үгээ мартсан уу?</Text>
-      <TouchableOpacity style={styles.button} onPress={handleLogin}>
-        <Text style={styles.buttonText}>Нэвтрэх</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogin} disabled={loading}>
+        {loading ? (
+          <ActivityIndicator size="small" color="#FFF" />
+        ) : (
+          <Text style={styles.buttonText}>Нэвтрэх</Text>
+        )}
       </TouchableOpacity>
 
       <View style={styles.registerContainer}>

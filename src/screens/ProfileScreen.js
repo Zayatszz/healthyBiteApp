@@ -6,19 +6,22 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  ActivityIndicator,
 } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { updateUser as updateUserApi } from '../api/user';
 
-const ProfileScreen = ({navigation}) => {
+const ProfileScreen = ({ navigation }) => {
   const { token, logout, userInfo, setUserInfo } = useContext(AuthContext);
   const [email, setEmail] = useState(userInfo.email);
   const [userName, setUserName] = useState(userInfo.userName);
   const [phoneNumber, setPhoneNumber] = useState(userInfo.phoneNumber);
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [loadingUpdate, setLoadingUpdate] = useState(false); // Loading state for update
+  const [loadingLogout, setLoadingLogout] = useState(false); // Loading state for logout
 
   const emailRef = useRef(null);
   const userNameRef = useRef(null);
@@ -32,6 +35,8 @@ const ProfileScreen = ({navigation}) => {
       return;
     }
 
+    setLoadingUpdate(true); // Start loading indicator for update
+
     try {
       const updatedUser = await updateUserApi(token, {
         id: userInfo.id,
@@ -41,18 +46,24 @@ const ProfileScreen = ({navigation}) => {
         password,
       });
       setUserInfo(updatedUser);
-      Alert.alert('Success', 'User information updated successfully');
+      Alert.alert('Амжилттай', 'Таны мэдээлэл амжилттай шинэчлэгдлээ.');
     } catch (error) {
       Alert.alert('Error', 'Failed to update user information');
-      console.log("Error msg update hiihed:", error)
+      console.log('Error msg update hiihed:', error);
+    } finally {
+      setLoadingUpdate(false); // Stop loading indicator for update
     }
   };
 
   const handleLogout = async () => {
+    setLoadingLogout(true); // Start loading indicator for logout
+
     try {
       await logout(token);
     } catch (error) {
       Alert.alert('Error', 'Failed to logout');
+    } finally {
+      setLoadingLogout(false); // Stop loading indicator for logout
     }
   };
 
@@ -64,7 +75,7 @@ const ProfileScreen = ({navigation}) => {
         <Text>Email</Text>
       </View>
       <View style={styles.inputContainer}>
-        <FontAwesome name='user-o' style={styles.icon} />
+        <FontAwesome name="user-o" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Email"
@@ -74,7 +85,7 @@ const ProfileScreen = ({navigation}) => {
           autoCapitalize="none"
           placeholderTextColor="#A9A9A9"
           returnKeyType="next"
-          onSubmitEditing={() => firstNameRef.current.focus()}
+          onSubmitEditing={() => userNameRef.current.focus()}
           ref={emailRef}
         />
       </View>
@@ -83,7 +94,7 @@ const ProfileScreen = ({navigation}) => {
         <Text>User Name</Text>
       </View>
       <View style={styles.inputContainer}>
-        <FontAwesome name='user-o' style={styles.icon} />
+        <FontAwesome name="user-o" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="User Name"
@@ -100,7 +111,7 @@ const ProfileScreen = ({navigation}) => {
         <Text>Phone Number</Text>
       </View>
       <View style={styles.inputContainer}>
-        <FontAwesome name='phone' style={styles.icon} />
+        <FontAwesome name="phone" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Phone Number"
@@ -118,7 +129,7 @@ const ProfileScreen = ({navigation}) => {
         <Text>Password</Text>
       </View>
       <View style={styles.inputContainer}>
-        <Ionicons name='lock-closed-outline' style={styles.icon} />
+        <Ionicons name="lock-closed-outline" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Password"
@@ -136,7 +147,7 @@ const ProfileScreen = ({navigation}) => {
         <Text>Confirm Password</Text>
       </View>
       <View style={styles.inputContainer}>
-        <Ionicons name='lock-closed-outline' style={styles.icon} />
+        <Ionicons name="lock-closed-outline" style={styles.icon} />
         <TextInput
           style={styles.input}
           placeholder="Confirm Password"
@@ -149,20 +160,14 @@ const ProfileScreen = ({navigation}) => {
         />
       </View>
 
-      <TouchableOpacity style={styles.button} onPress={handleUpdate}>
-        <Text style={styles.buttonText}>Шинэчлэх</Text>
+      <TouchableOpacity style={styles.button} onPress={handleUpdate} disabled={loadingUpdate || loadingLogout}>
+        {loadingUpdate ? <ActivityIndicator size="small" color="#FFF" /> : <Text style={styles.buttonText}>Шинэчлэх</Text>}
       </TouchableOpacity>
 
-      <TouchableOpacity style={styles.button} onPress={handleLogout}>
-        <Text style={styles.buttonText}>Гарах</Text>
+      <TouchableOpacity style={styles.button} onPress={handleLogout} disabled={loadingUpdate || loadingLogout}>
+        {loadingLogout ? <ActivityIndicator size="small" color="#FFF" /> : <Text style={styles.buttonText}>Гарах</Text>}
       </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={()=>
-        navigation.navigate('MyOrders')
-        // navigation.reset({
-        //   index: 0,
-        //   routes: [{ name: 'MyOrders' }],
-        // })
-        }>
+      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MyOrders')} disabled={loadingUpdate || loadingLogout}>
         <Text style={styles.buttonText}>Миний захиалгууд</Text>
       </TouchableOpacity>
     </View>

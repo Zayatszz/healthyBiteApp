@@ -1,308 +1,5 @@
-// import React, { useState, useEffect, useContext } from 'react';
-// import { View, Text, StyleSheet, Image, TouchableOpacity, Alert } from 'react-native';
-// import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-// import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-// import CarWashItem from '../components/CarWashItem';
-// import { fetchCarwashList as fetchCarwashListApi } from '../../api/user';
-// import { Dropdown } from 'react-native-element-dropdown';
-// import { AuthContext } from '../../context/AuthContext';
-// import { orderCarwash as orderCarwashApi } from '../../api/user';
-
-// const logoImg = require('../../assets/emu-logo.png');
-
-
-
-
-// const PaymentScreen = ({ route, navigation }) => {
-//   const { userInfo } = useContext(AuthContext);
-//   const { orderDetails } = route.params;
-//   const [loading, setLoading] = useState(false);
-
-//   const handleInvoice = async () => {
-//     setLoading(true);
-
-//     // Log the orderDetails for debugging
-//     console.log("Order Details:", orderDetails);
-
-//     try {
-//       // Properly handle the time and date formatting
-//       const [startHour] = orderDetails.time.split('-')[0].split(':');
-//       const startDateTime = new Date(orderDetails.date);
-//       startDateTime.setHours(parseInt(startHour, 10), 0, 0, 0); // Set hours, minutes, seconds, and milliseconds
-
-//       const endDateTime = new Date(startDateTime);
-//       endDateTime.setHours(startDateTime.getHours() + 1); // Assuming 1 hour duration
-
-//       // Log the formatted dates for debugging
-//       console.log("Start DateTime:", startDateTime.toISOString());
-//       console.log("End DateTime:", endDateTime.toISOString());
-
-//       const orderDetailsData = {
-//         scheduledTime: startDateTime.toISOString(),
-//         carWashTypeId: orderDetails.washTypeId || 1, // Ensure this field is not undefined
-//         washType: orderDetails.washType,
-//         carSize: orderDetails.carType,
-//         date: startDateTime.toISOString().split('T')[0], // Date without time
-//         endTime: endDateTime.toISOString(),
-//         paymentDetail: "Pending",
-//         price: orderDetails.price || 0, // Ensure this field is not undefined
-//         status: "pending",
-//         timetableId: orderDetails.timetableId || 1, // Ensure this field is not undefined
-//         userId: userInfo.id,
-//         carWashServiceId: orderDetails.carwash.id,
-//         carNumber: orderDetails.carNumber || "", // Ensure this field is not undefined
-//       };
-
-//       // Log the orderDetailsData for debugging
-//       console.log("Order Details Data:", orderDetailsData);
-
-//       const response = await orderCarwashApi(orderDetailsData);
-
-//       Alert.alert('Success', 'Booking created successfully');
-//       navigation.navigate('MyOrders'); // Replace with your success screen
-//     } catch (error) {
-//       console.error(error);
-//       Alert.alert('Error', 'Failed to create booking');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-
-
-//   return (
-//     <View style={styles.container}>
-//       <View style={styles.section}>
-//         <Text style={styles.paragraph}>Угаалгын газрын нэр: {orderDetails.carwash.name}</Text>
-//         <Text style={styles.paragraph}>Location: {orderDetails.carwash.location}</Text>
-//       </View>
-//       <View style={styles.section}>
-//         <Text style={styles.paragraph}>Машины төрөл</Text>
-//         <Text style={styles.paragraph}>{orderDetails.carType}</Text>
-//         <Text style={styles.paragraph}>Угаалгах төрөл</Text>
-//         <Text style={styles.paragraph}>{orderDetails.washType}</Text>
-//       </View>
-//       <View style={styles.section}>
-//         <Text style={styles.paragraph}>Угаалгах огноо</Text>
-//         <Text style={styles.paragraph}>{orderDetails.date}</Text>
-//         <Text style={styles.paragraph}>Цаг</Text>
-//         <Text style={styles.paragraph}>{orderDetails.time}</Text>
-//         <Text style={styles.paragraph}>Үнэ</Text>
-//         <Text style={styles.paragraph}>{orderDetails.price}</Text>
-//       </View>
-//       <View style={styles.section}>
-//         <Text style={styles.paragraph}>Банкны qpay үйлчилгээ ашиглан төлбөр төлөх холбоосууд харагдана.</Text>
-//       </View>
-//       <TouchableOpacity style={styles.button} onPress={handleInvoice} disabled={loading}>
-//         <Text style={styles.buttonText}>{loading ? 'Loading...' : 'okkkk'}</Text>
-//       </TouchableOpacity>
-//     </View>
-//   );
-// };
-
-
-
-
-
-
-
-// const styles = StyleSheet.create({
-//     section:{
-//         backgroundColor:'#fff',
-//         marginHorizontal:20,
-//         marginTop:20,
-//         padding:20,
-//     }, 
-//     carwashImg:{
-//         // width:280,
-//         height:200,
-//         borderTopLeftRadius:10,
-//         borderTopRightRadius:10,
-//     },
-//     dropdown: {
-//         height: 50,
-//         borderColor: 'gray',
-//         borderWidth: 0.5,
-//         borderRadius: 8,
-//         paddingHorizontal: 8,
-//       },
-//   searchBar: {
-//     padding: 10,
-//     marginRight: 30,
-//     backgroundColor: '#000',
-//     width: '100%',
-//   },
-//   view: {
-//     margin: 10,
-//   },
-//   container: {
-//     flex: 1,
-//     backgroundColor: '#066BCF',
-//   },
-//   section1: {
-//     paddingTop: 60,
-//     paddingBottom: 60,
-//     paddingHorizontal: 20,
-//   },
-//   sectionTitle: {
-//     fontSize: 50,
-//     fontWeight: 'bold',
-//     textAlign: 'center',
-//     color: '#FFF',
-//   },
-//   paragraph: {
-//     fontSize: 16,
-//     fontWeight: 'bold',
-//     // textAlign: 'center',
-//     // color: '#FFF',
-//   },
-//   parText: {
-//     fontSize: 20,
-//     textAlign: 'center',
-//     color: '#FFF',
-//   },
-//   flexHeader: {
-//     padding: 10,
-//     paddingHorizontal: 20,
-//     backgroundColor: '#066BCF',
-//     width: '100%',
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//   },
-//   flex: {
-//     padding: 10,
-//     paddingHorizontal: 20,
-//     width: '100%',
-//     flexDirection: 'row',
-//     justifyContent: 'space-between',
-//     alignItems: 'center',
-//   },
-//   flexz: {
-//     flexDirection: 'row',
-//     padding: 5,
-//     alignItems: 'center',
-//   },
-//   allBtn: {
-//     width: 120,
-//     height: 40,
-//     backgroundColor: '#58B3F0',
-//     borderRadius: 60,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     borderColor: '#C0C0C0',
-//   },
-//   logoImg: {
-//     width: 70,
-//     height: 60,
-//     borderRadius: 10,
-//   },
-//   CarWashItem: {
-//     paddingHorizontal: 20,
-//   },
-//   addWrapper: {
-//     width: 60,
-//     height: 60,
-//     backgroundColor: '#58B3F0',
-//     borderRadius: 60,
-//     justifyContent: 'center',
-//     alignItems: 'center',
-//     borderColor: '#18A0FB',
-//     borderWidth: 1,
-//   },
-//   addText: {
-//     fontWeight: 'bold',
-//     color: '#000',
-//     fontSize: 18,
-//   },
-
-//   button: {
-//     width: '100%',
-//     height: 45,
-//     backgroundColor: '#1E90FF',
-//     borderRadius: 30,
-//     alignItems: 'center',
-//     justifyContent: 'center',
-//     marginVertical: 10,
-//   },
-//   buttonText: {
-//     color: '#fff',
-//     fontSize: 18,
-//     fontWeight: 'bold',
-//   },
-// });
-
-// export default PaymentScreen;
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-  // const handleInvoice = async () => {
-  //   setLoading(true);
-
-  //   // Log the orderDetails for debugging
-  //   console.log("Order Details:", orderDetails);
-
-  //   try {
-  //     // Properly handle the time and date formatting
-  //     const [startHour] = orderDetails.time.split('-')[0].split(':');
-  //     const startDateTime = new Date(orderDetails.date);
-  //     startDateTime.setHours(parseInt(startHour, 10), 0, 0, 0); // Set hours, minutes, seconds, and milliseconds
-
-  //     const endDateTime = new Date(startDateTime);
-  //     endDateTime.setHours(startDateTime.getHours() + 1); // Assuming 1 hour duration
-
-  //     // Log the formatted dates for debugging
-  //     console.log("Start DateTime:", startDateTime.toISOString());
-  //     console.log("End DateTime:", endDateTime.toISOString());
-
-  //     const orderDetailsData = {
-  //       scheduledTime: startDateTime.toISOString(),
-  //       carWashTypeId: orderDetails.washTypeId || 1, // Ensure this field is not undefined
-  //       washType: orderDetails.washType,
-  //       carSize: orderDetails.carType,
-  //       date: startDateTime.toISOString().split('T')[0], // Date without time
-  //       endTime: endDateTime.toISOString(),
-  //       paymentDetail: "Pending",
-  //       price: orderDetails.price || 0, // Ensure this field is not undefined
-  //       status: "pending",
-  //       timetableId: orderDetails.timetableId || 1, // Ensure this field is not undefined
-  //       userId: userInfo.id,
-  //       carWashServiceId: orderDetails.carwash.id,
-  //       carNumber: orderDetails.carNumber || "", // Ensure this field is not undefined
-  //     };
-
-  //     // Log the orderDetailsData for debugging
-  //     console.log("Order Details Data:", orderDetailsData);
-
-  //     const response = await orderCarwashApi(orderDetailsData);
-
-  //     Alert.alert('Success', 'Booking created successfully');
-  //     navigation.navigate('MyOrders'); // Replace with your success screen
-  //   } catch (error) {
-  //     console.error(error);
-  //     Alert.alert('Error', 'Failed to create booking');
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
-
-
-
-  import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, Alert, Image, TouchableOpacity, ScrollView, Linking  } from 'react-native';
+import React, { useState, useEffect, useContext } from 'react';
+import { View, Text, StyleSheet, Alert, Image, TouchableOpacity, ScrollView, Linking, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { getBookingStatus as getBookingStatusApi } from '../api/user';
 
@@ -310,22 +7,20 @@ const PaymentScreen = ({ route, navigation }) => {
   const { userInfo } = useContext(AuthContext);
   const { invoiceResponse, orderDetails, bookingId } = route.params;
 
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true); // Initialize loading to true
   const [paymentStatus, setPaymentStatus] = useState("unpaid");
   const [qrCode, setQRCode] = useState("");
 
   useEffect(() => {
     const interval = setInterval(async () => {
-      // console.log(invoiceResponse.qrCode.urls, "aa")
       try {
         console.log("Checking booking status for booking ID:", bookingId);
         const bookingStatus = await getBookingStatusApi(bookingId);
         console.log("Booking status:", bookingStatus);
         if (bookingStatus === "paid") {
           Alert.alert("Төлбөр амжилттай төлөгдлөө.");
-          setPaymentStatus("paid"); // Update paymentStatus to "paid"
+          setPaymentStatus("paid");
           clearInterval(interval);
-          // navigation.navigate("MyOrders");
           navigation.reset({
             index: 0,
             routes: [{ name: 'MyOrders' }],
@@ -334,7 +29,7 @@ const PaymentScreen = ({ route, navigation }) => {
       } catch (error) {
         console.error("Error checking booking status:", error);
       }
-    }, 5000); // Check every 5 seconds
+    }, 5000);
 
     return () => clearInterval(interval);
   }, [bookingId]);
@@ -342,19 +37,17 @@ const PaymentScreen = ({ route, navigation }) => {
   useEffect(() => {
     if (invoiceResponse && invoiceResponse.qrCode) {
       try {
-        
         const qrDataUrl = `data:image/png;base64,${invoiceResponse.qrCode.qr_image}`;
         setQRCode(qrDataUrl);
       } catch (error) {
         console.error("Error decoding QR code:", error);
       }
     }
+    setLoading(false); // Set loading to false after the QR code is set
   }, [invoiceResponse]);
 
   return (
     <ScrollView style={styles.container}>
-
-
       <View style={styles.section}>
         <Text style={styles.paragraph}>Угаалгын газрын нэр: {orderDetails?.name}</Text>
         <Text style={styles.paragraph}>Location: {orderDetails?.location}</Text>
@@ -382,87 +75,52 @@ const PaymentScreen = ({ route, navigation }) => {
         )}
       </View>
       <View style={styles.containerUrls}>
-    
-      {invoiceResponse.qrCode && invoiceResponse.qrCode.urls && invoiceResponse.qrCode.urls.map((url, index) => (
-        // <Text>{invoiceResponse.qrCode.urls.length}</Text> 
-        <View key={index} style={styles.itemContainer}>
-          <TouchableOpacity onPress={() => Linking.openURL(url.link)}>
-            <Image source={{ uri: url.logo }} style={styles.image} />
-          </TouchableOpacity>
-        </View>
-      ))}
-
-{/* <View style={styles.section}>
-      {qrCode && qrCode.urls && qrCode.urls.map((url, index) => (
-        <View key={index} style={styles.itemContainer}>
-          <TouchableOpacity onPress={() => Linking.openURL(url.link)}>
-            <Image source={{ uri: url.logo }} style={styles.image} />
-          </TouchableOpacity>
-        </View>
-      ))}
-    </View> */}
-    </View>
-
+        {invoiceResponse.qrCode && invoiceResponse.qrCode.urls && invoiceResponse.qrCode.urls.map((url, index) => (
+          <View key={index} style={styles.itemContainer}>
+            <TouchableOpacity onPress={() => Linking.openURL(url.link)}>
+              <Image source={{ uri: url.logo }} style={styles.image} />
+            </TouchableOpacity>
+          </View>
+        ))}
+      </View>
+      {loading && (
+        <ActivityIndicator size="large" color="#FFF" style={styles.loadingIndicator} />
+      )}
     </ScrollView>
   );
 };
 
-
-
 const styles = StyleSheet.create({
-    section:{
-        backgroundColor:'#fff',
-        marginHorizontal:20,
-        marginTop:20,
-        padding:20,
-    }, 
-    
- 
- 
+  section: {
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
+    marginTop: 20,
+    padding: 20,
+  },
   container: {
     flex: 1,
     backgroundColor: '#066BCF',
   },
-  section1: {
-    paddingTop: 60,
-    paddingBottom: 60,
-    paddingHorizontal: 20,
-  },
-  
   paragraph: {
     fontSize: 16,
     fontWeight: 'bold',
-    // textAlign: 'center',
-    // color: '#FFF',
   },
-  parText: {
-    fontSize: 20,
-    textAlign: 'center',
-    color: '#FFF',
-  },
-  
-  
-  
   qrCode: {
     width: 200,
     height: 200,
     alignSelf: 'center',
   },
-  CarWashItem: {
-    paddingHorizontal: 20,
-  },
- 
   containerUrls: {
-    backgroundColor:'#fff',
-    marginHorizontal:20,
-    marginTop:20,
-    padding:20,
+    backgroundColor: '#fff',
+    marginHorizontal: 20,
+    marginTop: 20,
+    padding: 20,
     flexDirection: 'row',
     flexWrap: 'wrap',
     justifyContent: 'flex-start',
   },
   itemContainer: {
-    width: '33%', 
+    width: '33%',
     alignItems: 'center',
     marginTop: 40,
   },
@@ -470,6 +128,9 @@ const styles = StyleSheet.create({
     width: 50,
     height: 50,
     borderRadius: 9,
+  },
+  loadingIndicator: {
+    marginTop: 20,
   },
 });
 

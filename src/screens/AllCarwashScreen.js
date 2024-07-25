@@ -1,62 +1,53 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
 import CarWashItem from '../components/CarWashItem';
-import { fetchCarwashList as fetchCarwashListApi } from '../api/user';
 import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
 
-const logoImg = require('../../assets/emu-logo.png');
-
-const AllCarwashScreen = ({route, navigation}) => {
+const AllCarwashScreen = ({ route, navigation }) => {
   const [carwashList, setCarwashList] = useState([]);
-  const {filteredList} = route.params;
+  const [loading, setLoading] = useState(false); // State for loading indicator
+  const { filteredList } = route.params;
 
-  
   useEffect(() => {
-    
+    // Uncomment the following line to fetch car wash list
     // fetchCarwashList();
   }, []);
 
+  // Uncomment the following function to fetch car wash list
   // const fetchCarwashList = async () => {
+  //   setLoading(true);
   //   try {
   //     // const data = await fetchCarwashListApi();
   //     const data = await fetchCarwashServiceListApi();
   //     setCarwashList(data);
   //   } catch (error) {
   //     console.error(error);
+  //   } finally {
+  //     setLoading(false);
   //   }
   // };
 
   return (
     <View style={styles.container}>
-    
       <View style={styles.flex}>
         <Text style={styles.parText}>Угаалгын газрууд</Text>
-        
-       
       </View>
       <View style={styles.CarWashItem}>
-
-      {filteredList.length === 0 ? (
-        <Text style={styles.noResults}>Угаалгын газар олдсонгүй.</Text>
-      ) : (
-        <FlatList
-        data={filteredList} 
-          horizontal={false}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
-          keyExtractor={item => item.id}
-        />
-      )}
-        {/* <FlatList 
-          data={filteredWashList} 
-          horizontal={false}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
-          keyExtractor={item => item.id}
-          
-        /> */}
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          filteredList.length === 0 ? (
+            <Text style={styles.noResults}>Угаалгын газар олдсонгүй.</Text>
+          ) : (
+            <FlatList
+              data={filteredList}
+              horizontal={false}
+              showsHorizontalScrollIndicator={false}
+              renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
+              keyExtractor={item => item.id}
+            />
+          )
+        )}
       </View>
       {/* <BottomTabNavigator /> */}
     </View>
@@ -151,6 +142,11 @@ const styles = StyleSheet.create({
   addText: {
     fontWeight: 'bold',
     color: '#000',
+    fontSize: 18,
+  },
+  noResults: {
+    textAlign: 'center',
+    color: '#FFF',
     fontSize: 18,
   },
 });

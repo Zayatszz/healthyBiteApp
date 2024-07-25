@@ -1,16 +1,16 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, ActivityIndicator } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import CarWashItem from '../components/CarWashItem';
 import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
 import { filterCarwashes as filterCarwashesApi } from '../api/user';
 import { Dropdown } from 'react-native-element-dropdown';
 
-
 const logoImg = require('../../assets/logoo.png');
 
 const HomeScreen = ({ navigation }) => {
   const [carwashList, setCarwashList] = useState([]);
+  const [loading, setLoading] = useState(false);
   const [selectedCarType, setSelectedCarType] = useState(null);
   const [selectedWashType, setSelectedWashType] = useState(null);
   const [selectedProvince, setSelectedProvince] = useState(null);
@@ -100,27 +100,31 @@ const HomeScreen = ({ navigation }) => {
   }, [selectedProvince]);
 
   const fetchCarwashList = async () => {
+    setLoading(true);
     try {
       const data = await fetchCarwashServiceListApi();
       setCarwashList(data);
     } catch (error) {
       console.error(error);
+    } finally {
+      setLoading(false);
     }
   };
 
-  const handleSearch =async () => {
+  const handleSearch = async () => {
     const filters = {
       carType: selectedCarType,
       washType: selectedWashType,
       province: selectedProvince,
       district: selectedDistrict,
     };
-  
+
+    setLoading(true);
     try {
       let filteredList = await filterCarwashesApi(filters);
       console.log(filteredList.length);
       navigation.navigate('AllCarwash', { filteredList });
-  
+
       // Reset selections
       setSelectedCarType(null);
       setSelectedWashType(null);
@@ -128,6 +132,8 @@ const HomeScreen = ({ navigation }) => {
       setSelectedDistrict(null);
     } catch (error) {
       console.error('Failed to fetch filtered carwashes:', error);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -204,13 +210,17 @@ const HomeScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
       <View style={styles.CarWashItem}>
-        <FlatList 
-          data={carwashList} 
-          horizontal={true}
-          showsHorizontalScrollIndicator={false}
-          renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
-          keyExtractor={item => item.id.toString()}
-        />
+        {loading ? (
+          <ActivityIndicator size="large" color="#0000ff" />
+        ) : (
+          <FlatList
+            data={carwashList}
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
+            keyExtractor={item => item.id.toString()}
+          />
+        )}
       </View>
     </ScrollView>
   );
@@ -260,7 +270,7 @@ const styles = StyleSheet.create({
   },
   searchSection: {
     paddingHorizontal: 20,
-    marginBottom:10
+    marginBottom: 10,
   },
   dropdown: {
     height: 50,
@@ -271,8 +281,8 @@ const styles = StyleSheet.create({
     marginBottom: 15,
   },
   CarWashItem: {
-    paddingTop:15,
-    paddingBottom:30,
+    paddingTop: 15,
+    paddingBottom: 30,
     paddingHorizontal: 20,
   },
   logoImg: {
@@ -281,7 +291,7 @@ const styles = StyleSheet.create({
     borderRadius: 10,
   },
   bellIcon: {
-    color: 'black', 
+    color: 'black',
     fontSize: 25,
   },
   button: {
@@ -292,7 +302,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     marginVertical: 10,
-  
   },
   buttonText: {
     paddingLeft: 10,

@@ -1,14 +1,12 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert, ActivityIndicator } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import { TextInput } from 'react-native-paper';
 import { AuthContext } from '../context/AuthContext';
 import { getToken as getTokenApi } from '../api/user';
-import { createInvoive as createInvoiveApi } from '../api/user';
-
-import { orderCarwash as orderCarwashApi } from '../api/user';
+import { createInvoive as createInvoiveApi, orderCarwash as orderCarwashApi } from '../api/user';
 import dayjs from 'dayjs';
 import utc from 'dayjs-plugin-utc';
 import Cookies from "js-cookie";
@@ -36,21 +34,14 @@ const OrderScreen = ({ route, navigation }) => {
   const [bookingId, setBookingId] = useState(null);
   const capacity = carwash?.capacity;
   const [qrCode, setQRCode] = useState("");
-
   const [orderDetails, setOrderDetails] = useState(null);
-
   const [loading, setLoading] = useState(false);
-
   const [invoiceResponse, setInvoiceResponse] = useState(null);
 
   const holidays = carwash?.schedules?.holidays || [];
   const getFirstAvailableDay = () => {
     let day = dayjs();
-    while (
-      holidays &&
-      holidays.length > 0 &&
-      holidays.includes(day.format("YYYY-MM-DD"))
-    ) {
+    while (holidays.length > 0 && holidays.includes(day.format("YYYY-MM-DD"))) {
       day = day.add(1, "day");
     }
     return day.format("YYYY-MM-DD");
@@ -74,41 +65,26 @@ const OrderScreen = ({ route, navigation }) => {
         const start = currentTime.format("HH:mm");
         const end = currentTime.add(interval, "minute").format("HH:mm");
 
-        if (
-          selectedDay === today.format("YYYY-MM-DD") &&
-          currentTime.isBefore(currentPlusOneHour)
-        ) {
+        if (selectedDay === today.format("YYYY-MM-DD") && currentTime.isBefore(currentPlusOneHour)) {
           currentTime = currentTime.add(interval, "minute");
           continue;
         }
 
-        const isDisabled =
-          selectedDay === today.format("YYYY-MM-DD") &&
-          currentTime.isBefore(today);
+        const isDisabled = selectedDay === today.format("YYYY-MM-DD") && currentTime.isBefore(today);
 
         const slotBookings = bookings
           .filter((booking) => booking.status === "paid")
           .filter((booking) => {
-            const bookingDate = dayjs
-              .utc(booking.scheduledTime)
-              .format("YYYY-MM-DD");
+            const bookingDate = dayjs.utc(booking.scheduledTime).format("YYYY-MM-DD");
 
             if (bookingDate !== selectedDay) return false;
 
             const bookingStart = dayjs.utc(booking.scheduledTime);
             const bookingEnd = dayjs.utc(booking.endTime);
-            const slotStart = dayjs(
-              `${selectedDay} ${start}`,
-              "YYYY-MM-DD HH:mm"
-            ).utc();
-            const slotEnd = dayjs(
-              `${selectedDay} ${end}`,
-              "YYYY-MM-DD HH:mm"
-            ).utc();
+            const slotStart = dayjs(`${selectedDay} ${start}`, "YYYY-MM-DD HH:mm").utc();
+            const slotEnd = dayjs(`${selectedDay} ${end}`, "YYYY-MM-DD HH:mm").utc();
 
-            return !(
-              slotEnd.isBefore(bookingStart) || slotStart.isAfter(bookingEnd)
-            );
+            return !(slotEnd.isBefore(bookingStart) || slotStart.isAfter(bookingEnd));
           }).length;
 
         const slotIsFull = slotBookings >= capacity;
@@ -177,24 +153,6 @@ const OrderScreen = ({ route, navigation }) => {
     }
   }, [carwash.carWashTypes]);
 
-
-  ///shuud payment ruu damjuulj bsan
-  const handleOrder = () => {
-    const orderDetails = {
-      carType: selectedCarType,
-      carTypeId: selectedCarTypeId,
-      washType: selectedWashType,
-      washTypeId: selectedWashTypeId,
-      time: selectedTime,
-      date: selectedDay.toISOString().split('T')[0],
-      carwash: carwash,
-      price: price,
-      duration: duration,
-    };
-
-    navigation.navigate('Payment', { orderDetails });
-  };
-
   const handleInvoice = async () => {
     // Validate selectedDay and selectedTime
     if (!selectedDay || !selectedTime) {
@@ -230,7 +188,7 @@ const OrderScreen = ({ route, navigation }) => {
     };
   
     console.log("Order Details:", orderDetailsData);
-  
+    setLoading(true); // Start loading indicator
     try {
       const bookingResponse = await orderCarwashApi(orderDetailsData);
       console.log("Order Details:", bookingResponse);
@@ -252,22 +210,18 @@ const OrderScreen = ({ route, navigation }) => {
       };
   
       const invoiceResponse = await createInvoiveApi(invoiceDetails);
-      // console.log("end yu irj bna invoiceresponse -",invoiceResponse)
-  
       setOrderDetails(orderDetailsData);
       setInvoiceResponse(invoiceResponse.data);
       setQRCode(invoiceResponse.qrCode.qr_image);
   
-      navigation.navigate('Payment', { invoiceResponse: invoiceResponse, orderDetails: orderDetailsData, bookingId:bookingId });
+      navigation.navigate('Payment', { invoiceResponse: invoiceResponse, orderDetails: orderDetailsData, bookingId: bookingId });
     } catch (error) {
       console.error(error);
       Alert.alert('Error', 'Failed to create booking');
     } finally {
-      setLoading(false);
+      setLoading(false); // Stop loading indicator
     }
   };
-  
-  
 
   return (
     <View style={styles.container}>
@@ -362,7 +316,11 @@ const OrderScreen = ({ route, navigation }) => {
         <Text style={styles.paragraph}>Duration: {duration} mins</Text>
       </View>
       <TouchableOpacity style={styles.button} onPress={handleInvoice} disabled={loading}>
-        <Text style={styles.buttonText}>Захиалах</Text>
+        {loading ? (
+          <ActivityIndicator size="small" color="#FFF" />
+        ) : (
+          <Text style={styles.buttonText}>Захиалах</Text>
+        )}
       </TouchableOpacity>
     </View>
   );

@@ -1,58 +1,46 @@
-import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList } from 'react-native';
-import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
-import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import CarWashItem from '../components/CarWashItem';
-import { fetchCarwashList as fetchCarwashListApi } from '../api/user';
+import React, { useState } from 'react';
+import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator } from 'react-native';
 
-const logoImg = require('../../assets/emu-logo.png');
+const images = {
+  'carwashApp1.png': require("../../assets/carwashApp1.png"),
+  'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
+  'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
+};
 
 const CarwashDetailScreen = ({ route, navigation }) => {
-    const images = {
-        'carwashApp1.png': require("../../assets/carwashApp1.png"),
-        'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
-        'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
-        
-      };
-    const {carwash} = route.params;
-  const [carwashList, setCarwashList] = useState([]);
-  
-  useEffect(() => {
-    fetchCarwashList();
-  }, []);
+  const { carwash } = route.params;
+  const [loading, setLoading] = useState(false); // Loading state
 
-  const fetchCarwashList = async () => {
-    try {
-      const data = await fetchCarwashListApi();
-      setCarwashList(data);
-    } catch (error) {
-      console.error(error);
-    }
+  const handleOrder = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+      navigation.navigate('Order', { carwash, navigation });
+    }, 1000); // Simulate a brief delay
   };
 
   return (
     <View style={styles.container}>
-    <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
-    <Text style={styles.title}>{carwash.name}</Text>
-    <Text style={styles.paragraph}>{carwash.description}</Text>
-    <Text style={styles.paragraph}>Location: {carwash.location}</Text>
-    <Text style={styles.paragraph}>Phone: {carwash.phoneNumber}</Text>
-    <Text style={styles.paragraph}>Capacity: {carwash.capacity}</Text>
-    <Text style={styles.paragraph}>Stars: {carwash.stars}</Text>
-    <TouchableOpacity style={styles.button} onPress={()=>navigation.navigate('Order', {carwash, navigation})}>
-        <Text style={styles.buttonText}>Захиалах</Text>
+      <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
+      <Text style={styles.title}>{carwash.name}</Text>
+      <Text style={styles.paragraph}>{carwash.description}</Text>
+      <Text style={styles.paragraph}>Location: {carwash.location}</Text>
+      <Text style={styles.paragraph}>Phone: {carwash.phoneNumber}</Text>
+      <Text style={styles.paragraph}>Capacity: {carwash.capacity}</Text>
+      <Text style={styles.paragraph}>Stars: {carwash.stars}</Text>
+      <TouchableOpacity style={styles.button} onPress={handleOrder}>
+        {loading ? <ActivityIndicator size="small" color="#FFF" /> : <Text style={styles.buttonText}>Захиалах</Text>}
       </TouchableOpacity>
-  </View>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
-    carwashImg:{
-        // width:280,
-        height:200,
-        borderTopLeftRadius:10,
-        borderTopRightRadius:10,
-    },
+  carwashImg: {
+    height: 200,
+    borderTopLeftRadius: 10,
+    borderTopRightRadius: 10,
+  },
   searchBar: {
     padding: 10,
     marginRight: 30,
@@ -65,6 +53,8 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#066BCF',
+    // justifyContent: 'center',
+    alignItems: 'center',
   },
   section1: {
     paddingTop: 60,
@@ -142,7 +132,6 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 18,
   },
-
   button: {
     width: '100%',
     height: 45,
