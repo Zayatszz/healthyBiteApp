@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, ActivityIndicator } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import CarWashItem from '../components/CarWashItem';
+import SkeletonLoader from '../components/SkeletonLoader'; // Import SkeletonLoader
 import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
 import { filterCarwashes as filterCarwashesApi } from '../api/user';
 import { Dropdown } from 'react-native-element-dropdown';
@@ -211,7 +212,15 @@ const HomeScreen = ({ navigation }) => {
       </View>
       <View style={styles.CarWashItem}>
         {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
+          // Use SkeletonLoader instead of ActivityIndicator
+          // <ActivityIndicator></ActivityIndicator>
+          <FlatList
+            data={[...Array(3)]} // Show 3 skeleton items
+            horizontal={true}
+            showsHorizontalScrollIndicator={false}
+            renderItem={() => <SkeletonLoader />}
+            keyExtractor={(item, index) => index.toString()}
+          />
         ) : (
           <FlatList
             data={carwashList}
@@ -283,7 +292,7 @@ const styles = StyleSheet.create({
   CarWashItem: {
     paddingTop: 15,
     paddingBottom: 30,
-    paddingHorizontal: 20,
+    // paddingHorizontal: 20,
   },
   logoImg: {
     width: 60,

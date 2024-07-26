@@ -36,7 +36,8 @@ const styles = StyleSheet.create({
     borderColor: "#EBEBEB",
     borderWidth: 1,
     marginBottom: 80,
-    marginRight: 20,
+    // marginRight: 20,
+    marginLeft: 20,
     overflow: 'hidden', // Ensure children respect border radius
   },
   carwashImg: {
