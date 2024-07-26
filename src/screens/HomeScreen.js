@@ -1,11 +1,12 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, ActivityIndicator, Button } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import CarWashItem from '../components/CarWashItem';
-import SkeletonLoader from '../components/SkeletonLoader'; // Import SkeletonLoader
+import SkeletonCarWashItem from '../components/SkeletonCarWashItem';
 import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
 import { filterCarwashes as filterCarwashesApi } from '../api/user';
 import { Dropdown } from 'react-native-element-dropdown';
+import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 
 const logoImg = require('../../assets/logoo.png');
 
@@ -19,7 +20,7 @@ const HomeScreen = ({ navigation }) => {
   const [districts, setDistricts] = useState([]);
 
   const carTypes = [
-    { label: "Том оврын жийп", value: "Том оврын жийп", },
+    { label: "Том оврын жийп", value: "Том оврын жийп" },
     { label: "Дунд оврын жийп", value: "Дунд оврын жийп" },
     { label: "Жижиг тэрэг", value: "Жижиг тэрэг" },
     { label: "Портер", value: "Портер" },
@@ -32,7 +33,7 @@ const HomeScreen = ({ navigation }) => {
   ];
 
   const washTypes = [
-    { label: "Энгийн гадна угаалга", value: "Энгийн гадна угаалга", },
+    { label: "Энгийн гадна угаалга", value: "Энгийн гадна угаалга" },
     { label: "Энгийн дотор угаалга", value: "Энгийн дотор угаалга" },
     { label: "Энгийн бүтэн угаалга", value: "Энгийн бүтэн угаалга" },
     { label: "Уурийн угаалга", value: "Уурийн угаалга" },
@@ -142,6 +143,14 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('AllCarwash', { filteredList: carwashList });
   };
 
+  const width = useSharedValue(100);
+
+  const handlePress = () => {
+    width.value = withSpring(width.value + 50);
+  };
+
+  const colorMode = 'light';
+
   return (
     <ScrollView style={styles.container}>
       <View style={styles.flexHeader}>
@@ -210,15 +219,24 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.addText}>Бүгдийг харах</Text>
         </TouchableOpacity>
       </View>
+      {/* <View style={{ flex: 1, alignItems: 'center' }}>
+        <Animated.View
+          style={{
+            width,
+            height: 100,
+            backgroundColor: 'violet',
+          }}
+        />
+        <Button onPress={handlePress} title="Click me" />
+      </View> */}
+
       <View style={styles.CarWashItem}>
         {loading ? (
-          // Use SkeletonLoader instead of ActivityIndicator
-          // <ActivityIndicator></ActivityIndicator>
           <FlatList
-            data={[...Array(3)]} // Show 3 skeleton items
+            data={Array(5).fill({})}
             horizontal={true}
             showsHorizontalScrollIndicator={false}
-            renderItem={() => <SkeletonLoader />}
+            renderItem={() => <SkeletonCarWashItem />}
             keyExtractor={(item, index) => index.toString()}
           />
         ) : (

@@ -197,11 +197,17 @@
 import React, { useEffect, useState } from 'react';
 import AppNavigation from './src/navigation/appNavigation';
 import SplashScreen from './src/screens/SplashScreen';
+import {GestureHandlerRootView} from 'react-native-gesture-handler'
+import 'react-native-reanimated'
+import 'react-native-gesture-handler'
 
 const App = () => {
 
   return (
-    <AppNavigation />
+
+          <AppNavigation />
+
+
     // <SplashScreen/>
   );
 };
