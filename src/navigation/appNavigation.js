@@ -45,7 +45,7 @@ const AppNavigator = () => {
          token ? (
           <>
           <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
-          <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen} />
+          <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen} options={{ headerShown: false }} />
           <Stack.Screen name="AllCarwash" component={AllCarwashScreen} />
           <Stack.Screen name="Order" component={OrderScreen} />
           <Stack.Screen name="Payment" component={PaymentScreen} />

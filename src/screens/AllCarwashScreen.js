@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, FlatList, ActivityIndicator } from 'react-native';
-import CarWashItem from '../components/CarWashItem';
+import CarWashItem from '../components/CarWashItem1';
 import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
 
 const AllCarwashScreen = ({ route, navigation }) => {
@@ -43,7 +43,7 @@ const AllCarwashScreen = ({ route, navigation }) => {
               data={filteredList}
               horizontal={false}
               showsHorizontalScrollIndicator={false}
-              renderItem={({ item }) => <CarWashItem carwash={item} navigation={navigation} />}
+              renderItem={({ item, index }) => <CarWashItem carwash={item} index={index} navigation={navigation} />}
               keyExtractor={item => item.id}
             />
           )
