@@ -2,6 +2,7 @@ import React, { useState, useEffect, useContext } from 'react';
 import { View, Text, StyleSheet, Alert, Image, TouchableOpacity, ScrollView, Linking, ActivityIndicator } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { getBookingStatus as getBookingStatusApi } from '../api/user';
+import FastImage from 'react-native-fast-image';
 
 const PaymentScreen = ({ route, navigation }) => {
   const { userInfo } = useContext(AuthContext);
@@ -69,7 +70,8 @@ const PaymentScreen = ({ route, navigation }) => {
       <View style={styles.section}>
         <Text style={styles.paragraph}>Банкны qpay үйлчилгээ ашиглан төлбөр төлөх холбоосууд харагдана.</Text>
         {qrCode ? (
-          <Image source={{ uri: qrCode }} style={styles.qrCode} />
+          // <Image source={{ uri: qrCode }} style={styles.qrCode} />
+          <FastImage source={{ uri: qrCode }} style={styles.qrCode} />
         ) : (
           <Text>Loading QR Code...</Text>
         )}

@@ -1,6 +1,8 @@
 import React from "react";
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FastImage from "react-native-fast-image";
+import Animated from "react-native-reanimated";
 const CarWashItem = ({ carwash, navigation }) => {
   const images = {
     'carwashApp1.png': require("../../assets/carwashApp1.png"),
@@ -11,7 +13,8 @@ const CarWashItem = ({ carwash, navigation }) => {
   return (
     <TouchableOpacity onPress={() => navigation.navigate('DetailCarwash', { carwash, navigation })}>
       <View style={styles.item}>
-        <Image style={styles.carwashImg} source={images[carwash.imageUrl]} />
+        {/* <FastImage style={styles.carwashImg} source={images[carwash.imageUrl]} /> */}
+        <Animated.Image  sharedTransitionTag={carwash.id.toString()} style={styles.carwashImg} source={images[carwash.imageUrl]} />
         <View style={styles.flex}>
           <Text style={styles.name}>{carwash.name}</Text>
           <View style={styles.flexz}>

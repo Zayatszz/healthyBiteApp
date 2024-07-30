@@ -15,7 +15,7 @@ const CarWashItem = ({ carwash, navigation, index }) => {
     <TouchableOpacity onPress={() => navigation.navigate('DetailCarwash', { carwash, navigation })}>
       <View style={styles.item}>
         <Animated.Image 
-            sharedTransitionTag={carwash.name}
+            sharedTransitionTag={carwash.id.toString()}
             style={styles.carwashImg} 
             source={images[carwash.imageUrl]} 
         />
@@ -39,22 +39,26 @@ const styles = StyleSheet.create({
   item: {
     backgroundColor: "#FFF",
     paddingBottom: 15,
-    width: 280,
+    // width: 280,
     borderRadius: 10,
-    borderColor: "#EBEBEB",
+    // borderColor: "#EBEBEB",
+    borderColor: "#000",
     borderWidth: 1,
-    marginBottom: 80,
+    marginBottom: 20,
     // marginRight: 20,
-    marginLeft: 20,
+    // marginLeft: 20,
+    
     overflow: 'hidden', // Ensure children respect border radius
   },
   carwashImg: {
     
-    width: 255,
-    height: 200,
+    // width: 300,
+    height: 180,
     borderRadius: 10,
     alignSelf: 'center', // Center the image
-    margin:15,
+    // margin:15,
+    alignItems:'center',
+    justifyContent:'center'
 
   },
   flex: {

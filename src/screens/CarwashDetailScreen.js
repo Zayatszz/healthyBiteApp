@@ -31,7 +31,7 @@ const CarwashDetailScreen = ({ route, navigation }) => {
       <View style={styles.imgContainer}>
 
         <Animated.Image 
-          sharedTransitionTag={carwash.name}
+          sharedTransitionTag={carwash.id.toString()}
           style={styles.carwashImg}
           source={images[carwash.imageUrl]} 
         />

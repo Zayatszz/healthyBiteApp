@@ -121,7 +121,7 @@ const HomeScreen = ({ navigation }) => {
       district: selectedDistrict,
     };
 
-    setLoading(true);
+    // setLoading(true);
     try {
       let filteredList = await filterCarwashesApi(filters);
       console.log(filteredList.length);
@@ -324,7 +324,8 @@ const styles = StyleSheet.create({
   button: {
     width: '100%',
     height: 50,
-    backgroundColor: '#268AE6',
+    // backgroundColor: '#268AE6',
+    backgroundColor: '#1c6cce',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',

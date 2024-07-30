@@ -223,6 +223,83 @@ const OrderScreen = ({ route, navigation }) => {
     }
   };
 
+  // const handleInvoice = async () => {
+  //   // Validate selectedDay and selectedTime
+  //   if (!selectedDay || !selectedTime) {
+  //     Alert.alert('Error', 'Please select a valid date and time.');
+  //     return;
+  //   }
+  
+  //   const startTime = selectedTime.split(" - ")[0];
+  //   const endTime = selectedTime.split(" - ")[1];
+  //   const selectedDayString = dayjs(selectedDay).format('YYYY-MM-DD'); // Ensure correct format
+  
+  //   // Parse time strings correctly in local time
+  //   const scheduledTime = dayjs(`${selectedDayString}T${startTime}`, 'YYYY-MM-DDTHH:mm');
+  //   const endDateTime = dayjs(`${selectedDayString}T${endTime}`, 'YYYY-MM-DDTHH:mm');
+  
+  //   // Check if the dates are valid
+  //   if (!scheduledTime.isValid() || !endDateTime.isValid()) {
+  //     Alert.alert('Error', 'Invalid date or time selected.');
+  //     return;
+  //   }
+  //   console.log(startTime, 'my selected start time.');
+  //   console.log(endTime, 'my selected end time.');
+  //   console.log(selectedDayString, 'selectedDayString.');
+  //   console.log(scheduledTime.format(), 'scheduledTime formatted.');
+  //   console.log(endDateTime.format(), 'endDateTime formatted.');
+  
+  //   // Format dates without timezone offset
+  //   const formatDateTime = (dateTime) => dateTime.format('YYYY-MM-DDTHH:mm:ss');
+  //   console.log(formatDateTime(scheduledTime), 'scheduledTime formatted. punk');
+  //   const orderDetailsData = {
+  //     scheduledTime: formatDateTime(scheduledTime),
+  //     carSize: selectedCarType,
+  //     washType: selectedWashType,
+  //     date: formatDateTime(scheduledTime),
+  //     endTime: formatDateTime(endDateTime),
+  //     price,
+  //     userId: userInfo.id,
+  //     timetable: scheduleId,
+  //     CarWashService: carwash.id,
+  //   };
+  
+  //   console.log("Order Details:", orderDetailsData);
+  //   setLoading(true); // Start loading indicator
+  //   try {
+  //     const bookingResponse = await orderCarwashApi(orderDetailsData);
+  //     console.log("Order Details:", bookingResponse);
+  //     const bookingId = bookingResponse.id;
+  //     setBookingId(bookingId);
+  
+  //     const tokenResponse = await getTokenApi();
+  //     console.log("Order Details:", tokenResponse);
+  //     const token = tokenResponse.access_token;
+  //     Cookies.set("token", token, { expires: 2, path: "/" });
+  
+  //     const invoiceDetails = {
+  //       service: carwash.emuCode,
+  //       token,
+  //       bookingId,
+  //       amount: price,
+  //       description: `Payment for ${selectedWashType} (${selectedCarType}) on ${selectedDayString} at ${startTime}`,
+  //       userId: userInfo.id,
+  //     };
+  
+  //     const invoiceResponse = await createInvoiveApi(invoiceDetails);
+  //     setOrderDetails(orderDetailsData);
+  //     setInvoiceResponse(invoiceResponse.data);
+  //     setQRCode(invoiceResponse.qrCode.qr_image);
+  
+  //     navigation.navigate('Payment', { invoiceResponse: invoiceResponse, orderDetails: orderDetailsData, bookingId: bookingId });
+  //   } catch (error) {
+  //     console.error(error);
+  //     Alert.alert('Error', 'Failed to create booking');
+  //   } finally {
+  //     setLoading(false); // Stop loading indicator
+  //   }
+  // };
+
   return (
     <View style={styles.container}>
       <View style={styles.section}>
