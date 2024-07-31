@@ -56,13 +56,15 @@ const MainNav = () => {
               <Animated.View style={[ styles.yellowCircle, { transform: [{ translateX }] }]} />
               {/* <Animated.View style={[!focused && styles.yellowCircle, { transform: [{ translateX }] }]} /> */}
               <AntDesign name={iconName} style={[styles.icon, focused && styles.focusedIcon]} />
+              {/* <AntDesign name={iconName} style={[styles.icon]} /> */}
             </View>
           );
         },
         tabBarShowLabel: false,
         tabBarBackground: () => (
           <LinearGradient
-            colors={['#66BBCC', '#4EA6CD', '#4EA6CD', '#1D7ECE', '#066BCF']}
+            // colors={['#66BBCC', '#4EA6CD', '#4EA6CD', '#1D7ECE', '#066BCF']}
+            colors={['#066BCF', '#033669']}
             style={[StyleSheet.absoluteFill, styles.gradientStyle]}
           />
         ),

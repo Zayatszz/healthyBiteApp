@@ -1,14 +1,19 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, ActivityIndicator, useWindowDimensions } from 'react-native';
+import { View, Text, StyleSheet, useWindowDimensions } from 'react-native';
 import Animated, { FadeIn, FadeInDown } from 'react-native-reanimated';
-import Header from '../components/Header'; 
+import Header from '../components/Header';
 import Button from '../components/Button';
+import { SliderBox } from 'react-native-image-slider-box';
+import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import PricingInfo from '../components/PricingInfo';
+import { ScrollView } from 'react-native';
 
-const images = {
-  'carwashApp1.png': require("../../assets/carwashApp1.png"),
-  'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
-  'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
-};
+const images = [
+  require('../../assets/carwashApp2.jpg'),
+  require('../../assets/carwashApp3.jpg'),
+  require('../../assets/carwashApp2.jpg'),
+  require('../../assets/carwashApp3.jpg'),
+];
 
 const CarwashDetailScreen = ({ route, navigation }) => {
   const { carwash } = route.params;
@@ -24,105 +29,123 @@ const CarwashDetailScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container} contentContainerStyle={styles.contentContainer}>
       <Header navigation={navigation} />
-     <View>
-
-      <View style={styles.imgContainer}>
-
-        <Animated.Image 
-          sharedTransitionTag={carwash.id.toString()}
-          style={styles.carwashImg}
-          source={images[carwash.imageUrl]} 
-        />
-        <Animated.View
-        entering={FadeIn.delay(600)}
-         style={styles.textContainer}>
-          <Text style={styles.textName} >{carwash.name}</Text>
-          <Text style={styles.textLocation} >{carwash.location}</Text>
-          
-        </Animated.View>
-       
-      </View>
-      <Animated.View entering={FadeInDown.delay(800)}>
-          <Text style={styles.textDescription}>Дэлгэрэнгүй</Text>
-          <Text style={styles.text}>{carwash.description}</Text>
-        </Animated.View>
-     </View>
-        <View style={styles.btnContainer}>
-
-        <Button carwash={carwash} navigation={ navigation} />
+      <View>
+        <View style={styles.imgContainer}>
+          <Animated.View style={styles.carwashImgContainer} sharedTransitionTag={carwash.id.toString()}>
+            <SliderBox
+              images={images}
+              sliderBoxHeight={400}
+              dotColor="#FFEE58"
+              inactiveDotColor="#90A4AE"
+              paginationBoxVerticalPadding={20}
+              resizeMethod={'resize'}
+              resizeMode={'cover'}
+              ImageComponentStyle={styles.sliderBoxImage}
+            />
+          </Animated.View>
         </View>
-      {/* Uncomment this part for other details and button */}
-      {/* 
-      <Text style={styles.title}>{carwash.name}</Text>
-      <Text style={styles.paragraph}>{carwash.description}</Text>
-      <Text style={styles.paragraph}>Location: {carwash.location}</Text>
-      <Text style={styles.paragraph}>Phone: {carwash.phoneNumber}</Text>
-      <Text style={styles.paragraph}>Capacity: {carwash.capacity}</Text>
-      <Text style={styles.paragraph}>Stars: {carwash.stars}</Text>
-      <TouchableOpacity style={styles.button} onPress={handleOrder}>
-        {loading ? <ActivityIndicator size="small" color="#FFF" /> : <Text style={styles.buttonText}>Захиалах</Text>}
-      </TouchableOpacity>
-      */}
-    </View>
+
+        {/* <View style={styles.detailContainer}> */}
+          <Animated.View entering={FadeIn.delay(600)} style={styles.textContainer}>
+            <View style={styles.flex}>
+              <Text style={styles.textName}>{carwash.name}</Text>
+              <View style={styles.flexz}>
+                <FontAwesome name='star' style={{ color: '#FFCC33', fontSize: 16, paddingHorizontal: 4 }} />
+                <Text style={styles.paragraph}>{carwash.stars} (12 үнэлгээ)</Text>
+              </View>
+            </View>
+            <Text style={styles.textLocation}>{carwash.location}</Text>
+          </Animated.View>
+
+      
+        {/* </View> */}
+      </View>
+      <View  style={styles.priceInfo}>
+
+        <PricingInfo carWashTypes={carwash.carWashTypes} />
+      </View>
+      <View style={styles.detailContainer}>
+
+          <Animated.View entering={FadeInDown.delay(800)}>
+            <Text style={styles.textDescription}>Бидний тухай</Text>
+            <Text style={styles.text}>{carwash.description}</Text>
+          </Animated.View>
+      </View>
+      <View style={styles.detailContainer}>
+
+          <Animated.View entering={FadeInDown.delay(800)}>
+           
+            <View style={styles.flex}>
+            <Text style={styles.textDescription}>Хаяг</Text>
+            <Text style={styles.locationLink}>Газрын зураг дээр харах</Text>
+            </View>
+          </Animated.View>
+      </View>
+      
+      <View style={styles.btnContainer}>
+        <Button carwash={carwash} navigation={navigation} />
+      </View>
+    </ScrollView>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    // flex: 1,
+    flex: 1,
     backgroundColor: '#FFF',
-    height:'100%',
-    // alignItems: 'center',
-    // justifyContent:'center'
-    justifyContent:'space-between'
   },
-  btnContainer:{
+  contentContainer: {
+    justifyContent: 'space-between',
+  },
+  btnContainer: {
     alignItems: 'center',
-    justifyContent:'center',
-    justifyContent:'space-between'
+    justifyContent: 'center',
   },
-  carwashImg: {
-    height: 400,
-    borderTopLeftRadius: 10,
-    borderTopRightRadius: 10,
-   
+  carwashImgContainer: {
+    height: 280,
+    overflow: 'hidden',
   },
-  imgContainer:{
+  imgContainer: {
     alignItems: 'center',
   },
-  textContainer:{
-    position:'absolute',
-    bottom:10,
-    backgroundColor:'rgba(0,0,0,0.6)',
-    left:10,
-    right:10,
-    padding:16,
-    borderRadius:20
+  detailContainer: {
+    // marginLeft: 20,
+    marginHorizontal:20,
+    marginBottom:20
   },
-  textName:{
-    color:'#fff',
-    fontSize:32,
-    fontWeight:'bold'
+  textContainer: {
+    marginHorizontal:20,
+    marginTop:20,
+    // paddingTop: 16,
+    borderRadius: 20,
   },
-  textLocation:{
-    color:'#fff',
-    fontSize:16,
+  priceInfo:{
+    marginTop:20,
+    marginHorizontal:20
   },
-  textDescription:{
-    color:'#323232',
-    fontSize:28,
-    fontWeight:'bold',
-    margin:10
+  textName: {
+    color: 'black',
+    fontSize: 20,
+    fontWeight: 'bold',
   },
-  text:{
-    color:'#323232',
-    fontSize:16,
-    marginHorizontal:10,
-    textAlign:'justify'
+  textLocation: {
+    fontSize: 14,
   },
- 
+  textDescription: {
+    color: '#323232',
+    fontSize: 20,
+    fontWeight: 'bold',
+  },
+  text: {
+    color: '#323232',
+    fontSize: 16,
+    textAlign: 'justify',
+  },
+  sliderBoxImage: {
+    width: '100%',
+  },
   button: {
     width: '100%',
     height: 45,
@@ -137,7 +160,20 @@ const styles = StyleSheet.create({
     fontSize: 18,
     fontWeight: 'bold',
   },
-  // Add other styles if needed
+  flex: {
+    width: '100%',
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  flexz: {
+    flexDirection: 'row',
+    padding: 5,
+    alignItems: 'center',
+  },
+  locationLink:{
+    color:"#FE4B01"
+  }
 });
 
 export default CarwashDetailScreen;

@@ -19,12 +19,12 @@ const CarWashItem = ({ carwash, navigation }) => {
           <Text style={styles.name}>{carwash.name}</Text>
           <View style={styles.flexz}>
 
-          <FontAwesome name='star' style={{ color: '#FCBB45', fontSize: 20 }} />
-          <Text style={styles.paragraph}>{carwash.stars}</Text>
+          <FontAwesome name='star' style={{ color: '#FFCC33', fontSize: 16,paddingHorizontal:4 }}/>
+          <Text style={styles.paragraph}>{carwash.stars} (12 үнэлгээ)</Text>
           </View>
         </View>
         <Text style={styles.paragraph}>{carwash.location} </Text>
-        <Text style={styles.price}> ₮20,000 - ₮60,000</Text>
+        <Text style={styles.price}>₮20,000 - ₮60,000</Text>
       </View>
     </TouchableOpacity>
   );
@@ -41,15 +41,18 @@ const styles = StyleSheet.create({
     marginBottom: 80,
     // marginRight: 20,
     marginLeft: 20,
+    paddingHorizontal:15,
     overflow: 'hidden', // Ensure children respect border radius
   },
   carwashImg: {
-    
-    width: 255,
-    height: 200,
+    resizeMode: 'cover',
+    width: "100%",
+    height: 180,
     borderRadius: 10,
     alignSelf: 'center', // Center the image
-    margin:15,
+    marginTop:15,
+    marginBottom:5,
+    paddingHorizontal:30
 
   },
   flex: {
@@ -64,21 +67,21 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   paragraph: {
-    paddingHorizontal: 10,
+    // paddingHorizontal: 10,
     // fontWeight: 'bold',
-    fontSize:16
+    fontSize:14
     
   },
   name:{
     // paddingTop: 5,
-    paddingHorizontal: 10,
+    
     fontWeight: 'bold',
     fontSize:17,
     color:"#000"
   },
   price:{
-    paddingTop:15,
-    paddingHorizontal: 10,
+    paddingTop:10,
+    // paddingHorizontal: 10,
     fontWeight: 'bold',
     fontSize:17,
     color:"#000"

@@ -36,7 +36,13 @@ const AppNavigator = () => {
   }
 
   return (
-    <Stack.Navigator>
+    <Stack.Navigator
+      // screenOptions={{
+      //   headerStyle:{
+      //     backgroundColor:"yellow"
+      //   }
+      // }}
+    >  
       {isShowSplash ? (
         <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
        

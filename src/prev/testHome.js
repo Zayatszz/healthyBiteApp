@@ -1,14 +1,14 @@
 import React, { useState, useEffect } from 'react';
-import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, ActivityIndicator, Button,StatusBar } from 'react-native';
+import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, StatusBar } from 'react-native';
 import Feather from 'react-native-vector-icons/Feather';
 import CarWashItem from '../components/CarWashItem';
 import SkeletonCarWashItem from '../components/SkeletonCarWashItem';
-import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes as filterCarwashesApi } from '../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
+import { filterCarwashes as filterCarwashesApi } from '../api/user';
 import { Dropdown } from 'react-native-element-dropdown';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 
 const logoImg = require('../../assets/logoo.png');
-const bannerImg = require('../../assets/carwashBanner.png'); // Update the path to your banner image
 
 const HomeScreen = ({ navigation }) => {
   const [carwashList, setCarwashList] = useState([]);
@@ -121,8 +121,10 @@ const HomeScreen = ({ navigation }) => {
       district: selectedDistrict,
     };
 
+    // setLoading(true);
     try {
       let filteredList = await filterCarwashesApi(filters);
+      console.log(filteredList.length);
       navigation.navigate('AllCarwash', { filteredList });
 
       // Reset selections
@@ -141,9 +143,17 @@ const HomeScreen = ({ navigation }) => {
     navigation.navigate('AllCarwash', { filteredList: carwashList });
   };
 
+  const width = useSharedValue(100);
+
+  const handlePress = () => {
+    width.value = withSpring(width.value + 50);
+  };
+
+  const colorMode = 'light';
+
   return (
     <ScrollView style={styles.container}>
-      <StatusBar backgroundColor="#033669" barStyle="light-content" />
+      <StatusBar backgroundColor="#0A1946" barStyle="light-content" />
       <View style={styles.flexHeader}>
         <Image style={styles.logoImg} source={logoImg} />
         <Text>
@@ -151,10 +161,10 @@ const HomeScreen = ({ navigation }) => {
         </Text>
       </View>
       <View style={styles.banner}>
-       <Image style={styles.bannerImg} source={bannerImg} />
-       </View>
+      <Image style={styles.bannerImg} source="" />
+        {/* <Text style={styles.sectionTitle}>Бага хай. Илүү амьдар.</Text> */}
+      </View>
       <View style={styles.searchSection}>
-      <Text style={styles.parText}>Угаалгын газар хайх</Text>
         <Dropdown
           style={styles.dropdown}
           data={carTypes}
@@ -201,7 +211,8 @@ const HomeScreen = ({ navigation }) => {
           disabled={!selectedProvince}
         />
         <TouchableOpacity style={[styles.button, styles.flexz]} onPress={handleSearch}>
-          <Text style={styles.buttonText}>Хайх</Text>
+          <Feather name='search' style={{ color: '#FFF', fontSize: 25 }} />
+          <Text style={styles.buttonText}>Угаалгын газар хайх</Text>
         </TouchableOpacity>
       </View>
       <View style={styles.flex}>
@@ -210,6 +221,17 @@ const HomeScreen = ({ navigation }) => {
           <Text style={styles.addText}>Бүгдийг харах</Text>
         </TouchableOpacity>
       </View>
+      {/* <View style={{ flex: 1, alignItems: 'center' }}>
+        <Animated.View
+          style={{
+            width,
+            height: 100,
+            backgroundColor: 'violet',
+          }}
+        />
+        <Button onPress={handlePress} title="Click me" />
+      </View> */}
+
       <View style={styles.CarWashItem}>
         {loading ? (
           <FlatList
@@ -243,6 +265,16 @@ const styles = StyleSheet.create({
     paddingBottom: 60,
     paddingHorizontal: 20,
   },
+  banner: {
+    paddingTop: 20,
+    paddingBottom: 40,
+    paddingHorizontal: 20,
+  },
+  bannerImg:{
+    height:160,
+    backgroundColor:"gray",
+    borderRadius:5
+  },
   sectionTitle: {
     fontSize: 28,
     fontWeight: 'bold',
@@ -250,15 +282,14 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   parText: {
-    marginTop:20,
     fontSize: 18,
+    textAlign: 'center',
     color: '#000',
   },
   flexHeader: {
-    padding: 5,
-    paddingHorizontal:10,
-    paddingRight:20,
-    backgroundColor: '#033669',
+    // paddingTop: StatusBar.currentHeight, 
+    padding: 10,
+    backgroundColor: '#0A1946', // Change background color to dark blue
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -278,35 +309,36 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   searchSection: {
-    marginTop:10,
     paddingHorizontal: 20,
-    // marginBottom: 10,
+    marginBottom: 10,
   },
   dropdown: {
     height: 50,
+    borderColor: 'gray',
+    borderWidth: 0.5,
     borderRadius: 8,
     paddingHorizontal: 8,
-    marginTop: 15,
-    backgroundColor: "#F4F6F9"
+    marginBottom: 15,
   },
   CarWashItem: {
     paddingTop: 15,
-    paddingBottom: 40,
+    paddingBottom: 30,
+    // paddingHorizontal: 20,
   },
   logoImg: {
-    width: 50,
-    height: 50,
+    width: 40,
+    height: 45,
     borderRadius: 10,
   },
   bellIcon: {
-    color: '#fff',
+    color: 'white', // Change the bell icon color to white
     fontSize: 25,
   },
   button: {
-    marginTop: 15,
     width: '100%',
     height: 50,
-    backgroundColor: '#FFCC33',
+    // backgroundColor: '#268AE6',
+    backgroundColor: '#1c6cce',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
@@ -314,9 +346,7 @@ const styles = StyleSheet.create({
   },
   buttonText: {
     paddingLeft: 10,
-    // color: '#969597',
-    color: '#FFF',
-    // color: '#033669',
+    color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
@@ -324,17 +354,7 @@ const styles = StyleSheet.create({
     color: '#8B8E95',
     fontSize: 16,
   },
-  banner: {
-    paddingTop: 20,
-    // paddingBottom: 10,
-    marginHorizontal: 20,
-  },
-  bannerImg: {
-    width: '100%',
-    height: 160,
-    resizeMode: 'cover',
-    borderRadius: 5
-  },
 });
 
 export default HomeScreen;
+
