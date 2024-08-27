@@ -52,9 +52,9 @@ const AppNavigator = () => {
           <>
           <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
           <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="AllCarwash" component={AllCarwashScreen} />
-          <Stack.Screen name="Order" component={OrderScreen} />
-          <Stack.Screen name="Payment" component={PaymentScreen} />
+          <Stack.Screen name="AllCarwash" component={AllCarwashScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Order" component={OrderScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="MyOrders" component={MyOrdersScreen} />
         </>
           

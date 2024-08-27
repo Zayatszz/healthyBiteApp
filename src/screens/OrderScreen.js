@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useCallback, useContext } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Alert, ActivityIndicator, Pressable } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { Dropdown } from 'react-native-element-dropdown';
 import DateTimePicker from '@react-native-community/datetimepicker';
@@ -10,6 +10,9 @@ import { createInvoive as createInvoiveApi, orderCarwash as orderCarwashApi } fr
 import dayjs from 'dayjs';
 import utc from 'dayjs-plugin-utc';
 import Cookies from "js-cookie";
+import Header from '../components/Header';
+import Button from '../components/Button';
+import SubmitButton from '../components/SubmitButton';
 
 dayjs.extend(utc);
 const logoImg = require('../../assets/emu-logo.png');
@@ -223,91 +226,27 @@ const OrderScreen = ({ route, navigation }) => {
     }
   };
 
-  // const handleInvoice = async () => {
-  //   // Validate selectedDay and selectedTime
-  //   if (!selectedDay || !selectedTime) {
-  //     Alert.alert('Error', 'Please select a valid date and time.');
-  //     return;
-  //   }
   
-  //   const startTime = selectedTime.split(" - ")[0];
-  //   const endTime = selectedTime.split(" - ")[1];
-  //   const selectedDayString = dayjs(selectedDay).format('YYYY-MM-DD'); // Ensure correct format
-  
-  //   // Parse time strings correctly in local time
-  //   const scheduledTime = dayjs(`${selectedDayString}T${startTime}`, 'YYYY-MM-DDTHH:mm');
-  //   const endDateTime = dayjs(`${selectedDayString}T${endTime}`, 'YYYY-MM-DDTHH:mm');
-  
-  //   // Check if the dates are valid
-  //   if (!scheduledTime.isValid() || !endDateTime.isValid()) {
-  //     Alert.alert('Error', 'Invalid date or time selected.');
-  //     return;
-  //   }
-  //   console.log(startTime, 'my selected start time.');
-  //   console.log(endTime, 'my selected end time.');
-  //   console.log(selectedDayString, 'selectedDayString.');
-  //   console.log(scheduledTime.format(), 'scheduledTime formatted.');
-  //   console.log(endDateTime.format(), 'endDateTime formatted.');
-  
-  //   // Format dates without timezone offset
-  //   const formatDateTime = (dateTime) => dateTime.format('YYYY-MM-DDTHH:mm:ss');
-  //   console.log(formatDateTime(scheduledTime), 'scheduledTime formatted. punk');
-  //   const orderDetailsData = {
-  //     scheduledTime: formatDateTime(scheduledTime),
-  //     carSize: selectedCarType,
-  //     washType: selectedWashType,
-  //     date: formatDateTime(scheduledTime),
-  //     endTime: formatDateTime(endDateTime),
-  //     price,
-  //     userId: userInfo.id,
-  //     timetable: scheduleId,
-  //     CarWashService: carwash.id,
-  //   };
-  
-  //   console.log("Order Details:", orderDetailsData);
-  //   setLoading(true); // Start loading indicator
-  //   try {
-  //     const bookingResponse = await orderCarwashApi(orderDetailsData);
-  //     console.log("Order Details:", bookingResponse);
-  //     const bookingId = bookingResponse.id;
-  //     setBookingId(bookingId);
-  
-  //     const tokenResponse = await getTokenApi();
-  //     console.log("Order Details:", tokenResponse);
-  //     const token = tokenResponse.access_token;
-  //     Cookies.set("token", token, { expires: 2, path: "/" });
-  
-  //     const invoiceDetails = {
-  //       service: carwash.emuCode,
-  //       token,
-  //       bookingId,
-  //       amount: price,
-  //       description: `Payment for ${selectedWashType} (${selectedCarType}) on ${selectedDayString} at ${startTime}`,
-  //       userId: userInfo.id,
-  //     };
-  
-  //     const invoiceResponse = await createInvoiveApi(invoiceDetails);
-  //     setOrderDetails(orderDetailsData);
-  //     setInvoiceResponse(invoiceResponse.data);
-  //     setQRCode(invoiceResponse.qrCode.qr_image);
-  
-  //     navigation.navigate('Payment', { invoiceResponse: invoiceResponse, orderDetails: orderDetailsData, bookingId: bookingId });
-  //   } catch (error) {
-  //     console.error(error);
-  //     Alert.alert('Error', 'Failed to create booking');
-  //   } finally {
-  //     setLoading(false); // Stop loading indicator
-  //   }
-  // };
 
   return (
     <View style={styles.container}>
-      <View style={styles.section}>
-        <Text style={styles.paragraph}>Угаалгын газрын нэр: {carwash.name}</Text>
-        <Text style={styles.paragraph}>Location: {carwash.location}</Text>
+      <View style={[styles.flexHeader]}>
+        <Pressable onPress={() => navigation.goBack()}>
+            <FontAwesome name='chevron-left' style={styles.icon} />
+        </Pressable>
+        <Text style={styles.headerTitle}>Захиалга хийх</Text>
       </View>
-      <View style={styles.section}>
-        <Text style={styles.paragraph}>Машины төрөл сонгох</Text>
+      <View style={styles.detailContainer}>
+        <View style={styles.flexz}>
+          <Text style={styles.textName}>{carwash.name} </Text>
+          <Text style={styles.textLocation}>{carwash.location}</Text>
+
+        </View>
+   
+      </View>
+      <View style={styles.detailContainer}>
+
+        <Text style={styles.textDescription}>Машины төрөл</Text>
         <Dropdown
           style={styles.dropdown}
           data={carTypes}
@@ -335,7 +274,10 @@ const OrderScreen = ({ route, navigation }) => {
             }
           }}
         />
-        <Text style={styles.paragraph}>Угаалгах төрлөө сонгох</Text>
+      </View>
+      <View style={styles.detailContainer}>
+
+        <Text style={styles.textDescription}>Угаалгах төрөл</Text>
         <Dropdown
           style={styles.dropdown}
           data={washTypes}
@@ -354,18 +296,28 @@ const OrderScreen = ({ route, navigation }) => {
           }}
         />
       </View>
+      <View style={styles.detailContainer}>
 
-      <View style={styles.section}>
-        <Text style={styles.paragraph}>Угаалгах огноо</Text>
-        <TouchableOpacity onPress={showDatepicker}>
-          <TextInput
-            label="Date"
+        <Text style={styles.textDescription}>Угаалгах огноо</Text>
+        <TouchableOpacity  onPress={showDatepicker}>
+          {/* <TextInput
+          style={[styles.dropdown, { borderWidth: 0 }]} 
+            // label="Date"
             value={selectedDay.toISOString().split('T')[0]}
             right={<FontAwesome name='calendar-o' />}
             mode="outlined"
             editable={false}
             pointerEvents="none"
+          /> */}
+          <TextInput
+            style={styles.dropdown}
+            // label="Date"
+            value={selectedDay.toISOString().split('T')[0]}
+            editable={false}
+            pointerEvents="none"
+            underlineColorAndroid="#fff" 
           />
+
         </TouchableOpacity>
         {show && (
           <DateTimePicker
@@ -377,7 +329,11 @@ const OrderScreen = ({ route, navigation }) => {
             onChange={onChange}
           />
         )}
-        <Text style={styles.paragraph}>Цагаа сонгоно уу.</Text>
+      
+      </View>
+      <View style={styles.detailContainer}>
+
+        <Text style={styles.textDescription}>Угаалгах цаг</Text>
         <Dropdown
           style={styles.dropdown}
           data={timeSlots.filter(slot => !slot.isDisabled)}
@@ -389,16 +345,27 @@ const OrderScreen = ({ route, navigation }) => {
             setSelectedTime(item.value);
           }}
         />
-        <Text style={styles.paragraph}>Үнийн мэдээлэл: {price}</Text>
-        <Text style={styles.paragraph}>Duration: {duration} mins</Text>
+      
       </View>
-      <TouchableOpacity style={styles.button} onPress={handleInvoice} disabled={loading}>
+
+      <View style={[styles.detailContainer, styles.priceContainer]}>
+
+        <Text style={styles.priceInfoText}>Үнийн мэдээлэл </Text>
+        <Text style={styles.priceInfo}>{price} ₮</Text>
+      </View>
+   
+      {/* <TouchableOpacity style={styles.button} onPress={handleInvoice} disabled={loading}>
         {loading ? (
           <ActivityIndicator size="small" color="#FFF" />
         ) : (
           <Text style={styles.buttonText}>Захиалах</Text>
+          
         )}
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+      <View style={styles.buttonz}>
+        <SubmitButton  onPress={handleInvoice} text={"Захиалах"} />
+      </View>
+   
     </View>
   );
 };
@@ -416,11 +383,13 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   dropdown: {
+    backgroundColor:"#F4F6F9",
     height: 50,
-    borderColor: 'gray',
-    borderWidth: 0.5,
+    // borderColor: 'gray',
+    
     borderRadius: 8,
     paddingHorizontal: 8,
+    
   },
   searchBar: {
     padding: 10,
@@ -433,37 +402,37 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: '#066BCF',
+    backgroundColor: '#FFF',
   },
   section1: {
     paddingTop: 60,
     paddingBottom: 60,
     paddingHorizontal: 20,
   },
-  sectionTitle: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#FFF',
-  },
+  
+
   paragraph: {
+    color: '#323232',
     fontSize: 16,
     fontWeight: 'bold',
+  },
+  detailContainer: {
+    // marginLeft: 20,
+    marginHorizontal:20,
+    marginBottom:20
+  },
+  textDescription: {
+    color: '#323232',
+    fontSize: 18,
+    fontWeight: '500',
+    paddingBottom:10
   },
   parText: {
     fontSize: 20,
     textAlign: 'center',
     color: '#FFF',
   },
-  flexHeader: {
-    padding: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#066BCF',
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
+
   flex: {
     padding: 10,
     paddingHorizontal: 20,
@@ -474,41 +443,44 @@ const styles = StyleSheet.create({
   },
   flexz: {
     flexDirection: 'row',
-    padding: 5,
+    
+    // paddingVertical: 5,
     alignItems: 'center',
+    textAlign:'center'
   },
-  allBtn: {
-    width: 120,
-    height: 40,
-    backgroundColor: '#58B3F0',
-    borderRadius: 60,
-    justifyContent: 'center',
+  header:{
+    
+    marginVertical:30,
+    // marginBottom:30,
+    marginHorizontal:30,
+    backgroundColor:'#033669'
+    
+  },
+  flexHeader: {
+    padding: 15,
+    // paddingBottom:15,
+    paddingHorizontal:30,
+    paddingRight:20,
+    backgroundColor: '#033669',
+    width: '100%',
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
     alignItems: 'center',
-    borderColor: '#C0C0C0',
+    marginBottom:20
+  
   },
-  logoImg: {
-    width: 70,
-    height: 60,
-    borderRadius: 10,
+  headerTitle: {
+    fontSize: 20,
+    fontWeight: '500',
+    paddingLeft:20,
+    color: '#fff',
   },
-  CarWashItem: {
-    paddingHorizontal: 20,
+  icon: {
+    fontSize: 20,
+    borderRadius: 50,
+    color: '#fff',
   },
-  addWrapper: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#58B3F0',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#18A0FB',
-    borderWidth: 1,
-  },
-  addText: {
-    fontWeight: 'bold',
-    color: '#000',
-    fontSize: 18,
-  },
+ 
   button: {
     width: '100%',
     height: 45,
@@ -516,13 +488,52 @@ const styles = StyleSheet.create({
     borderRadius: 30,
     alignItems: 'center',
     justifyContent: 'center',
-    marginVertical: 10,
+    marginVertical: 20,
   },
   buttonText: {
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
   },
+
+priceContainer:{
+  marginTop:10,
+  marginBottom:25,
+  backgroundColor:"#F4F6F9",
+  borderRadius:10
+},
+priceInfoText:{
+  backgroundColor:"#CFCFCF",
+
+  borderTopLeftRadius:10,
+  borderTopRightRadius:10,
+  textAlign:'center',
+  padding:15,
+  fontSize:18,
+  color:"#000",
+  fontWeight:'bold'
+},
+priceInfo:{
+
+  padding:15,
+  textAlign:'center',
+  fontSize:18,
+  color:"#000",
+  fontWeight:'bold'
+},
+textLocation: {
+  fontSize: 14,
+  paddingLeft:80
+
+},
+textName:{
+  fontSize: 19,
+  color:"#000",
+  fontWeight:'500'
+},
+buttonz:{
+  marginHorizontal:20
+}
 });
 
 export default OrderScreen;

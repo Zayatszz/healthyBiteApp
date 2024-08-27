@@ -23,11 +23,11 @@ const styles = StyleSheet.create({
         zIndex: 1
     },
     icon: {
-        fontSize: 23,
+        fontSize: 20,
         backgroundColor: '#fff',
         paddingHorizontal: 13,
         padding: 10,
-        borderRadius: 15,
+        borderRadius: 50,
         color: '#000',
         marginLeft: 10
     }

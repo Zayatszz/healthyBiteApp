@@ -5,8 +5,11 @@ import Header from '../components/Header';
 import Button from '../components/Button';
 import { SliderBox } from 'react-native-image-slider-box';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import EvilIcons from 'react-native-vector-icons/EvilIcons';
 import PricingInfo from '../components/PricingInfo';
 import { ScrollView } from 'react-native';
+import Maps from '../components/Maps';
+
 
 const images = [
   require('../../assets/carwashApp2.jpg'),
@@ -81,6 +84,13 @@ const CarwashDetailScreen = ({ route, navigation }) => {
             <Text style={styles.textDescription}>Хаяг</Text>
             <Text style={styles.locationLink}>Газрын зураг дээр харах</Text>
             </View>
+            <View style={styles.bottom} />
+
+            <View style={styles.flexz}>
+              <EvilIcons name='location' style={styles.locationIcon} />
+              <Text style={styles.textLocation}>{carwash.location}</Text>
+            </View>
+            <Maps/>
           </Animated.View>
       </View>
       
@@ -168,10 +178,24 @@ const styles = StyleSheet.create({
   },
   flexz: {
     flexDirection: 'row',
-    padding: 5,
-    alignItems: 'center',
+    paddingBottom:10,
+    // paddingVertical:10
+    // padding: 5,
+    // alignItems: 'center',
   },
   locationLink:{
+    color:"#FE4B01"
+  },
+  bottom: {
+    flex: 0.3,
+    borderColor:"#E0E0E0",
+    borderWidth: 0.5,
+    marginVertical:10,
+    // borderBottomLeftRadius: 20,
+    // borderBottomRightRadius: 20,
+  },
+  locationIcon:{
+    fontSize:20,
     color:"#FE4B01"
   }
 });

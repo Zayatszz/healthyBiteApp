@@ -250,7 +250,7 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   parText: {
-    marginTop:20,
+    // marginTop:20,
     fontSize: 18,
     color: '#000',
   },
@@ -276,6 +276,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     padding: 5,
     alignItems: 'center',
+    
   },
   searchSection: {
     marginTop:10,
