@@ -15,16 +15,18 @@ const CarWashItem = ({ carwash, navigation }) => {
       <View style={styles.item}>
         {/* <FastImage style={styles.carwashImg} source={images[carwash.imageUrl]} /> */}
         <Animated.Image  sharedTransitionTag={carwash.id.toString()} style={styles.carwashImg} source={images[carwash.imageUrl]} />
-        <View style={styles.flex}>
-          <Text style={styles.name}>{carwash.name}</Text>
-          <View style={styles.flexz}>
+        <View>
+          <View style={styles.flex}>
+            <Text style={styles.name}>{carwash.name}</Text>
+            <View style={styles.flexz}>
 
-          <FontAwesome name='star' style={{ color: '#FFCC33', fontSize: 16,paddingHorizontal:4 }}/>
-          <Text style={styles.paragraph}>{carwash.stars} (12 үнэлгээ)</Text>
+            <FontAwesome name='star' style={{ color: '#FFCC33', fontSize: 16,paddingHorizontal:4 }}/>
+            <Text style={styles.paragraph}>{carwash.stars} (12 үнэлгээ)</Text>
+            </View>
           </View>
+          <Text style={styles.location}>{carwash.location} </Text>
+          <Text style={styles.price}>20,000₮ - 60,000₮</Text>
         </View>
-        <Text style={styles.paragraph}>{carwash.location} </Text>
-        <Text style={styles.price}>₮20,000 - ₮60,000</Text>
       </View>
     </TouchableOpacity>
   );
@@ -33,26 +35,34 @@ const CarWashItem = ({ carwash, navigation }) => {
 const styles = StyleSheet.create({
   item: {
     backgroundColor: "#FFF",
-    paddingBottom: 15,
+    padding: 12,
     width: 280,
-    borderRadius: 10,
-    borderColor: "#EBEBEB",
-    borderWidth: 1,
     marginBottom: 80,
     // marginRight: 20,
     marginLeft: 20,
-    paddingHorizontal:15,
     overflow: 'hidden', // Ensure children respect border radius
+    shadowColor: 'rgba(0, 0, 0, 0.07)',
+    shadowOffset: {
+      width: 0,
+      height: 11
+    },
+    shadowRadius: 194,
+    elevation: 194,
+    shadowOpacity: 1,
+    borderRadius: 12,
+    borderStyle: "solid",
+    borderColor: 'rgba(0, 0, 0, 0.08)',
+    borderWidth: 1,
+    flex: 1,
+    gap: 12,
+   
   },
   carwashImg: {
     resizeMode: 'cover',
     width: "100%",
-    height: 180,
+    height: 165,
     borderRadius: 10,
     alignSelf: 'center', // Center the image
-    marginTop:15,
-    marginBottom:5,
-    paddingHorizontal:30
 
   },
   flex: {
@@ -69,22 +79,33 @@ const styles = StyleSheet.create({
   paragraph: {
     // paddingHorizontal: 10,
     // fontWeight: 'bold',
-    fontSize:14
+    fontSize:12,
+    lineHeight:16,
+    color:'#8b8e95'
     
+  },
+  location:{
+    paddingTop:8,
+    fontSize:12,
+    lineHeight:14,
+    color:'#8b8e95'
   },
   name:{
     // paddingTop: 5,
     
-    fontWeight: 'bold',
-    fontSize:17,
-    color:"#000"
+    fontWeight: '500',
+    fontSize:16,
+    lineHeight:19,
+    color:'#141218',
+
   },
   price:{
-    paddingTop:10,
+    paddingTop:16,
     // paddingHorizontal: 10,
-    fontWeight: 'bold',
-    fontSize:17,
-    color:"#000"
+    fontWeight: '600',
+    fontSize:16,
+    lineHeight:19,
+    color:"#141218"
   }
 });
 

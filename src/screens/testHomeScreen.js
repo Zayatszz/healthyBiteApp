@@ -162,8 +162,6 @@ const HomeScreen = ({ navigation }) => {
           valueField="value"
           placeholder="Машины хэмжээ"
           value={selectedCarType}
-          iconStyle={styles.iconStyle}
-          iconColor='rgba(0, 0, 0, 0.72)'
           onChange={item => {
             setSelectedCarType(item.value);
           }}
@@ -175,12 +173,9 @@ const HomeScreen = ({ navigation }) => {
           valueField="value"
           placeholder="Угаалгах төрөл"
           value={selectedWashType}
-          iconStyle={styles.iconStyle}
-          iconColor='rgba(0, 0, 0, 0.72)'
           onChange={item => {
             setSelectedWashType(item.value);
           }}
-         
         />
         <Dropdown
           style={styles.dropdown}
@@ -189,8 +184,6 @@ const HomeScreen = ({ navigation }) => {
           valueField="value"
           placeholder="Аймаг, хот"
           value={selectedProvince}
-          iconStyle={styles.iconStyle}
-          iconColor='rgba(0, 0, 0, 0.72)'
           onChange={item => {
             setSelectedProvince(item.value);
           }}
@@ -202,8 +195,6 @@ const HomeScreen = ({ navigation }) => {
           valueField="value"
           placeholder="Сум, дүүрэг"
           value={selectedDistrict}
-          iconStyle={styles.iconStyle}
-          iconColor='rgba(0, 0, 0, 0.72)'
           onChange={item => {
             setSelectedDistrict(item.value);
           }}
@@ -246,7 +237,11 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    
+  },
+  section1: {
+    paddingTop: 60,
+    paddingBottom: 60,
+    paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 28,
@@ -255,23 +250,14 @@ const styles = StyleSheet.create({
     color: '#000',
   },
   parText: {
-    fontSize: 16,
-    lineHeight:19,
-    fontWeight:'500',
-    color: '#141218',
-    paddingBottom:16
-  },
-
-  addText: {
-    color: '#8B8E95',
-    fontSize: 13,
-    lineHeight:16,
-    paddingBottom:16
+    // marginTop:20,
+    fontSize: 18,
+    color: '#000',
   },
   flexHeader: {
-   paddingVertical:8,
-    paddingHorizontal:20,
-    paddingRight:12,
+    padding: 5,
+    paddingHorizontal:10,
+    paddingRight:20,
     backgroundColor: '#033669',
     width: '100%',
     flexDirection: 'row',
@@ -279,7 +265,7 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   flex: {
-    paddingTop: 16,
+    padding: 10,
     paddingHorizontal: 20,
     width: '100%',
     flexDirection: 'row',
@@ -293,28 +279,20 @@ const styles = StyleSheet.create({
     
   },
   searchSection: {
-    marginVertical:16,
+    marginTop:10,
     paddingHorizontal: 20,
     // marginBottom: 10,
   },
   dropdown: {
-    height: 48,
-    width:'100%',
+    height: 50,
     borderRadius: 8,
-    // paddingHorizontal: 8,
-    paddingLeft:16,
-    paddingRight:8,
-    paddingVertical:8,
-    marginBottom: 16,
-    backgroundColor: "#F4F6F9",
-  },
-  iconStyle:{
-    height:24,
-    overflow:'hidden',
+    paddingHorizontal: 8,
+    marginTop: 15,
+    backgroundColor: "#F4F6F9"
   },
   CarWashItem: {
-    marginTop: 8,
-    marginBottom: 32,
+    paddingTop: 15,
+    paddingBottom: 40,
   },
   logoImg: {
     width: 50,
@@ -324,39 +302,39 @@ const styles = StyleSheet.create({
   bellIcon: {
     color: '#fff',
     fontSize: 25,
-   
   },
   button: {
-    marginTop: 4,
+    marginTop: 15,
     width: '100%',
-    height: 48,
+    height: 50,
     backgroundColor: '#FFCC33',
-    borderRadius: 8,
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingVertical: 8,
-    paddingHorizontal:16,
+    marginVertical: 10,
   },
   buttonText: {
-    
+    paddingLeft: 10,
     // color: '#969597',
     color: '#FFF',
     // color: '#033669',
-    fontSize: 20,
-    lineHeight:24,
-    opacity:0.7,
-    fontWeight: '700',
+    fontSize: 18,
+    fontWeight: 'bold',
   },
-
+  addText: {
+    color: '#8B8E95',
+    fontSize: 16,
+  },
   banner: {
-    paddingVertical: 16,
+    paddingTop: 20,
+    // paddingBottom: 10,
     marginHorizontal: 20,
   },
   bannerImg: {
     width: '100%',
-    height: 150,
+    height: 160,
     resizeMode: 'cover',
-    borderRadius: 8
+    borderRadius: 5
   },
 });
 

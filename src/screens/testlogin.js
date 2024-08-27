@@ -1,3 +1,7 @@
+
+
+
+
 import React, { useState, useContext } from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, ActivityIndicator } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -34,7 +38,7 @@ const LoginScreen = ({ navigation }) => {
         <Text style={styles.sectionTitle}>Тавтай морилно уу</Text>
         <Text style={styles.paragraph}>Та бүртгэлтэй утасны дугаараа оруулан нэвтэрнэ үү.</Text>
       </View>
-      <View >
+      <View style={styles.labelContainer}>
         <Text style={styles.labelText}>Утасны дугаар</Text>
       </View>
       <View style={styles.inputContainer}>
@@ -48,7 +52,7 @@ const LoginScreen = ({ navigation }) => {
           placeholderTextColor="#A9A9A9"
         />
       </View>
-      <View >
+      <View style={styles.labelContainer}>
         <Text style={styles.labelText}>Нууц үг</Text>
       </View>
       <View style={styles.inputContainer}>
@@ -84,110 +88,95 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF',
-    paddingHorizontal: 20,
-    paddingTop:108
+    padding: 20,
   },
   section1: {
     alignItems: 'center',
-    paddingBottom: 40,
+    paddingTop: 30,
+    paddingBottom: 20,
+    paddingHorizontal: 20,
   },
   sectionTitle: {
     fontSize: 24,
-    fontWeight: '600',
-    lineHeight:29,
+    fontWeight: 'bold',
     textAlign: 'center',
     color: '#000',
-    paddingBottom: 16,
+    paddingBottom: 10,
+    paddingTop: 10,
   },
   paragraph: {
     fontSize: 14,
-    width:335,
     textAlign: 'center',
-    color: 'rgba(0, 0, 0, 0.72)',
-    // paddingHorizontal: 20,
+    color: '#474747',
+    paddingBottom: 20,
+    paddingHorizontal: 20,
   },
   logoImg: {
-    // marginTop: 30,
-    width: 105,
-    height: 62,
+    marginTop: 30,
+    width: 100,
+    height: 110,
+  
     borderRadius: 10,
     textAlign: 'center',
-    marginBottom:34,
   },
   labelContainer: {
     marginBottom: 10,
   },
   labelText: {
-    fontSize: 12,
-    fontFamily: "Inter-Regular",
-    color: "#080b11",
-    marginBottom:6
-    // textAlign: "left"
+    fontSize: 13,
+    color: '#000',
   },
   inputContainer: {
     flexDirection: 'row',
     alignItems: 'center',
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 8,
-    marginBottom: 16,
+    borderRadius: 10,
+    paddingHorizontal: 15,
+    marginBottom: 10,
     width: '100%',
     height: 50,
   },
   forgetText: {
-    // paddingTop: 10,
-    paddingBottom: 24,
+    paddingTop: 10,
+    paddingBottom: 20,
     textAlign: 'right',
-    color: '#008bdc',
+    color: '#008BDC',
     fontSize: 13,
   },
   input: {
-    paddingHorizontal:16,
-    paddingVertical:12,
-    fontSize:14,
-    
     flex: 1,
     height: '100%',
   },
   registerContainer: {
-    marginTop: 72,
+    marginTop: 50,
     flexDirection: 'row',
     alignItems: 'center',
     marginBottom: 30,
     justifyContent: 'center',
   },
   registerText: {
-    fontSize:14,
-    lineHeight:17,
-    fontFamily:"Roboto-Regular",
     color: '#8B8E95',
   },
   registerLink: {
     color: '#008BDC',
-    fontSize:14,
-    lineHeight:17,
-    fontFamily: "Roboto-Medium",
-
-    fontWeight: '500',
+    fontWeight: 'bold',
     marginLeft: 5,
   },
   button: {
     width: '100%',
-    height: 48,
-    backgroundColor: '#033669',
-    borderRadius: 8,
+    height: 50,
+    backgroundColor: '#262626',
+    borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal:16, 
-    paddingVertical:8
   },
   buttonText: {
     color: '#F5F5F5',
-    fontSize: 16,
-    lineHeight:24,
-    fontWeight: '500',
-    fontFamily:"Inter-Medium"
+    fontSize: 18,
+    fontWeight: 'bold',
   },
 });
 
 export default LoginScreen;
+
