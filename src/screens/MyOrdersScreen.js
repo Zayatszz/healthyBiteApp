@@ -1,20 +1,22 @@
 import React, { useState, useEffect, useContext } from 'react';
-import { View, Text, StyleSheet, FlatList, ActivityIndicator, Button, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { fetchUserOrders as fetchUserOrdersApi } from '../api/user';
-import OrderItem from '../components/OrderItem';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import FlexHeader from '../components/FlexHeader';
+import Switch from '../components/Switch';
+import OrderItem from '../components/OrderItem';
 
 const MyOrdersScreen = ({ navigation }) => {
   const { userInfo } = useContext(AuthContext);
   const [orders, setOrders] = useState([]);
-  const [loading, setLoading] = useState(true);
   const [index, setIndex] = useState(0);
+  const [isSuccessful, setIsSuccessful] = useState(true);
   const [routes] = useState([
     { key: 'successful', title: 'Амжилттай' },
     { key: 'unsuccessful', title: 'Амжилтгүй' },
   ]);
+ 
 
   useEffect(() => {
     fetchUserOrders();
@@ -23,52 +25,34 @@ const MyOrdersScreen = ({ navigation }) => {
   const fetchUserOrders = async () => {
     try {
       const data = await fetchUserOrdersApi(userInfo.id);
-      // Sort orders by date in descending order (latest orders first)
       const sortedOrders = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
       setOrders(sortedOrders);
     } catch (error) {
       console.error('Failed to fetch orders:', error);
-    } finally {
-      setLoading(false);
     }
   };
 
-  const renderOrderItem = ({ item }) => (
-    <OrderItem order={item} />
+  const renderOrderItem = ({ item, index }) => (
+    <OrderItem order={item} index={index} />
   );
 
-  const navigateToHome = () => {
-    navigation.reset({
-      index: 0,
-      routes: [{ name: 'Main' }],
-    });
-  };
-
   const SuccessfulOrders = () => (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={orders.filter(order => order.status === 'paid')}
-          renderItem={renderOrderItem}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      )}
+    <View style={styles.tabContainer}>
+      <FlatList
+        data={orders.filter(order => order.status === 'paid')}
+        renderItem={renderOrderItem}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
   );
 
   const UnsuccessfulOrders = () => (
-    <View style={styles.container}>
-      {loading ? (
-        <ActivityIndicator size="large" color="#0000ff" />
-      ) : (
-        <FlatList
-          data={orders.filter(order => order.status !== 'paid')}
-          renderItem={renderOrderItem}
-          keyExtractor={(item) => item.id.toString()}
-        />
-      )}
+    <View style={styles.tabContainer}>
+      <FlatList
+        data={orders.filter(order => order.status !== 'paid')}
+        renderItem={renderOrderItem}
+        keyExtractor={(item) => item.id.toString()}
+      />
     </View>
   );
 
@@ -79,8 +63,11 @@ const MyOrdersScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      
-      <FlexHeader headerText={"Миний захиалгууд"} navigation={navigation}/> 
+      <FlexHeader headerText={"Миний захиалгууд"} navigation={navigation}/>
+      {/* <View>
+        <Text>Амжилттай</Text>
+        <Text>Амжилтгүй</Text>
+      </View>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -94,150 +81,108 @@ const MyOrdersScreen = ({ navigation }) => {
             labelStyle={styles.labelStyle}
           />
         )}
-      />
-      <Button title="Go to Home" onPress={navigateToHome} />
+      /> */}
+      {/* onChangeMethod={() => null} */}
+      <Switch isSuccessful={isSuccessful} setIsSuccessful={setIsSuccessful}/>
+      <View style={styles.tabContainer}>
+     
+
+      <>
+      {isSuccessful ? (
+        <FlatList
+          data={orders.filter(order => order.status === 'paid')}
+          renderItem={renderOrderItem}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      ) : (
+        <FlatList
+          data={orders.filter(order => order.status !== 'paid')}
+          renderItem={renderOrderItem}
+          keyExtractor={(item) => item.id.toString()}
+        />
+      )}
+    </>
+    </View>
     </View>
   );
 };
 
-
 const styles = StyleSheet.create({
-    section:{
-        backgroundColor:'#fff',
-        marginHorizontal:20,
-        marginTop:20,
-        padding:20,
-        
-
-
-    }, 
-    carwashImg:{
-        // width:280,
-        height:200,
-        borderTopLeftRadius:10,
-        borderTopRightRadius:10,
-    },
-    dropdown: {
-        height: 50,
-        borderColor: 'gray',
-        borderWidth: 0.5,
-        borderRadius: 8,
-        paddingHorizontal: 8,
-      },
-  searchBar: {
-    padding: 10,
-    marginRight: 30,
-    backgroundColor: '#000',
-    width: '100%',
-  },
-  view: {
-    margin: 10,
-  },
   container: {
     flex: 1,
-    backgroundColor: '#066BCF',
+    backgroundColor: '#fff',
   },
-  section1: {
-    paddingTop: 60,
-    paddingBottom: 60,
-    paddingHorizontal: 20,
-  },
-  sectionTitle: {
-    fontSize: 50,
-    fontWeight: 'bold',
-    textAlign: 'center',
-    color: '#FFF',
-  },
-  paragraph: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    // textAlign: 'center',
-    // color: '#FFF',
-  },
-  parText: {
-    fontSize: 20,
-    textAlign: 'center',
-    color: '#FFF',
-  },
-  flexHeader: {
-    padding: 10,
-    paddingHorizontal: 20,
-    backgroundColor: '#066BCF',
-    width: '100%',
+  header: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
+    backgroundColor: '#003366',
+    paddingTop: 20,
+    paddingBottom: 15,
+    paddingHorizontal: 15,
   },
-  flex: {
-    padding: 10,
-    paddingHorizontal: 20,
-    width: '100%',
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-  },
-  flexz: {
-    flexDirection: 'row',
-    padding: 5,
-    alignItems: 'center',
-  },
-  allBtn: {
-    width: 120,
-    height: 40,
-    backgroundColor: '#58B3F0',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#C0C0C0',
-  },
-  logoImg: {
-    width: 70,
-    height: 60,
-    borderRadius: 10,
-  },
-  CarWashItem: {
-    paddingHorizontal: 20,
-  },
-  addWrapper: {
-    width: 60,
-    height: 60,
-    backgroundColor: '#58B3F0',
-    borderRadius: 60,
-    justifyContent: 'center',
-    alignItems: 'center',
-    borderColor: '#18A0FB',
-    borderWidth: 1,
-  },
-  addText: {
-    fontWeight: 'bold',
-    color: '#000',
+  backButton: {
+    color: '#ffffff',
     fontSize: 18,
+    marginRight: 10,
   },
-
-  button: {
-    width: '100%',
-    height: 45,
-    backgroundColor: '#1E90FF',
-    borderRadius: 30,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginVertical: 10,
-  },
-  buttonText: {
-    color: '#fff',
+  headerText: {
+    color: '#ffffff',
     fontSize: 18,
     fontWeight: 'bold',
   },
-
-
   tabBar: {
     backgroundColor: '#ffffff',
+    paddingVertical: 5,
   },
   indicator: {
-    // backgroundColor: '#0000ff',
+    backgroundColor: '#FFD700',
+    height: 5,
+    borderRadius: 10,
   },
   labelStyle: {
     color: '#000',
+    fontWeight: 'bold',
+  },
+  tabContainer: {
+    flex: 1,
+    paddingHorizontal: 20,
+    // paddingTop: 16,
+  },
+  orderContainer: {
+    backgroundColor: '#F4F6F9',
+    borderRadius: 12,
+    padding: 15,
+    marginBottom: 16,
+    // shadowColor: '#000',
+    // shadowOffset: { width: 0, height: 2 },
+    // shadowOpacity: 0.1,
+    // shadowRadius: 8,
+    // elevation: 4,
+  },
+  orderTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  orderDetails: {
+    fontSize: 14,
+    color: '#666',
+    marginVertical: 5,
+  },
+  orderInfo: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 5,
+  },
+  orderPrice: {
+    fontSize: 18,
+    fontWeight: 'bold',
+    color: '#000',
+  },
+  orderDate: {
+    fontSize: 14,
+    color: '#666',
   },
 });
 
