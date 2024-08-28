@@ -12,6 +12,8 @@ import OrderScreen from '../screens/OrderScreen';
 import SplashScreen from '../screens/SplashScreen';
 import PaymentScreen from '../screens/PaymentScreen';
 import MyOrdersScreen from '../screens/MyOrdersScreen';
+import EditProfileScreen from '../screens/EditProfileScreen';
+import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -55,7 +57,9 @@ const AppNavigator = () => {
           <Stack.Screen name="AllCarwash" component={AllCarwashScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Order" component={OrderScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name="MyOrders" component={MyOrdersScreen} />
+          <Stack.Screen name="MyOrders" component={MyOrdersScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="ChangePass" component={ChangePasswordScreen} options={{ headerShown: false }}/>
         </>
           
         ) : (

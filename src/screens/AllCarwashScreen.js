@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, FlatList, ActivityIndicator, TextInput, Pressab
 import CarWashItem from '../components/CarWashItem1';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
+import FlexHeader from '../components/FlexHeader';
 
 const AllCarwashScreen = ({ route, navigation }) => {
   const [searchText, setSearchText] = useState('');
@@ -28,12 +29,7 @@ const AllCarwashScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.flexHeader]}>
-        <Pressable onPress={() => navigation.goBack()}>
-            <FontAwesome name='chevron-left' style={styles.icon} />
-        </Pressable>
-        <Text style={styles.headerTitle}>Угаалгын газар сонгох</Text>
-      </View>
+    <FlexHeader headerText={'Угаалгын газар сонгох'} navigation={navigation}/>
      
       <View style={ styles.searchSection }>
 
@@ -126,30 +122,7 @@ const styles = StyleSheet.create({
     color: '#000',
     fontSize: 18,
   },
-  flexHeader: {
-    padding: 15,
-    // paddingBottom:15,
-    paddingHorizontal:30,
-    paddingRight:20,
-    backgroundColor: '#033669',
-    width: '100%',
-    flexDirection: 'row',
-    // justifyContent: 'space-between',
-    alignItems: 'center',
-    // marginBottom:20
-  
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '500',
-    paddingLeft:20,
-    color: '#fff',
-  },
-  icon: {
-    fontSize: 20,
-    borderRadius: 50,
-    color: '#fff',
-  },
+
   searchIcon:{
     fontSize: 20,
     paddingRight:15

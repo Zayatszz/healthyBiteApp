@@ -13,7 +13,7 @@ import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { signup as signupApi } from '../api/user';
 
-const logoImg = require('../../assets/emu-logo.png');
+const logoImg = require('../../assets/logoo.png');
 
 const SignupScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
@@ -57,7 +57,7 @@ const SignupScreen = ({ navigation }) => {
       {({ handleChange, handleBlur, handleSubmit, values, errors, touched }) => (
         <View style={styles.container}>
           <View style={styles.section1}>
-            <Image style={styles.logoImg} source={logoImg} />
+            {/* <Image style={styles.logoImg} source={logoImg} /> */}
             <Text style={styles.sectionTitle}>Бүртгүүлэх</Text>
             <Text style={styles.paragraph}>Та мэдээллээ бөглөн бүртгүүлнэ үү.</Text>
           </View>
@@ -220,6 +220,14 @@ const styles = StyleSheet.create({
     fontSize: 20,
     color: '#A9A9A9',
     marginRight: 10,
+  },
+  logoImg: {
+    // marginTop: 30,
+    width: 105,
+    height: 62,
+    borderRadius: 10,
+    textAlign: 'center',
+    marginBottom:34,
   },
   input: {
     flex: 1,

@@ -12,6 +12,10 @@ import { AuthContext } from '../context/AuthContext';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { updateUser as updateUserApi } from '../api/user';
+import FlexHeader from '../components/FlexHeader';
+import { Image } from 'moti';
+import Feather from 'react-native-vector-icons/Feather';
+import { Button } from 'react-native-paper';
 
 const ProfileScreen = ({ navigation }) => {
   const { token, logout, userInfo, setUserInfo } = useContext(AuthContext);
@@ -23,6 +27,7 @@ const ProfileScreen = ({ navigation }) => {
   const [loadingUpdate, setLoadingUpdate] = useState(false); // Loading state for update
   const [loadingLogout, setLoadingLogout] = useState(false); // Loading state for logout
 
+  console.log(userInfo, "from profileeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee")
   const emailRef = useRef(null);
   const userNameRef = useRef(null);
   const phoneNumberRef = useRef(null);
@@ -69,107 +74,56 @@ const ProfileScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.sectionTitle}>Profile</Text>
+   
+      <FlexHeader headerText={"Профайл"} navigation={navigation}/> 
+      <View style={[styles.profileSection, styles.flex]}> 
+        <Image style={styles.profileImg} source={require("../../assets/carwashApp1.png")} />
+        <View style={styles.userInfo}>
+          <Text style={styles.userName}>{userInfo.userName}</Text>
+          <Text style={styles.text12}>{userInfo.email}</Text>
+        </View>
+      </View>
+      <View style={styles.infoOrder}>
+        <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('MyOrders')} disabled={loadingUpdate || loadingLogout}> 
+          <View style={styles.flex}>
+            <Feather name='server' style={styles.icon} />
+            <Text style={styles.text}>Миний захиалгууд</Text>
+          </View>
+          <Feather name='chevron-right' style={[styles.icon ]} />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('EditProfile')} disabled={loadingUpdate || loadingLogout}> 
+          <View style={styles.flex}> 
 
-      <View style={styles.labelContainer}>
-        <Text>Email</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome name="user-o" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Email"
-          value={email}
-          onChangeText={setEmail}
-          keyboardType="email-address"
-          autoCapitalize="none"
-          placeholderTextColor="#A9A9A9"
-          returnKeyType="next"
-          onSubmitEditing={() => userNameRef.current.focus()}
-          ref={emailRef}
-        />
-      </View>
+            <Feather name='user' style={styles.icon} />
+            <Text style={styles.text}>Хувийн мэдээлэл</Text>
+          </View>
+          <Feather name='chevron-right' style={[styles.icon ]} />
+        </TouchableOpacity>
+        <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('ChangePass')} disabled={loadingUpdate || loadingLogout}> 
+        
+          <View style={styles.flex}> 
 
-      <View style={styles.labelContainer}>
-        <Text>User Name</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome name="user-o" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="User Name"
-          value={userName}
-          onChangeText={setUserName}
-          placeholderTextColor="#A9A9A9"
-          returnKeyType="next"
-          onSubmitEditing={() => phoneNumberRef.current.focus()}
-          ref={userNameRef}
-        />
-      </View>
-
-      <View style={styles.labelContainer}>
-        <Text>Phone Number</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <FontAwesome name="phone" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Phone Number"
-          value={phoneNumber}
-          onChangeText={setPhoneNumber}
-          keyboardType="phone-pad"
-          placeholderTextColor="#A9A9A9"
-          returnKeyType="next"
-          onSubmitEditing={() => passwordRef.current.focus()}
-          ref={phoneNumberRef}
-        />
+            <Feather name='lock' style={styles.icon} />
+            <Text style={styles.text}>Нууц үг солих</Text>
+          </View>
+          <Feather name='chevron-right' style={[styles.icon ]} />
+        </TouchableOpacity>
+        
+        {/* <View style={[styles.info, styles.flex]} onPress={handleLogout}> 
+          <Feather name='log-out' style={styles.icon} />
+          <Text style={styles.text}>Гарах</Text>
+        </View> */}
+        <TouchableOpacity style={[styles.info, styles.flex]} onPress={handleLogout}> 
+          <Feather name='log-out' style={styles.icon} />
+          <Text style={styles.text}>Гарах</Text>
+        </TouchableOpacity>
       </View>
 
-      <View style={styles.labelContainer}>
-        <Text>Password</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Password"
-          value={password}
-          onChangeText={setPassword}
-          secureTextEntry
-          placeholderTextColor="#A9A9A9"
-          returnKeyType="next"
-          onSubmitEditing={() => confirmPasswordRef.current.focus()}
-          ref={passwordRef}
-        />
-      </View>
 
-      <View style={styles.labelContainer}>
-        <Text>Confirm Password</Text>
-      </View>
-      <View style={styles.inputContainer}>
-        <Ionicons name="lock-closed-outline" style={styles.icon} />
-        <TextInput
-          style={styles.input}
-          placeholder="Confirm Password"
-          value={confirmPassword}
-          onChangeText={setConfirmPassword}
-          secureTextEntry
-          placeholderTextColor="#A9A9A9"
-          returnKeyType="done"
-          ref={confirmPasswordRef}
-        />
-      </View>
-
-      <TouchableOpacity style={styles.button} onPress={handleUpdate} disabled={loadingUpdate || loadingLogout}>
-        {loadingUpdate ? <ActivityIndicator size="small" color="#FFF" /> : <Text style={styles.buttonText}>Шинэчлэх</Text>}
-      </TouchableOpacity>
-
-      <TouchableOpacity style={styles.button} onPress={handleLogout} disabled={loadingUpdate || loadingLogout}>
+      {/* <TouchableOpacity style={styles.button} onPress={handleLogout} disabled={loadingUpdate || loadingLogout}>
         {loadingLogout ? <ActivityIndicator size="small" color="#FFF" /> : <Text style={styles.buttonText}>Гарах</Text>}
-      </TouchableOpacity>
-      <TouchableOpacity style={styles.button} onPress={() => navigation.navigate('MyOrders')} disabled={loadingUpdate || loadingLogout}>
-        <Text style={styles.buttonText}>Миний захиалгууд</Text>
-      </TouchableOpacity>
+      </TouchableOpacity> */}
+ 
     </View>
   );
 };
@@ -177,8 +131,54 @@ const ProfileScreen = ({ navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
-    padding: 15,
+    backgroundColor:'#fff'
+  },
+  profileSection:{
+    paddingVertical:36,
+    paddingHorizontal:20
+  },
+  infoOrder:{
+    paddingHorizontal:20
+  },
+  info:{
+    marginBottom:16,
+    paddingHorizontal:24,
+    paddingVertical:16,
+    borderWidth:1,
+    borderRadius:8,
+    borderColor:"#dadada"
+  },
+
+  flex: {
+  
+    width: '100%',
+    flexDirection: 'row',
+    // justifyContent: 'space-between',
+    alignItems: 'center',
+    
+  },
+  userInfo:{
+    paddingLeft:16,
+   
+  },
+  userName:{
+    fontSize:16,
+    color: "#080b11",
+  },
+  text12:{
+    fontSize:12,
+    color: "#080b11",
+  },
+
+  text:{
+    fontSize:16,
+    color: "#000",
+    paddingLeft:16
+  },
+  profileImg:{
+    width: 90,
+    height: 90,
+    borderRadius: 50,
   },
   sectionTitle: {
     fontSize: 30,
@@ -197,15 +197,16 @@ const styles = StyleSheet.create({
     borderColor: '#ccc',
     borderWidth: 1,
     borderRadius: 30,
-    paddingHorizontal: 15,
+    paddingHorizontal: 20,
+    
     marginBottom: 10,
     width: '100%',
     height: 45,
   },
   icon: {
-    fontSize: 20,
-    color: '#A9A9A9',
-    marginRight: 10,
+    fontSize: 24,
+    color: '#000',
+    // paddingRight: 16,
   },
   input: {
     flex: 1,

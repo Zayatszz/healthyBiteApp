@@ -4,6 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { fetchUserOrders as fetchUserOrdersApi } from '../api/user';
 import OrderItem from '../components/OrderItem';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
+import FlexHeader from '../components/FlexHeader';
 
 const MyOrdersScreen = ({ navigation }) => {
   const { userInfo } = useContext(AuthContext);
@@ -19,16 +20,6 @@ const MyOrdersScreen = ({ navigation }) => {
     fetchUserOrders();
   }, []);
 
-  // const fetchUserOrders = async () => {
-  //   try {
-  //     const data = await fetchUserOrdersApi(userInfo.id);
-  //     setOrders(data);
-  //   } catch (error) {
-  //     console.error('Failed to fetch orders:', error);
-  //   } finally {
-  //     setLoading(false);
-  //   }
-  // };
   const fetchUserOrders = async () => {
     try {
       const data = await fetchUserOrdersApi(userInfo.id);
@@ -88,7 +79,8 @@ const MyOrdersScreen = ({ navigation }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.title}>Миний захиалгууд:</Text>
+      
+      <FlexHeader headerText={"Миний захиалгууд"} navigation={navigation}/> 
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
