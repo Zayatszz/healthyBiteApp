@@ -52,6 +52,10 @@ export const fetchCarwashList = () => {
 export const fetchCarwashServiceList = () => {
   return request('/carwashservices', 'GET');
 };
+export const fetchCarwashService = (id) => {
+
+  return request(`/carwashservices/${id}`, 'GET');
+};
 
 export const orderCarwash = (orderDetails) => {
   return request('/bookings', 'POST', orderDetails);

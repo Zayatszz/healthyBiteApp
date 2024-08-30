@@ -8,6 +8,7 @@ import Feather from 'react-native-vector-icons/Feather';
 import Animated, { FadeInDown } from "react-native-reanimated";
 import { TouchableOpacity } from 'react-native-gesture-handler';
 
+
 const formatTime = (datetime) => {
   const date = new Date(datetime);
   return format(date, 'HH:mm');
@@ -49,7 +50,7 @@ const OrderItem = ({ order, index }) => {
           <Text style={styles.text14}>{order.carwashService.location}</Text>
         
             <Text style={styles.text14}>
-              {/* {order.date} */}  2024-08-24
+              {/* {order.date} */}  {format(new Date(order.createdAt), 'yyyy-MM-dd')}
               </Text>
         </View>
       </TouchableOpacity>
@@ -66,11 +67,11 @@ const OrderItem = ({ order, index }) => {
         </View>
         <View style={styles.flex}>
           <Text style={styles.detailText}>Захиалсан өдөр</Text>
-          <Text style={styles.detailText}>2024-10-11</Text>
+          <Text style={styles.detailText}>{format(new Date(order.scheduledTime), 'yyyy-MM-dd')}</Text>
         </View>
         <View style={styles.flex}>
           <Text style={styles.detailText}>Захиалсан цаг</Text>
-          <Text style={styles.detailText}>10:00 - 11:00</Text>
+          <Text style={styles.detailText}> {new Date(order.scheduledTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - {new Date(order.endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</Text>
         </View>
      
       </View>

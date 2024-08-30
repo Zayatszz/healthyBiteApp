@@ -4,6 +4,10 @@ import { AuthContext } from '../context/AuthContext';
 import { getBookingStatus as getBookingStatusApi } from '../api/user';
 import FastImage from 'react-native-fast-image';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
+import FlexHeader from '../components/FlexHeader';
+import { format } from 'date-fns';
+import { fetchCarwashService } from '../api/user';
+import Feather from 'react-native-vector-icons/Feather';
 const PaymentScreen = ({ route, navigation }) => {
   const { userInfo } = useContext(AuthContext);
   const { invoiceResponse, orderDetails, bookingId } = route.params;
@@ -11,7 +15,20 @@ const PaymentScreen = ({ route, navigation }) => {
   const [loading, setLoading] = useState(true); // Initialize loading to true
   const [paymentStatus, setPaymentStatus] = useState("unpaid");
   const [qrCode, setQRCode] = useState("");
+  const [carwashService, setCarwashService] = useState({});
 
+  useEffect(() => {
+    fetchcarwashService();
+  }, [orderDetails]);
+
+  const fetchcarwashService = async () => {
+    try {
+      const data = await fetchCarwashService(orderDetails.CarWashService);
+      setCarwashService(data);
+    } catch (error) {
+      console.error('Failed to fetch carwashService:', error);
+    }
+  };
   useEffect(() => {
     const interval = setInterval(async () => {
       try {
@@ -49,21 +66,17 @@ const PaymentScreen = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-       <View style={[styles.flexHeader]}>
-        <Pressable onPress={() => navigation.goBack()}>
-            <FontAwesome name='chevron-left' style={styles.icon} />
-        </Pressable>
-        <Text style={styles.headerTitle}>Захиалга хийх</Text>
-      </View>
+      <FlexHeader headerText={'Захиалга хийх'} navigation={navigation}/>
       <Text style={styles.title}>Таны захиалгын мэдээлэл</Text>
+
       <View style={[styles.section, styles.orderInfo]}>
         <View style={styles.flex}>
           <Text style={[styles.paragraph, styles.flex1]} >Нэр </Text>
-          <Text style={styles.paragraph}>{orderDetails?.name}k</Text>
+          <Text style={styles.paragraph}>{carwashService.name}</Text>
         </View>
         <View style={styles.flex}>
           <Text style={[styles.paragraph, styles.flex1]} >Байршил </Text>
-          <Text style={styles.paragraph}>{orderDetails?.location}k</Text>
+          <Text style={styles.paragraph}>{carwashService.location}</Text>
         </View>
         <View style={styles.flex}>
           <Text style={[styles.paragraph, styles.flex1]} >Угаалгах машин </Text>
@@ -74,30 +87,43 @@ const PaymentScreen = ({ route, navigation }) => {
           <Text style={styles.paragraph}>{orderDetails?.washType}</Text>
         </View>
         <View style={styles.flex}>
-          <Text style={[styles.paragraph, styles.flex1]} >Захиалсан цаг </Text>
-          <Text style={styles.paragraph}>{orderDetails.date} - {orderDetails.endTime}</Text>
+          <Text style={[styles.paragraph, styles.flex1]} >Захиалсан өдөр </Text>
+          <Text style={styles.paragraph}>{format(new Date(orderDetails.scheduledTime), 'yyyy-MM-dd')}</Text>
         </View>
-       
-      </View>
-      <View style={[styles.section, styles.orderInfo]}>
         <View style={styles.flex}>
-          <Text style={[styles.paragraph, styles.flex1]} >Үнийн мэдээлэл </Text>
-          <Text style={styles.paragraph}>{orderDetails?.name}k</Text>
+          <Text style={[styles.paragraph, styles.flex1]} >Захиалсан цаг </Text>
+          <Text style={styles.paragraph}>{new Date(orderDetails.scheduledTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })} - {new Date(orderDetails.endTime).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', hour12: false })}</Text>
+        </View>
+        <View>
+          <Text style={styles.priceInfo}>{orderDetails.price}₮</Text>
+        </View>
+      </View>
+      <View style={[styles.warningSection]}>
+        <View style={styles.flex}>
+          <Feather name="alert-circle" style={[styles.icon ]}/>
+          <Text style={[styles.warningText]} >Та төлбөрөө зөвхөн Qpay ашиглан төлнө үү.</Text>
+       
+        </View>
+        <View style={styles.flex}>
+           <Feather name="alert-circle" style={[styles.icon ]}/>
+          <Text style={[styles.warningText]} >Захиалга цуцлах боломжгүй тул сонголтоо зөв хийнэ үү. </Text>
         </View>
        
-       
+      
       </View>
+     
   
-      <View style={styles.section}>
+      {/* <View style={styles.section}>
         <Text style={styles.paragraph}>Банкны qpay үйлчилгээ ашиглан төлбөр төлөх холбоосууд харагдана.</Text>
         {qrCode ? (
-          // <Image source={{ uri: qrCode }} style={styles.qrCode} />
+        
           <FastImage source={{ uri: qrCode }} style={styles.qrCode} />
         ) : (
           <Text>Loading QR Code...</Text>
         )}
-      </View>
+      </View> */}
       <View style={styles.containerUrls}>
+      <Text style={styles.titleSub}>Банкны qpay үйлчилгээ ашиглан төлбөр төлөх холбоосууд</Text>
         {invoiceResponse.qrCode && invoiceResponse.qrCode.urls && invoiceResponse.qrCode.urls.map((url, index) => (
           <View key={index} style={styles.itemContainer}>
             <TouchableOpacity onPress={() => Linking.openURL(url.link)}>
@@ -116,32 +142,71 @@ const PaymentScreen = ({ route, navigation }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#fff',
+    backgroundColor: '#FDFDFD',
   },
   section: {
     backgroundColor: '#F4F6F9',
     marginHorizontal: 20,
-    marginTop: 20,
+    marginTop: 16,
     padding: 20,
+    paddingTop:16,
+    borderRadius:12
+  },
+  warningSection:{
+    backgroundColor: '#F4F6F9',
+    marginHorizontal: 20,
+    marginTop: 16,
+    padding: 20,
+    paddingTop:16,
     borderRadius:12
   },
   orderInfo:{
-    borderWidth:1,
-    borderColor:"#000",
+
+    backgroundColor:"#fff",
+ 
+     shadowColor: '#C5C5C5',
+     shadowOffset: { width: 0, height: 2 },
+     shadowOpacity: 0.3,
+     shadowRadius: 3.84,
+     elevation: 3,
+    // borderWidth:1,
+    // borderColor:"#000",
     
   },
   title: {
     paddingHorizontal:20,
+    paddingTop:16,
     color: '#000',
     fontSize: 20,
     fontWeight: '500',
-    paddingBottom:10
+    
   },
- 
+  titleSub:{
+    paddingHorizontal:24,
+    color: '#000',
+    fontSize: 16,
+    fontWeight: '500',
+    textAlign:'center'
+  }
+ ,
   paragraph: {
     fontSize: 16,
-    fontWeight: 'bold',
+    lineHeight:30,
     color: "#000"
+  },
+  warningText:{
+    fontSize: 14,
+    lineHeight:20,
+    color: "#D90000",
+    paddingLeft:8,
+   
+  },
+  priceInfo:{
+    fontSize:16,
+    color:"#000",
+    fontWeight:"500",
+     textAlign:'center',
+     paddingTop:24
   },
   flex: {
     padding: 5,
@@ -149,9 +214,7 @@ const styles = StyleSheet.create({
     width: '100%',
     flexDirection: 'row',
     justifyContent: "",
-    alignItems: 'center',
-
-    
+    // alignItems: 'center',
   },
 
   flex1:{
@@ -164,9 +227,9 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   containerUrls: {
-    backgroundColor: '#fff',
-    marginHorizontal: 20,
-    marginTop: 20,
+    // backgroundColor: '#fff',
+   
+    // marginTop: 20,
     padding: 20,
     flexDirection: 'row',
     flexWrap: 'wrap',
@@ -175,7 +238,7 @@ const styles = StyleSheet.create({
   itemContainer: {
     width: '33%',
     alignItems: 'center',
-    marginTop: 40,
+    marginTop: 24,
   },
   image: {
     width: 50,
@@ -207,7 +270,9 @@ const styles = StyleSheet.create({
   icon: {
     fontSize: 20,
     borderRadius: 50,
-    color: '#fff',
+    color:"#D90000",
+    // paddingTop:4
+   
   },
 });
 
