@@ -14,6 +14,7 @@ import PaymentScreen from '../screens/PaymentScreen';
 import MyOrdersScreen from '../screens/MyOrdersScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
+import NotificationScreen from '../screens/NotificationScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -60,6 +61,7 @@ const AppNavigator = () => {
           <Stack.Screen name="MyOrders" component={MyOrdersScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="ChangePass" component={ChangePasswordScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }}/>
         </>
           
         ) : (

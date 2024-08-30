@@ -146,9 +146,9 @@ const HomeScreen = ({ navigation }) => {
       <StatusBar backgroundColor="#033669" barStyle="light-content" />
       <View style={styles.flexHeader}>
         <Image style={styles.logoImg} source={logoImg} />
-        <Text>
+        <TouchableOpacity onPress={()=> navigation.navigate("Notification")}>
           <Feather name='bell' style={styles.bellIcon} />
-        </Text>
+        </TouchableOpacity>
       </View>
       <View style={styles.banner}>
        <Image style={styles.bannerImg} source={bannerImg} />
