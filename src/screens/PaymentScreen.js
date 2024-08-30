@@ -66,7 +66,7 @@ const PaymentScreen = ({ route, navigation }) => {
 
   return (
     <ScrollView style={styles.container}>
-      <FlexHeader headerText={'Захиалга хийх'} navigation={navigation}/>
+      <FlexHeader headerText={'Төлбөр төлөх'} navigation={navigation}/>
       <Text style={styles.title}>Таны захиалгын мэдээлэл</Text>
 
       <View style={[styles.section, styles.orderInfo]}>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   section: {
     backgroundColor: '#F4F6F9',
     marginHorizontal: 20,
-    marginTop: 16,
+    marginTop: 24,
     padding: 20,
     paddingTop:16,
     borderRadius:12
@@ -166,16 +166,16 @@ const styles = StyleSheet.create({
  
      shadowColor: '#C5C5C5',
      shadowOffset: { width: 0, height: 2 },
-     shadowOpacity: 0.3,
+     shadowOpacity: 0.8,
      shadowRadius: 3.84,
-     elevation: 3,
+     elevation: 5,
     // borderWidth:1,
     // borderColor:"#000",
     
   },
   title: {
     paddingHorizontal:20,
-    paddingTop:16,
+    paddingTop:24,
     color: '#000',
     fontSize: 20,
     fontWeight: '500',
@@ -192,7 +192,8 @@ const styles = StyleSheet.create({
   paragraph: {
     fontSize: 16,
     lineHeight:30,
-    color: "#000"
+    color: "#000",
+    fontWeight:'450'
   },
   warningText:{
     fontSize: 14,

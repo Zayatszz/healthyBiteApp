@@ -191,6 +191,8 @@ const OrderScreen = ({ route, navigation }) => {
           labelField="label"
           valueField="value"
           placeholder="Машины төрлөө сонгоно уу."
+          iconStyle={styles.iconStyle}
+          iconColor='rgba(0, 0, 0, 0.72)'
           value={selectedCarType}
           onChange={item => {
             setSelectedCarType(item.value);
@@ -219,6 +221,8 @@ const OrderScreen = ({ route, navigation }) => {
           labelField="label"
           valueField="value"
           placeholder="Угаах төрлөө сонгоно уу."
+          iconStyle={styles.iconStyle}
+          iconColor='rgba(0, 0, 0, 0.72)'
           value={selectedWashType}
           onChange={item => {
             setSelectedWashType(item.value);
@@ -261,6 +265,8 @@ const OrderScreen = ({ route, navigation }) => {
           labelField="label"
           valueField="value"
           placeholder="Цагаа сонгоно уу."
+          iconStyle={styles.iconStyle}
+          iconColor='rgba(0, 0, 0, 0.72)'
           value={selectedTime}
           onChange={item => {
             setSelectedTime(item.value);
@@ -289,7 +295,7 @@ const styles = StyleSheet.create({
     borderTopRightRadius: 10,
   },
   dropdown: {
-    height: 50,
+    height: 48,
     borderColor: 'gray',
     borderWidth: 0.5,
     borderRadius: 8,
@@ -395,6 +401,10 @@ const styles = StyleSheet.create({
     color: '#fff',
     fontSize: 18,
     fontWeight: 'bold',
+  },
+  iconStyle:{
+    height:24,
+    overflow:'hidden',
   },
 });
 

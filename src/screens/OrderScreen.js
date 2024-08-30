@@ -13,6 +13,7 @@ import Cookies from "js-cookie";
 import Header from '../components/Header';
 import Button from '../components/Button';
 import SubmitButton from '../components/SubmitButton';
+import FlexHeader from '../components/FlexHeader';
 
 dayjs.extend(utc);
 const logoImg = require('../../assets/emu-logo.png');
@@ -230,128 +231,141 @@ const OrderScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <View style={[styles.flexHeader]}>
-        <Pressable onPress={() => navigation.goBack()}>
-            <FontAwesome name='chevron-left' style={styles.icon} />
-        </Pressable>
-        <Text style={styles.headerTitle}>Захиалга хийх</Text>
-      </View>
-      <View style={styles.detailContainer}>
-        <View style={styles.flexz}>
-          <Text style={styles.textName}>{carwash.name} </Text>
-          <Text style={styles.textLocation}>{carwash.location}</Text>
+      <FlexHeader headerText='Захиалга хийх' navigation={navigation}/>
+      <View style={styles.detail}>
 
+        <View style={styles.detailContainer}>
+        <Text style={styles.textDescription}>Угаалгын газар</Text>
+          <View style={styles.flex}>
+            <Text style={styles.textName}>Нэр</Text>
+            <Text style={styles.textLocation}>{carwash.name} </Text>
+          </View>
+          <View style={styles.flex}>
+            <Text style={styles.textName}>Байршил</Text>
+            <Text style={styles.textLocation}>{carwash.location}</Text>
+          </View>
+    
         </View>
-   
-      </View>
-      <View style={styles.detailContainer}>
+        <View style={styles.detailContainer}>
 
-        <Text style={styles.textDescription}>Машины төрөл</Text>
-        <Dropdown
-          style={styles.dropdown}
-          data={carTypes}
-          labelField="label"
-          valueField="value"
-          placeholder="Машины төрлөө сонгоно уу."
-          value={selectedCarType}
-          onChange={item => {
-            setSelectedCarType(item.value);
-            const selectedCar = carTypes.find(car => car.value === item.value);
-            if (selectedCar) {
-              setSelectedCarTypeId(selectedCar.washingTypes[0].serviceId);
-              const firstWashType = selectedCar.washingTypes[0];
-              setWashTypes(selectedCar.washingTypes.map(washType => ({
-                label: washType.type,
-                value: washType.type,
-                price: washType.price,
-                duration: washType.duration,
-                id: washType.id // Ensure you have an ID field in your washType
-              })));
-              setSelectedWashType(firstWashType?.type || "");
-              setSelectedWashTypeId(firstWashType?.id || null);
-              setPrice(firstWashType?.price || 0);
-              setDuration(firstWashType?.duration || 0);
-            }
-          }}
-        />
-      </View>
-      <View style={styles.detailContainer}>
-
-        <Text style={styles.textDescription}>Угаалгах төрөл</Text>
-        <Dropdown
-          style={styles.dropdown}
-          data={washTypes}
-          labelField="label"
-          valueField="value"
-          placeholder="Угаах төрлөө сонгоно уу."
-          value={selectedWashType}
-          onChange={item => {
-            setSelectedWashType(item.value);
-            const selectedWash = washTypes.find(wash => wash.value === item.value);
-            if (selectedWash) {
-              setSelectedWashTypeId(selectedWash.id);
-              setPrice(selectedWash.price);
-              setDuration(selectedWash.duration);
-            }
-          }}
-        />
-      </View>
-      <View style={styles.detailContainer}>
-
-        <Text style={styles.textDescription}>Угаалгах огноо</Text>
-        <TouchableOpacity  onPress={showDatepicker}>
-          {/* <TextInput
-          style={[styles.dropdown, { borderWidth: 0 }]} 
-            // label="Date"
-            value={selectedDay.toISOString().split('T')[0]}
-            right={<FontAwesome name='calendar-o' />}
-            mode="outlined"
-            editable={false}
-            pointerEvents="none"
-          /> */}
-          <TextInput
+          <Text style={styles.textDescription}>Машины төрөл</Text>
+          <Dropdown
             style={styles.dropdown}
-            // label="Date"
-            value={selectedDay.toISOString().split('T')[0]}
-            editable={false}
-            pointerEvents="none"
-            underlineColorAndroid="#fff" 
+            data={carTypes}
+            labelField="label"
+            valueField="value"
+            placeholder="Машины төрлөө сонгоно уу."
+            iconStyle={styles.iconStyle}
+            iconColor='rgba(0, 0, 0, 0.72)'
+            value={selectedCarType}
+            onChange={item => {
+              setSelectedCarType(item.value);
+              const selectedCar = carTypes.find(car => car.value === item.value);
+              if (selectedCar) {
+                setSelectedCarTypeId(selectedCar.washingTypes[0].serviceId);
+                const firstWashType = selectedCar.washingTypes[0];
+                setWashTypes(selectedCar.washingTypes.map(washType => ({
+                  label: washType.type,
+                  value: washType.type,
+                  price: washType.price,
+                  duration: washType.duration,
+                  id: washType.id // Ensure you have an ID field in your washType
+                })));
+                setSelectedWashType(firstWashType?.type || "");
+                setSelectedWashTypeId(firstWashType?.id || null);
+                setPrice(firstWashType?.price || 0);
+                setDuration(firstWashType?.duration || 0);
+              }
+            }}
           />
+        </View>
+        <View style={styles.detailContainer}>
 
-        </TouchableOpacity>
-        {show && (
-          <DateTimePicker
-            testID="dateTimePicker"
-            value={selectedDay}
-            mode="date"
-            is24Hour={true}
-            display="default"
-            onChange={onChange}
+          <Text style={styles.textDescription}>Угаалгах төрөл</Text>
+          <Dropdown
+            style={styles.dropdown}
+            data={washTypes}
+            labelField="label"
+            valueField="value"
+            placeholder="Угаах төрлөө сонгоно уу."
+            iconStyle={styles.iconStyle}
+            iconColor='rgba(0, 0, 0, 0.72)'
+            value={selectedWashType}
+            onChange={item => {
+              setSelectedWashType(item.value);
+              const selectedWash = washTypes.find(wash => wash.value === item.value);
+              if (selectedWash) {
+                setSelectedWashTypeId(selectedWash.id);
+                setPrice(selectedWash.price);
+                setDuration(selectedWash.duration);
+              }
+            }}
           />
-        )}
-      
-      </View>
-      <View style={styles.detailContainer}>
+        </View>
+        
+        <View style={styles.detailContainer}>
 
-        <Text style={styles.textDescription}>Угаалгах цаг</Text>
-        <Dropdown
-          style={styles.dropdown}
-          data={timeSlots.filter(slot => !slot.isDisabled)}
-          labelField="label"
-          valueField="value"
-          placeholder="Цагаа сонгоно уу."
-          value={selectedTime}
-          onChange={item => {
-            setSelectedTime(item.value);
-          }}
-        />
-      
-      </View>
+          <Text style={styles.textDescription}>Угаалгах огноо</Text>
+          <TouchableOpacity  onPress={showDatepicker}>
+            {/* <TextInput
+            style={[styles.dropdown, { borderWidth: 0 }]} 
+              // label="Date"
+              value={selectedDay.toISOString().split('T')[0]}
+              right={<FontAwesome name='calendar-o' />}
+              mode="outlined"
+              editable={false}
+              pointerEvents="none"
+            /> */}
+            <TextInput
+              style={styles.dropdown}
+              // label="Date"
+              value={selectedDay.toISOString().split('T')[0]}
+              editable={false}
+              pointerEvents="none"
+              underlineColorAndroid="#fff" 
+            />
 
-      <View style={[styles.detailContainer, styles.priceContainer]}>
+          </TouchableOpacity>
+          {show && (
+            <DateTimePicker
+              testID="dateTimePicker"
+              value={selectedDay}
+              mode="date"
+              is24Hour={true}
+              display="default"
+              onChange={onChange}
+            />
+          )}
+        
+        </View>
+        <View style={styles.detailContainer}>
 
-        <Text style={styles.priceInfoText}>Үнийн мэдээлэл </Text>
-        <Text style={styles.priceInfo}>{price} ₮</Text>
+          <Text style={styles.textDescription}>Угаалгах цаг</Text>
+          <Dropdown
+            style={styles.dropdown}
+            data={timeSlots.filter(slot => !slot.isDisabled)}
+            labelField="label"
+            valueField="value"
+            placeholder="Цагаа сонгоно уу."
+            iconStyle={styles.iconStyle}
+            iconColor='rgba(0, 0, 0, 0.72)'
+            value={selectedTime}
+            onChange={item => {
+              setSelectedTime(item.value);
+            }}
+          />
+        
+        </View>
+
+        <View style={[styles.detailContainer, styles.priceContainer]}>
+
+          <Text style={styles.priceInfoText}>Үнийн мэдээлэл </Text>
+          <Text style={styles.priceInfo}>{price} ₮</Text>
+        </View>
+
+        <View style={styles.buttonz}>
+          <SubmitButton  onPress={handleInvoice} text={"Захиалах"} />
+        </View>
       </View>
    
       {/* <TouchableOpacity style={styles.button} onPress={handleInvoice} disabled={loading}>
@@ -362,9 +376,7 @@ const OrderScreen = ({ route, navigation }) => {
           
         )}
       </TouchableOpacity> */}
-      <View style={styles.buttonz}>
-        <SubmitButton  onPress={handleInvoice} text={"Захиалах"} />
-      </View>
+   
    
     </View>
   );
@@ -384,7 +396,7 @@ const styles = StyleSheet.create({
   },
   dropdown: {
     backgroundColor:"#F4F6F9",
-    height: 50,
+    height: 48,
     // borderColor: 'gray',
     
     borderRadius: 8,
@@ -416,14 +428,18 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+  detail:{
+    paddingTop:16
+
+  },
   detailContainer: {
     // marginLeft: 20,
     marginHorizontal:20,
-    marginBottom:20
+    marginBottom:16
   },
   textDescription: {
     color: '#323232',
-    fontSize: 18,
+    fontSize: 16,
     fontWeight: '500',
     paddingBottom:10
   },
@@ -434,20 +450,13 @@ const styles = StyleSheet.create({
   },
 
   flex: {
-    padding: 10,
-    paddingHorizontal: 20,
+    paddingBottom:8,
     width: '100%',
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
-  flexz: {
-    flexDirection: 'row',
-    
-    // paddingVertical: 5,
-    alignItems: 'center',
-    textAlign:'center'
-  },
+
   header:{
     
     marginVertical:30,
@@ -500,40 +509,52 @@ priceContainer:{
   marginTop:10,
   marginBottom:25,
   backgroundColor:"#F4F6F9",
-  borderRadius:10
+  borderRadius:8
 },
 priceInfoText:{
-  backgroundColor:"#CFCFCF",
+  // backgroundColor:"#CFCFCF",
 
   borderTopLeftRadius:10,
   borderTopRightRadius:10,
   textAlign:'center',
   padding:15,
-  fontSize:18,
+  fontSize:16,
   color:"#000",
-  fontWeight:'bold'
+  fontWeight:'500'
 },
 priceInfo:{
 
   padding:15,
   textAlign:'center',
-  fontSize:18,
+  fontSize:16,
+  backgroundColor:"#fff",
   color:"#000",
-  fontWeight:'bold'
+  fontWeight:'bold',
+  shadowColor: '#C5C5C5',
+  shadowOffset: { width: 0, height: 2 },
+  shadowOpacity: 0.23,
+  shadowRadius: 8,
+  elevation: 2,
 },
 textLocation: {
   fontSize: 14,
-  paddingLeft:80
+  color:"#8B8E95"
+
 
 },
 textName:{
-  fontSize: 19,
+  fontSize: 14,
   color:"#000",
-  fontWeight:'500'
+
+  
 },
 buttonz:{
   marginHorizontal:20
-}
+},
+iconStyle:{
+  height:20,
+  overflow:'hidden',
+},
 });
 
 export default OrderScreen;
