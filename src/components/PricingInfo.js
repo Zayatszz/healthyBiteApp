@@ -46,7 +46,7 @@ const PricingInfo = ({ carWashTypes }) => {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textDescription}>Үнийн мэдээлэл</Text>
+      <Text style={styles.textName}>Үнийн мэдээлэл</Text>
       <TabView
         navigationState={{ index, routes }}
         renderScene={renderScene}
@@ -69,6 +69,11 @@ const PricingInfo = ({ carWashTypes }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+  },
+  textName: {
+    color: '#000',
+    fontSize: 16,
+    fontWeight: '600',
   },
   textContainer: {
     paddingTop: 16,
@@ -107,13 +112,13 @@ const styles = StyleSheet.create({
   },
   priceText: {
     marginTop: 10,
-    fontSize: 18,
+    fontSize: 14,
     color: '#000',
-    fontWeight: 'bold',
+    fontWeight: '500',
   },
   sizeText: {
     marginTop: 5,
-    fontSize: 14,
+    fontSize: 13,
     color: '#000',
   },
   tabBar: {
@@ -132,8 +137,8 @@ const styles = StyleSheet.create({
   tabLabel: {
     // color: '#007AFF',
     color: '#365EC6',
-    fontSize:14,
-    fontWeight: 'bold',
+    fontSize:13,
+    fontWeight: '600',
   },
   icon: {
     color: '#000',

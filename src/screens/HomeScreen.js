@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, FlatList, ScrollView, 
 import Feather from 'react-native-vector-icons/Feather';
 import CarWashItem from '../components/CarWashItem';
 import SkeletonCarWashItem from '../components/SkeletonCarWashItem';
-import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes as filterCarwashesApi } from '../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes } from '../api/user';
 import { Dropdown } from 'react-native-element-dropdown';
 import Animated, { useSharedValue, withSpring } from 'react-native-reanimated';
 
@@ -122,7 +122,7 @@ const HomeScreen = ({ navigation }) => {
     };
 
     try {
-      let filteredList = await filterCarwashesApi(filters);
+      let filteredList = await filterCarwashes(filters);
       navigation.navigate('AllCarwash', { filteredList });
 
       // Reset selections

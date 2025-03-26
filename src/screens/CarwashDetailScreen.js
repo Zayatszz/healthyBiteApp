@@ -56,7 +56,7 @@ const CarwashDetailScreen = ({ route, navigation }) => {
               <Text style={styles.textName}>{carwash.name}</Text>
               <View style={styles.flexz}>
                 <FontAwesome name='star' style={{ color: '#FFCC33', fontSize: 16, paddingHorizontal: 4 }} />
-                <Text style={styles.paragraph}>{carwash.stars} (12 үнэлгээ)</Text>
+                <Text style={styles.ratingText}>{carwash.stars} (12 үнэлгээ)</Text>
               </View>
             </View>
             <Text style={styles.textLocation}>{carwash.location}</Text>
@@ -72,7 +72,7 @@ const CarwashDetailScreen = ({ route, navigation }) => {
       <View style={styles.detailContainer}>
 
           <Animated.View entering={FadeInDown.delay(800)}>
-            <Text style={styles.textDescription}>Бидний тухай</Text>
+            <Text style={styles.textName}>Бидний тухай</Text>
             <Text style={styles.text}>{carwash.description}</Text>
           </Animated.View>
       </View>
@@ -81,7 +81,7 @@ const CarwashDetailScreen = ({ route, navigation }) => {
           <Animated.View entering={FadeInDown.delay(800)}>
            
             <View style={styles.flex}>
-            <Text style={styles.textDescription}>Хаяг</Text>
+            <Text style={styles.textName}>Хаяг</Text>
             <Text style={styles.locationLink}>Газрын зураг дээр харах</Text>
             </View>
             <View style={styles.bottom} />
@@ -136,21 +136,23 @@ const styles = StyleSheet.create({
     marginHorizontal:20
   },
   textName: {
-    color: 'black',
-    fontSize: 20,
-    fontWeight: 'bold',
+    color: '#000',
+    fontSize: 16,
+    fontWeight: '500',
+  },
+  ratingText:{
+    color: '#8B8E95',
+    fontSize: 12,
+    fontWeight: '600',
   },
   textLocation: {
-    fontSize: 14,
+    fontSize: 12,
+    color:'#8B8E95'
   },
-  textDescription: {
-    color: '#323232',
-    fontSize: 20,
-    fontWeight: 'bold',
-  },
+
   text: {
     color: '#323232',
-    fontSize: 16,
+    fontSize: 14,
     textAlign: 'justify',
   },
   sliderBoxImage: {

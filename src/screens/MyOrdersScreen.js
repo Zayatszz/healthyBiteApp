@@ -64,25 +64,6 @@ const MyOrdersScreen = ({ navigation }) => {
   return (
     <View style={styles.container}>
       <FlexHeader headerText={"Миний захиалгууд"} navigation={navigation}/>
-      {/* <View>
-        <Text>Амжилттай</Text>
-        <Text>Амжилтгүй</Text>
-      </View>
-      <TabView
-        navigationState={{ index, routes }}
-        renderScene={renderScene}
-        onIndexChange={setIndex}
-        initialLayout={{ width: Dimensions.get('window').width }}
-        renderTabBar={props => (
-          <TabBar
-            {...props}
-            indicatorStyle={styles.indicator}
-            style={styles.tabBar}
-            labelStyle={styles.labelStyle}
-          />
-        )}
-      /> */}
-      {/* onChangeMethod={() => null} */}
       <Switch isSuccessful={isSuccessful} setIsSuccessful={setIsSuccessful}/>
       <View style={styles.tabContainer}>
      

@@ -27,12 +27,14 @@ const Button = ({ carwash, navigation }) => {
 
 const styles = StyleSheet.create({
   container: {
-    backgroundColor: '#1c6cce',
-    padding: 20,
+    backgroundColor: '#033669',
+    padding: 12,
     alignItems: 'center',
-    borderRadius: 15,
+    height:48,
+    borderRadius: 8,
     marginBottom: 20,
   },
+  
   buttonText: {
     fontSize: 20,
     color: '#fff',

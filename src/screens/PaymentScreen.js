@@ -39,10 +39,10 @@ const PaymentScreen = ({ route, navigation }) => {
           Alert.alert("Төлбөр амжилттай төлөгдлөө.");
           setPaymentStatus("paid");
           clearInterval(interval);
-          navigation.reset({
-            index: 0,
-            routes: [{ name: 'MyOrders' }],
-          });
+          // navigation.reset({
+          //   index: 0,
+          //   routes: [{ name: 'MyOrders' }],
+          // });
         }
       } catch (error) {
         console.error("Error checking booking status:", error);
@@ -111,19 +111,11 @@ const PaymentScreen = ({ route, navigation }) => {
        
       
       </View>
-     
-  
-      {/* <View style={styles.section}>
-        <Text style={styles.paragraph}>Банкны qpay үйлчилгээ ашиглан төлбөр төлөх холбоосууд харагдана.</Text>
-        {qrCode ? (
-        
-          <FastImage source={{ uri: qrCode }} style={styles.qrCode} />
-        ) : (
-          <Text>Loading QR Code...</Text>
-        )}
-      </View> */}
+    
       <View style={styles.containerUrls}>
       <Text style={styles.titleSub}>Банкны qpay үйлчилгээ ашиглан төлбөр төлөх холбоосууд</Text>
+     
+     
         {invoiceResponse.qrCode && invoiceResponse.qrCode.urls && invoiceResponse.qrCode.urls.map((url, index) => (
           <View key={index} style={styles.itemContainer}>
             <TouchableOpacity onPress={() => Linking.openURL(url.link)}>
@@ -135,6 +127,13 @@ const PaymentScreen = ({ route, navigation }) => {
       {loading && (
         <ActivityIndicator size="large" color="#FFF" style={styles.loadingIndicator} />
       )}
+       <View>
+      {qrCode ? (
+          <Image source={{ uri: qrCode }} style={styles.qrCode} />
+        ) : (
+          <Text>Loading QR Code...</Text>
+        )}
+      </View>
     </ScrollView>
   );
 };
@@ -228,9 +227,6 @@ const styles = StyleSheet.create({
     alignSelf: 'center',
   },
   containerUrls: {
-    // backgroundColor: '#fff',
-   
-    // marginTop: 20,
     padding: 20,
     flexDirection: 'row',
     flexWrap: 'wrap',

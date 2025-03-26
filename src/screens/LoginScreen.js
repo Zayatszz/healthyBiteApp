@@ -114,9 +114,7 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     marginBottom:34,
   },
-  labelContainer: {
-    marginBottom: 10,
-  },
+ 
   labelText: {
     fontSize: 12,
     fontFamily: "Inter-Regular",

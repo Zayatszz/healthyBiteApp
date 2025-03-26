@@ -1,6 +1,8 @@
 // api.js
 
-const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
+// const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
+
+const API_URL =  'https://c308-202-70-37-32.ngrok-free.app';
 
 // const API_URL = 'http://192.168.100.37:3003';
 // const API_URL = 'http://172.20.10.3:3003';
@@ -81,9 +83,11 @@ export const createInvoive = (invoiceDetails) => {
 
 export const filterCarwashes = async (filters) => {
   console.log(filters, "aaaaaaaaaaaa")
+  console.log(filters?.province, "province")
   const queryString = new URLSearchParams(filters).toString();
-  console.log(`/carwashservices/filter?${queryString}`)
-  return request(`/carwashservices/filter?${queryString}`, 'GET');
+  console.log(queryString, "queryString")
+  console.log(`/carwashservice/filter?${queryString}`)
+  return request(`/carwashservice/filter?${queryString}`, 'GET');
 };
 
 // api/user.js

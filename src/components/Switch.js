@@ -35,7 +35,6 @@ const Switch = ({ isSuccessful, setIsSuccessful }) => {
         <Animated.Text style={[styles.title]}>Амжилттай</Animated.Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.half} onPress={() => onChange(false)}>
-        {/* <Animated.Text style={[styles.title, colorStyle2]}>Амжилтгүй</Animated.Text> */}
         <Animated.Text style={[styles.title]}>Амжилтгүй</Animated.Text>
       </TouchableOpacity>
     </View>
