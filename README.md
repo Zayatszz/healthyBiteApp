@@ -1,4 +1,5 @@
 <<<<<<< HEAD
+<<<<<<< HEAD
 This is a new [**React Native**](https://reactnative.dev) project, bootstrapped using [`@react-native-community/cli`](https://github.com/react-native-community/cli).
 
 # Getting Started
@@ -81,3 +82,7 @@ To learn more about React Native, take a look at the following resources:
 =======
 # EmuApp
 >>>>>>> c2fbfd2d2ba96001a84f65676cadcf79d6a48720
+=======
+# healthyBiteApp
+Health-Based Smart Food Recommendation Solution
+>>>>>>> 95a5c93a61a317049a236aa91a25e4fa1592d684
