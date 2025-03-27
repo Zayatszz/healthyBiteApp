@@ -150,7 +150,7 @@ import {
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FlexHeader from '../components/FlexHeader';
-import FoodItem from '../components/CarWashItem1';
+import FoodItem from '../components/FoodItem';
 
 const defaultFoods = [
   {
@@ -199,6 +199,13 @@ const defaultFoods = [
     image: require('../../assets/logoo.png')
   },
 ];
+
+const imageMap = {
+  "/images/avocado-toast.jpg": require('../../assets/images/avocado-toast.jpg'),
+  "/images/scrambled-eggs.jpg": require('../../assets/images/scrambled-eggs.jpg'),
+  // бусад зургууд...
+};
+
 
 
 const AllCarwashScreen = ({ route, navigation }) => {
@@ -277,7 +284,7 @@ const AllCarwashScreen = ({ route, navigation }) => {
         horizontal={false}
         showsHorizontalScrollIndicator={false}
        
-        renderItem={({ item, index }) => <FoodItem carwash={item} index={index} navigation={navigation} />}
+        renderItem={({ item, index }) => <FoodItem food={item} index={index} navigation={navigation} />}
         contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
         keyExtractor={item => item.id.toString()}
       />

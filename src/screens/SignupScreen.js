@@ -19,7 +19,7 @@ const SignupScreen = ({ navigation }) => {
   const [loading, setLoading] = useState(false);
 
   const SignupSchema = Yup.object().shape({
-    email: Yup.string().email('Invalid email').required('Required'),
+    // email: Yup.string().email('Invalid email').required('Required'),
     userName: Yup.string().required('Required'),
     phoneNumber: Yup.string().required('Required'),
     password: Yup.string().min(6, 'Password too short!').required('Required'),
@@ -51,7 +51,6 @@ const SignupScreen = ({ navigation }) => {
       >
  <Formik
       initialValues={{
-        email: '',
         userName: '',
         phoneNumber: '',
         password: '',
@@ -103,7 +102,7 @@ const SignupScreen = ({ navigation }) => {
             <Text style={styles.errorText}>{errors.phoneNumber}</Text>
           ) : null}
 
-          <View style={styles.labelContainer}>
+          {/* <View style={styles.labelContainer}>
             <Text style={styles.labelText}>И-мэйл</Text>
           </View>
           <View style={styles.inputContainer}>
@@ -120,7 +119,7 @@ const SignupScreen = ({ navigation }) => {
           </View>
           {errors.email && touched.email ? (
             <Text style={styles.errorText}>{errors.email}</Text>
-          ) : null}
+          ) : null} */}
 
           <View style={styles.labelContainer}>
             <Text style={styles.labelText}>Нууц үг</Text>

@@ -11,13 +11,14 @@ import { ScrollView } from 'react-native';
 import Maps from '../components/Maps';
 
 
-const images = [
-  require('../../assets/carwashApp2.jpg'),
-  require('../../assets/carwashApp3.jpg'),
-  require('../../assets/carwashApp2.jpg'),
-  require('../../assets/carwashApp3.jpg'),
-];
+// const images = [
+//   require('../../assets/carwashApp2.jpg'),
+//   require('../../assets/carwashApp3.jpg'),
+//   require('../../assets/carwashApp2.jpg'),
+//   require('../../assets/carwashApp3.jpg'),
+// ];
 
+const defaultImage = require('../../assets/logoo.png') ; 
 const CarwashDetailScreen = ({ route, navigation }) => {
   const { carwash } = route.params;
   const { width } = useWindowDimensions();
@@ -38,7 +39,11 @@ const CarwashDetailScreen = ({ route, navigation }) => {
         <View style={styles.imgContainer}>
           <Animated.View style={styles.carwashImgContainer} sharedTransitionTag={carwash.id.toString()}>
             <SliderBox
-              images={images}
+              images={
+                carwash?.image
+                  ? [imageMap[carwash.image] || defaultImage]
+                  : [defaultImage]
+              }
               sliderBoxHeight={400}
               dotColor="#FFEE58"
               inactiveDotColor="#90A4AE"

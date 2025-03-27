@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -10,55 +10,59 @@ import {
 } from 'react-native';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FlexHeader from '../components/FlexHeader';
-import FoodItem from '../components/CarWashItem1';
+import FoodItem from '../components/FoodItem';
 import { fetchCarwashServiceList as fetchCarwashServiceListApi } from '../api/user';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { AuthContext } from '../context/AuthContext';
+import { getFavoriteFoods } from '../api/user';
 
 const FavFoodScreen = ({ navigation }) => {
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const [carwashList, setCarwashList] = useState([]);
   const [filteredCarwashList, setFilteredCarwashList] = useState([]);
+
+  const [favoriteFoods, setFavoriteFoods] = useState([]);
+
+  const { userInfo } = useContext(AuthContext);
   
   const [mealTime, setMealTime] = useState('Өглөө');
-  useFocusEffect(
-    useCallback(() => {
-      fetchCarwashList();
-    }, [])
-  );
+ 
 
   useEffect(() => {
-    filterCarwashesByName();
-  }, [searchText, mealTime, carwashList]);
+    const fetchFavorites = async () => {
+      try {
+        const data = await getFavoriteFoods(userInfo.id);
+        setFavoriteFoods(data);
+      } catch (error) {
+        console.error('Failed to fetch favorite foods:', error);
+      }
+    };
+  
+    fetchFavorites();
+  }, []);
 
-  const fetchCarwashList = async () => {
-    console.log("iishe orj bnu")
-    setLoading(true);
-    try {
-      const data = await fetchCarwashServiceListApi();
-      console.log("why hooson bh", data)
-      setCarwashList(data);
-      setFilteredCarwashList(data); // initialize with full data
-      console.log(filteredCarwashList.length )
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
-    }
-  };
+  useEffect(() => {
+    filterFavoriteFoodsByName();
+  }, [searchText, favoriteFoods]);
+  
+
+
 
   const handleSearch = (text) => {
     setSearchText(text);
   };
 
-  const filterCarwashesByName = () => {
-    const filtered = carwashList.filter(carwash =>
-      carwash.name.toLowerCase().includes(searchText.toLowerCase())
+ 
+  // SEARCH-ийг favoriteFoods дээр тулгуурлан шүүнэ
+const filterFavoriteFoodsByName = () => {
+    const filtered = favoriteFoods.filter(food =>
+      food.food.name.toLowerCase().includes(searchText.toLowerCase())
     );
     setFilteredCarwashList(filtered);
-    console.log(filtered)
   };
+  
 
   return (
     
@@ -79,19 +83,20 @@ const FavFoodScreen = ({ navigation }) => {
       {loading ? (
         <ActivityIndicator size="large" color="#0000ff" />
       ) : (
-        filteredCarwashList.length === 0 ? (
+        favoriteFoods.length === 0 ? (
           <Text style={styles.noResults}>Хоол олдсонгүй.</Text>
         ) : (
-          <FlatList
+            <FlatList
             data={filteredCarwashList}
             horizontal={false}
             showsHorizontalScrollIndicator={false}
             renderItem={({ item, index }) => (
-              <FoodItem carwash={item} index={index} navigation={navigation} />
+              <FoodItem food={item.food} index={index} navigation={navigation} isFavorite1={true} />
             )}
             contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
-            keyExtractor={item => item.id.toString()}
+            keyExtractor={item => item.id}
           />
+          
         )
       )}
     </View>

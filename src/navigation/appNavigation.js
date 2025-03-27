@@ -17,7 +17,7 @@ import EditProfileScreen from '../screens/EditProfileScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import StatisticsScreen from '../screens/StatisticsScreen';
-
+import DetailFoodScreen from '../screens/DetailFoodScreen';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -57,6 +57,8 @@ const AppNavigator = () => {
           <>
           <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
           <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen} options={{ headerShown: false }} />
+          <Stack.Screen name="DetailFood" component={DetailFoodScreen} options={{ headerShown: false }} />
+          
           <Stack.Screen name="AllCarwash" component={AllCarwashScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="FavFood" component={FavFoodScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Order" component={OrderScreen} options={{ headerShown: false }}/>

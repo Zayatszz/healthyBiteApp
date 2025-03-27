@@ -2,7 +2,7 @@
 
 // const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
 
-const API_URL =  'https://b9d1-157-15-7-118.ngrok-free.app';
+const API_URL =  'https://16a8-157-15-7-118.ngrok-free.app';
 
 // const API_URL = 'http://192.168.100.37:3003';
 // const API_URL = 'http://172.20.10.3:3003';
@@ -46,6 +46,34 @@ export const login = (emailOrPhoneNumber, password) => {
 export const signup = (userData) => {
   return request('/users', 'POST', userData);
 };
+
+export const fetchFoodList = (userId) => {
+  return request(`/foods?userId=${userId}`, 'GET');
+};
+
+
+export const toggleFavoriteFood = (userId, foodId) => {
+  return request('/favorite-foods/toggle', 'POST', { userId, foodId });
+};
+
+export const getFavoriteFoods = (userId) => {
+  return request(`/favorite-foods/${userId}`, 'GET');
+};
+
+export const logFood = (userId, foodId, mealType) => {
+  return request('/logged-foods', 'POST', { userId, foodId, mealType });
+};
+export const getLoggedFoods = (userId) => {
+  return request(`/logged-foods/${userId}`, 'GET');
+};
+export const deleteLoggedFood = (id) => {
+  return request(`/logged-foods/${id}`, 'DELETE');
+};
+
+
+
+
+
 
 
 export const fetchCarwashList = () => {

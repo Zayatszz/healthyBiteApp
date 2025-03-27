@@ -16,21 +16,22 @@ const StatisticsScreen = ({ navigation }) => {
   const [orders, setOrders] = useState([]);
   const [index, setIndex] = useState(0);
   const [isSuccessful, setIsSuccessful] = useState(true);
+
   const groupedMeals = [
     {
       date: '2025-03-12',
       meals: {
-        Өглөө: [{ id: 1, name: 'Scrambled egg breakfast', kcal: 359, time: '10 mins', image: require('../../assets/logoo.png') }],
-        Өдөр: [{ id: 2, name: 'Banana toast & egg', kcal: 359, time: '10 mins', image: require('../../assets/logoo.png') }],
-        Орой: [{ id: 3, name: 'Yogurt Parfait', kcal: 359, time: '10 mins', image: require('../../assets/logoo.png') }]
+        Өглөө: [{ id: 1, name: 'Scrambled egg breakfast', kcal: 359, time: '10 mins', image: require('../../assets/images/avocado-toast.jpg') }],
+        Өдөр: [{ id: 2, name: 'Banana toast & egg', kcal: 359, time: '10 mins', image: require('../../assets/images/scrambled-eggs.jpg') }],
+        Орой: [{ id: 3, name: 'Yogurt Parfait', kcal: 359, time: '10 mins', image: require('../../assets/images/chia-seed-pudding.jpg') }]
       }
     },
     {
       date: '2025-03-13',
       meals: {
-        Өглөө: [{ id: 1, name: 'Scrambled egg breakfast', kcal: 359, time: '10 mins', image: require('../../assets/logoo.png') }],
-        Өдөр: [{ id: 2, name: 'Banana toast & egg', kcal: 359, time: '10 mins', image: require('../../assets/logoo.png') }],
-        Орой: [{ id: 3, name: 'Yogurt Parfait', kcal: 359, time: '10 mins', image: require('../../assets/logoo.png') }]
+        Өглөө: [{ id: 1, name: 'Scrambled egg breakfast', kcal: 359, time: '10 mins', image: require('../../assets/images/avocado-toast.jpg') }],
+        Өдөр: [{ id: 2, name: 'Banana toast & egg', kcal: 359, time: '10 mins', image: require('../../assets/images/scrambled-eggs.jpg') }],
+        Орой: [{ id: 3, name: 'Yogurt Parfait', kcal: 359, time: '10 mins', image: require('../../assets/images/chia-seed-pudding.jpg') }]
       }
     }
   ];
