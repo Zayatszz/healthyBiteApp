@@ -4,8 +4,7 @@ import { AuthContext } from '../context/AuthContext';
 import { fetchUserOrders as fetchUserOrdersApi } from '../api/user';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import FlexHeader from '../components/FlexHeader';
-import Switch from '../components/Switch';
-import OrderItem from '../components/OrderItem';
+
 import NotificationItem from '../components/NotificationItem';
 
 const NotificationScreen = ({ navigation }) => {

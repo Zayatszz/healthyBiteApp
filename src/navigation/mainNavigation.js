@@ -125,7 +125,6 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import FavoritesScreen from '../screens/FavFoodScreen';
 import StatsScreen from '../screens/StatisticsScreen';
-import MyOrdersScreen from '../screens/MyOrdersScreen';
 
 const Tab = createBottomTabNavigator();
 

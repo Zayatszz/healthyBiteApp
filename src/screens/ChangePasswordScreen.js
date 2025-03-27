@@ -172,10 +172,10 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     borderColor: '#ccc',
     borderWidth: 1,
-    borderRadius: 8,
+    borderRadius: 16,
     marginBottom: 16,
     width: '100%',
-    height: 50,
+    height: 55,
   },
   input: {
     paddingHorizontal:16,
@@ -193,9 +193,9 @@ const styles = StyleSheet.create({
  
   button: {
     width: '100%',
-    height: 48,
-    backgroundColor: '#033669',
-    borderRadius: 8,
+    height: 55,
+    backgroundColor: '#50B86C',
+    borderRadius: 16,
     alignItems: 'center',
     justifyContent: 'center',
     paddingHorizontal:16, 

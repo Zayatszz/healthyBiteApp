@@ -5,7 +5,6 @@ import { fetchUserOrders as fetchUserOrdersApi } from '../api/user';
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import FlexHeader from '../components/FlexHeader';
 import Switch from '../components/Switch';
-import OrderItem from '../components/OrderItem';
 import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'; 
 import RegisteredMeals from '../components/RegisteredMeals';
@@ -13,8 +12,6 @@ import { LineChart } from 'react-native-chart-kit';
 const StatisticsScreen = ({ navigation }) => {
     const screenWidth = Dimensions.get('window').width - 40;
   const { userInfo } = useContext(AuthContext);
-  const [orders, setOrders] = useState([]);
-  const [index, setIndex] = useState(0);
   const [isSuccessful, setIsSuccessful] = useState(true);
 
   const groupedMeals = [
@@ -42,24 +39,8 @@ const StatisticsScreen = ({ navigation }) => {
   ]);
  
 
-  useEffect(() => {
-    fetchUserOrders();
-  }, []);
 
-  const fetchUserOrders = async () => {
-    try {
-      const data = await fetchUserOrdersApi(userInfo.id);
-      const sortedOrders = data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-      setOrders(sortedOrders);
-    } catch (error) {
-      console.error('Failed to fetch orders:', error);
-    }
-  };
-
-  const renderOrderItem = ({ item, index }) => (
-    <OrderItem order={item} index={index} />
-  );
-
+ 
   const SuccessfulOrders = () => (
     <View style={styles.tabContainer}>
       {/* <FlatList

@@ -89,7 +89,7 @@ const ProfileScreen = ({ navigation }) => {
         </View>
       </View>
       <View style={styles.infoOrder}>
-        <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('MyOrders')} disabled={loadingUpdate || loadingLogout}> 
+        <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('EditProfile')} disabled={loadingUpdate || loadingLogout}> 
           <View style={styles.flex}>
             <Feather name='settings' style={styles.icon} />
             <Text style={styles.text}>Хэрэглэгчийн тохиргоо</Text>

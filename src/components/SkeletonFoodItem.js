@@ -3,7 +3,7 @@ import React from 'react';
 import { View, StyleSheet } from 'react-native';
 import Skeleton from './Skeleton';
 
-const SkeletonCarWashItem = () => {
+const SkeletonFoodItem = () => {
   return (
     <View style={styles.container}>
       <Skeleton style={styles.image} />
@@ -38,4 +38,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default SkeletonCarWashItem;
+export default SkeletonFoodItem;

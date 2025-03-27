@@ -1,4 +1,4 @@
-// components/OrderItem.js
+
 
 import React, { useState } from 'react';
 import { View, Text, StyleSheet } from 'react-native';
@@ -27,7 +27,7 @@ const NotificationItem = ({ index }) => {
         </View>
         <View style={ styles.info}>
           <Text style={styles.text14}>2024-08-23</Text>
-          <Text style={styles.text}>Аму - энгийн гадна угаалгын захиалга амжилттай хийгдлээ. </Text>
+          <Text style={styles.text}>HealthyByte - таны хоол амжилттай нэмэгдлээ. </Text>
          
         </View>
  
