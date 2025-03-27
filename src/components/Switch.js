@@ -32,10 +32,10 @@ const Switch = ({ isSuccessful, setIsSuccessful }) => {
     <View style={styles.container}>
       <Animated.View style={[styles.switcher, style]} />
       <TouchableOpacity style={styles.half} onPress={() => onChange(true)}>
-        <Animated.Text style={[styles.title]}>Амжилттай</Animated.Text>
+        <Animated.Text style={[styles.title, colorStyle1]}>Хоол</Animated.Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.half} onPress={() => onChange(false)}>
-        <Animated.Text style={[styles.title]}>Амжилтгүй</Animated.Text>
+        <Animated.Text style={[styles.title, colorStyle2]}>Ус</Animated.Text>
       </TouchableOpacity>
     </View>
   )
@@ -45,9 +45,9 @@ export default Switch
 
 const styles = StyleSheet.create({
   container: {
-    width: width - 32,
-    height: 64,
-    borderRadius: 12,
+    width: width - 40,
+    height: 54,
+    borderRadius: 16,
     borderColor: '#E9E9E9',
     borderWidth: 1,
     // backgroundColor: '#F8F9FB',
@@ -55,15 +55,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     // padding: 4,
     alignSelf: 'center',
-    marginTop: 16
+    marginTop: 8
   },
   switcher: {
     width: SWITCHER_WIDTH,
-    height: 62,
-    borderRadius: 12,
+    height: 54,
+    borderRadius: 16,
     
-    backgroundColor: '#FFCC33',
+    backgroundColor: '#50B86C',
     position: 'absolute',
+    color:'#fff'
     // top: 4,
     // left: 4,
   },
@@ -74,7 +75,7 @@ const styles = StyleSheet.create({
   },
   title:{
     fontSize:16,
-    color:"#000",
+    color:"#828282",
     fontWeight:'500'
   }
 })

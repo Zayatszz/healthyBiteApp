@@ -15,6 +15,8 @@ import { updateUser as updateUserApi } from '../api/user';
 import FlexHeader from '../components/FlexHeader';
 import { Image } from 'moti';
 import Feather from 'react-native-vector-icons/Feather';
+import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
+
 import { Button } from 'react-native-paper';
 
 const ProfileScreen = ({ navigation }) => {
@@ -77,7 +79,10 @@ const ProfileScreen = ({ navigation }) => {
    
       <FlexHeader headerText={"Профайл"} navigation={navigation}/> 
       <View style={[styles.profileSection, styles.flex]}> 
-        <Image style={styles.profileImg} source={require("../../assets/carwashApp1.png")} />
+      {/* <FontAwesome name="user-circle-o" style={styles.userIcon} /> */}
+      <Ionicons name="person-circle-outline" style={styles.userIcon} />
+
+        {/* <Image style={styles.profileImg} source={require("../../assets/carwashApp1.png")} /> */}
         <View style={styles.userInfo}>
           <Text style={styles.userName}>{userInfo.userName}</Text>
           <Text style={styles.text12}>{userInfo.email}</Text>
@@ -86,16 +91,16 @@ const ProfileScreen = ({ navigation }) => {
       <View style={styles.infoOrder}>
         <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('MyOrders')} disabled={loadingUpdate || loadingLogout}> 
           <View style={styles.flex}>
-            <Feather name='server' style={styles.icon} />
-            <Text style={styles.text}>Миний захиалгууд</Text>
+            <Feather name='settings' style={styles.icon} />
+            <Text style={styles.text}>Хэрэглэгчийн тохиргоо</Text>
           </View>
           <Feather name='chevron-right' style={[styles.icon ]} />
         </TouchableOpacity>
         <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('EditProfile')} disabled={loadingUpdate || loadingLogout}> 
           <View style={styles.flex}> 
 
-            <Feather name='user' style={styles.icon} />
-            <Text style={styles.text}>Хувийн мэдээлэл</Text>
+            <MaterialCommunityIcons name='heart-pulse' style={styles.icon} />
+            <Text style={styles.text}>Эрүүл мэндийн мэдээлэл</Text>
           </View>
           <Feather name='chevron-right' style={[styles.icon ]} />
         </TouchableOpacity>
@@ -103,16 +108,21 @@ const ProfileScreen = ({ navigation }) => {
         
           <View style={styles.flex}> 
 
-            <Feather name='lock' style={styles.icon} />
-            <Text style={styles.text}>Нууц үг солих</Text>
+            <Feather name='bell' style={styles.icon} />
+            <Text style={styles.text}>Сонордуулга тохиргоо</Text>
           </View>
           <Feather name='chevron-right' style={[styles.icon ]} />
         </TouchableOpacity>
         
-        {/* <View style={[styles.info, styles.flex]} onPress={handleLogout}> 
-          <Feather name='log-out' style={styles.icon} />
-          <Text style={styles.text}>Гарах</Text>
-        </View> */}
+  
+        <TouchableOpacity style={[styles.info, styles.flex]} onPress={() => navigation.navigate('EditProfile')} disabled={loadingUpdate || loadingLogout}> 
+          <View style={styles.flex}> 
+
+            <Feather name='phone' style={styles.icon} />
+            <Text style={styles.text}>Холбоо барих</Text>
+          </View>
+          <Feather name='chevron-right' style={styles.iconRight } />
+        </TouchableOpacity>
         <TouchableOpacity style={[styles.info, styles.flex]} onPress={handleLogout}> 
           <Feather name='log-out' style={styles.icon} />
           <Text style={styles.text}>Гарах</Text>
@@ -120,9 +130,7 @@ const ProfileScreen = ({ navigation }) => {
       </View>
 
 
-      {/* <TouchableOpacity style={styles.button} onPress={handleLogout} disabled={loadingUpdate || loadingLogout}>
-        {loadingLogout ? <ActivityIndicator size="small" color="#FFF" /> : <Text style={styles.buttonText}>Гарах</Text>}
-      </TouchableOpacity> */}
+    
  
     </View>
   );
@@ -134,8 +142,9 @@ const styles = StyleSheet.create({
     backgroundColor:'#fff'
   },
   profileSection:{
-    paddingVertical:36,
-    paddingHorizontal:20
+    paddingTop:8,
+    paddingBottom:24,
+    paddingHorizontal:10
   },
   infoOrder:{
     paddingHorizontal:20
@@ -143,9 +152,9 @@ const styles = StyleSheet.create({
   info:{
     marginBottom:16,
     paddingHorizontal:24,
-    paddingVertical:16,
+    paddingVertical:24,
     borderWidth:1,
-    borderRadius:8,
+    borderRadius:16,
     borderColor:"#dadada"
   },
 
@@ -161,9 +170,15 @@ const styles = StyleSheet.create({
     paddingLeft:16,
    
   },
+  userIcon: {
+    fontSize: 120,
+    color: '#DADADA',
+  },
+  
   userName:{
     fontSize:16,
-    color: "#080b11",
+    color: "#000",
+    fontWeight:'600'
   },
   text12:{
     fontSize:12,
@@ -207,6 +222,11 @@ const styles = StyleSheet.create({
     fontSize: 24,
     color: '#000',
     // paddingRight: 16,
+  },
+  iconRight:{
+    fontSize: 24,
+    color: '#000',
+    paddingRight:100
   },
   input: {
     flex: 1,

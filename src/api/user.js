@@ -2,7 +2,7 @@
 
 // const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
 
-const API_URL =  'https://c308-202-70-37-32.ngrok-free.app';
+const API_URL =  'https://b9d1-157-15-7-118.ngrok-free.app';
 
 // const API_URL = 'http://192.168.100.37:3003';
 // const API_URL = 'http://172.20.10.3:3003';

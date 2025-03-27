@@ -8,6 +8,7 @@ import { View, ActivityIndicator } from 'react-native';
 import mainNavigation from './mainNavigation';
 import CarwashDetailScreen from '../screens/CarwashDetailScreen';
 import AllCarwashScreen from '../screens/AllCarwashScreen';
+import FavFoodScreen from '../screens/FavFoodScreen';
 import OrderScreen from '../screens/OrderScreen';
 import SplashScreen from '../screens/SplashScreen';
 import PaymentScreen from '../screens/PaymentScreen';
@@ -15,6 +16,7 @@ import MyOrdersScreen from '../screens/MyOrdersScreen';
 import EditProfileScreen from '../screens/EditProfileScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import NotificationScreen from '../screens/NotificationScreen';
+import StatisticsScreen from '../screens/StatisticsScreen';
 
 const Stack = createNativeStackNavigator();
 
@@ -56,10 +58,12 @@ const AppNavigator = () => {
           <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
           <Stack.Screen name="DetailCarwash" component={CarwashDetailScreen} options={{ headerShown: false }} />
           <Stack.Screen name="AllCarwash" component={AllCarwashScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="FavFood" component={FavFoodScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Order" component={OrderScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Payment" component={PaymentScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="MyOrders" component={MyOrdersScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="Statistics" component={StatisticsScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="ChangePass" component={ChangePasswordScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }}/>
         </>

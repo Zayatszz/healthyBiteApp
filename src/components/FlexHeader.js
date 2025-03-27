@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, StyleSheet, FlatList, ActivityIndicator, TextInput, Pressable } from 'react-native';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-
+import Ionicons from 'react-native-vector-icons/Ionicons'; 
 
 const FlexHeader = ({ headerText, navigation }) => {
 
@@ -9,7 +9,12 @@ const FlexHeader = ({ headerText, navigation }) => {
     
     <View style={[styles.flexHeader]}>
     <Pressable onPress={() => navigation.goBack()}>
-        <FontAwesome name='chevron-left' style={styles.icon} />
+      <View style={styles.iconBorder}>
+      {/* <Ionicons name='left' style={styles.icon} /> */}
+      <Ionicons name="chevron-back" size={24} color="#fff" />
+
+      </View>
+        
     </Pressable>
     <Text style={styles.headerTitle}>{headerText}</Text>
   </View>
@@ -18,11 +23,11 @@ const FlexHeader = ({ headerText, navigation }) => {
 
 const styles = StyleSheet.create({
     flexHeader: {
-        padding: 16,
+        padding: 20,
         // paddingBottom:15,
-        paddingHorizontal:30,
-        paddingRight:20,
-        backgroundColor: '#033669',
+        // paddingHorizontal:20,
+      
+        // backgroundColor: '#033669',
         width: '100%',
         flexDirection: 'row',
         // justifyContent: 'space-between',
@@ -34,9 +39,17 @@ const styles = StyleSheet.create({
       },
       headerTitle: {
         fontSize: 20,
-        fontWeight: '500',
+        fontWeight: 'bold',
         paddingLeft:20,
-        color: '#fff',
+        color: '#000',
+      },
+      iconBorder:{
+        width:40, 
+        height:40,
+        borderRadius:50,
+        backgroundColor: '#50B86C',
+        justifyContent: 'center', 
+        alignItems: 'center'
       },
       icon: {
         fontSize: 20,

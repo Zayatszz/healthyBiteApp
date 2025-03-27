@@ -1,39 +1,58 @@
-import React from "react";
+import React, { useState, useEffect } from 'react';
 import { View, Text, StyleSheet, TouchableOpacity, Image } from "react-native";
 import Animated, { FadeInDown } from "react-native-reanimated";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
-const CarWashItem = ({ carwash, navigation, index }) => {
+
+const FoodItem = ({ carwash, navigation, index }) => {
   const images = {
     'carwashApp1.png': require("../../assets/carwashApp1.png"),
     'carwashApp2.jpg': require("../../assets/carwashApp2.jpg"),
     'carwashApp3.jpg': require("../../assets/carwashApp3.jpg"),
   };
 
+  console.log("1", carwash)
+  const [isFavorite, setIsFavorite] = useState(carwash.isFavorite || false); 
+
+  const toggleFavorite = () => {
+    setIsFavorite(!isFavorite);
+  };
+
   return (
     <Animated.View entering={FadeInDown.delay(200*index)}>
 
     <TouchableOpacity onPress={() => navigation.navigate('DetailCarwash', { carwash, navigation })}>
-      <View style={styles.item}>
-        <Animated.Image 
+
+    <View style={styles.foodItem}>
+      <Animated.Image 
             sharedTransitionTag={carwash.id.toString()}
-            style={styles.carwashImg} 
+            style={styles.foodImage} 
             source={images[carwash.imageUrl]} 
         />
-        <View style={styles.flex}>
-          <Text style={styles.name}>{carwash.name}</Text>
-          <View style={styles.flexz}>
-
-          <FontAwesome name='star' style={{ color: '#FCBB45', fontSize: 20 }} />
-          <Text style={styles.paragraph}>{carwash.stars}</Text>
-          </View>
-        </View>
-        <Text style={styles.paragraph}>{carwash.location} </Text>
-        <Text style={styles.price}> ₮20,000 - ₮60,000</Text>
+      <View style={styles.foodContent}>
+        <Text style={styles.foodName}>{carwash.name}</Text>
+        <Text style={styles.foodDetails}>{carwash.name} kcal  |  {carwash.name}</Text>
       </View>
+   
+      <View style={styles.actionContainer}>
+      {/* Favorite icon - top right */}
+     
+      {/* Selection circle */}
+      <FontAwesome name="circle-thin" size={28} color="#F4C92F" />
+    </View>
+    <TouchableOpacity onPress={toggleFavorite} style={styles.heartIcon}>
+    {isFavorite ? (
+      <FontAwesome name="heart" size={16} color="#EF5A5A" />
+    ) : (
+      <FontAwesome name="heart-o" size={16} color="#C7C9D9" />
+    )}
+  </TouchableOpacity>
+
+    </View>
     </TouchableOpacity>
     </Animated.View>
   );
-}
+};
+
 
 const styles = StyleSheet.create({
   item: {
@@ -91,7 +110,52 @@ const styles = StyleSheet.create({
     fontWeight: 'bold',
     fontSize:17,
     color:"#000"
-  }
+  },
+
+
+  foodItem: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 20,
+    backgroundColor: '#FFF',
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#E6E6E6',
+    marginBottom: 16,
+  },
+  foodImage: {
+    width: 60,
+    height: 60,
+    borderRadius: 50,
+    marginRight: 16,
+  },
+  foodContent: {
+    flex: 1,
+  },
+  foodName: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000',
+  },
+  foodDetails: {
+    fontSize: 14,
+    color: '#6D7074',
+    marginTop: 4,
+  },
+  actions: {
+    alignItems: 'center',
+  },
+  actionContainer: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    position: 'relative',
+  },
+  heartIcon: {
+    position: 'absolute',
+    top: 10,
+    right: 10,
+    zIndex: 1,
+  },
 });
 
-export default CarWashItem;
+export default FoodItem;

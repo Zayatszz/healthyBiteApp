@@ -12,7 +12,7 @@ import {
 import { Formik } from 'formik';
 import * as Yup from 'yup';
 import { signup as signupApi } from '../api/user';
-
+import LinearGradient from 'react-native-linear-gradient';
 const logoImg = require('../../assets/logoo.png');
 
 const SignupScreen = ({ navigation }) => {
@@ -43,7 +43,13 @@ const SignupScreen = ({ navigation }) => {
   };
 
   return (
-    <Formik
+    <LinearGradient
+        colors={['#E5F5EA', '#FFFFFF']}
+        start={{ x: 0, y: 0 }}
+        end={{ x: 0, y: 1 }}
+        style={styles.container}
+      >
+ <Formik
       initialValues={{
         email: '',
         userName: '',
@@ -169,18 +175,21 @@ const SignupScreen = ({ navigation }) => {
         </View>
       )}
     </Formik>
+        </LinearGradient>
+        
+   
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
-    padding: 20,
+    // backgroundColor: '#FFF',
+    padding: 15,
   },
   section1: {
     alignItems: 'center',
-    paddingTop: 35,
+    paddingTop: 30,
     paddingBottom: 20,
     paddingHorizontal: 20,
   },
@@ -250,8 +259,8 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    height: 50,
-    backgroundColor: '#262626',
+    height: 60,
+    backgroundColor: '#50B86C',
     borderRadius: 10,
     alignItems: 'center',
     justifyContent: 'center',

@@ -4,8 +4,10 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../context/AuthContext.js';
 import { login as loginApi } from '../api/user.js';
+import LinearGradient from 'react-native-linear-gradient';
 
-const logoImg = require('../../assets/logoo.png');
+
+const logoImg = require('../../assets/logo1.png');
 
 const LoginScreen = ({ navigation }) => {
   const { login } = useContext(AuthContext);
@@ -28,7 +30,14 @@ const LoginScreen = ({ navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <LinearGradient
+    colors={['#E5F5EA', '#FFFFFF']}
+    start={{ x: 0, y: 0 }}
+    end={{ x: 0, y: 1 }}
+    style={styles.container}
+  >
+    
+     <View style={styles.container}>
       <View style={[styles.section1]}>
         <Image style={styles.logoImg} source={logoImg} />
         <Text style={styles.sectionTitle}>Тавтай морилно уу</Text>
@@ -77,15 +86,18 @@ const LoginScreen = ({ navigation }) => {
         </TouchableOpacity>
       </View>
     </View>
+ 
+    </LinearGradient>
+    
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#FFF',
+    // backgroundColor: '#FFF',
     paddingHorizontal: 20,
-    paddingTop:108
+    paddingTop:50
   },
   section1: {
     alignItems: 'center',
@@ -109,7 +121,7 @@ const styles = StyleSheet.create({
   logoImg: {
     // marginTop: 30,
     width: 105,
-    height: 62,
+    height: 120,
     borderRadius: 10,
     textAlign: 'center',
     marginBottom:34,
@@ -171,8 +183,8 @@ const styles = StyleSheet.create({
   },
   button: {
     width: '100%',
-    height: 48,
-    backgroundColor: '#033669',
+    height: 60,
+    backgroundColor: '#50B86C',
     borderRadius: 8,
     alignItems: 'center',
     justifyContent: 'center',
