@@ -7,7 +7,7 @@ import { AuthContext, AuthProvider } from '../context/AuthContext';
 import { View, ActivityIndicator } from 'react-native';
 import mainNavigation from './mainNavigation';
 
-import AllCarwashScreen from '../screens/AllCarwashScreen';
+import MealPlanScreen from '../screens/MealPlanScreen';
 import FavFoodScreen from '../screens/FavFoodScreen';
 import SplashScreen from '../screens/SplashScreen';
 
@@ -17,6 +17,7 @@ import ChangePasswordScreen from '../screens/ChangePasswordScreen';
 import NotificationScreen from '../screens/NotificationScreen';
 import StatisticsScreen from '../screens/StatisticsScreen';
 import DetailFoodScreen from '../screens/DetailFoodScreen';
+import QuestionnaireScreen from '../screens/QuestionnaireScreen';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
@@ -55,9 +56,10 @@ const AppNavigator = () => {
          token ? (
           <>
           <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
+          <Stack.Screen name="Question" component={QuestionnaireScreen} options={{ headerShown: false }} />
           <Stack.Screen name="DetailFood" component={DetailFoodScreen} options={{ headerShown: false }} />
           
-          <Stack.Screen name="AllCarwash" component={AllCarwashScreen} options={{ headerShown: false }}/>
+          <Stack.Screen name="AllCarwash" component={MealPlanScreen} options={{ headerShown: false }}/>
           <Stack.Screen name="FavFood" component={FavFoodScreen} options={{ headerShown: false }}/>
       
         

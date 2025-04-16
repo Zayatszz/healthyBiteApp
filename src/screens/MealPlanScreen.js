@@ -71,12 +71,12 @@ const imageMap = {
 
 
 
-const AllCarwashScreen = ({ route, navigation }) => {
+const MealPlanScreen = ({ route, navigation }) => {
 
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
   const { filteredList } = route.params;
-  const [filteredCarwashList, setFilteredCarwashList] = useState(filteredList);
+  const [filteredFoodList, setFilteredFoodList] = useState(filteredList);
 
   useEffect(() => {
     filterCarwashesByName();
@@ -90,7 +90,7 @@ const AllCarwashScreen = ({ route, navigation }) => {
     const filtered = filteredList.filter(carwash =>
       carwash.name.toLowerCase().includes(searchText.toLowerCase())
     );
-    setFilteredCarwashList(filtered);
+    setFilteredFoodList(filtered);
     console.log(filtered)
   };
   const [mealTime, setMealTime] = useState('Өглөө'); // default
@@ -98,7 +98,7 @@ const AllCarwashScreen = ({ route, navigation }) => {
 
  
 
-  console.log("Zaya's test", filteredCarwashList)
+  console.log("Zaya's test", filteredFoodList)
   return (
     <View style={styles.container}>
       <FlexHeader headerText={'Өглөөний хоол'} navigation={navigation} />
@@ -139,11 +139,11 @@ const AllCarwashScreen = ({ route, navigation }) => {
             {loading ? (
           <ActivityIndicator size="large" color="#0000ff" />
         ) : (
-          filteredCarwashList.length === 0 ? (
+          filteredFoodList.length === 0 ? (
             <Text style={styles.noResults}>Хоолны мэдээлэл олдсонгүй.</Text>
           ) : (
       <FlatList
-        data={filteredCarwashList}
+        data={filteredFoodList}
         horizontal={false}
         showsHorizontalScrollIndicator={false}
        
@@ -243,4 +243,4 @@ const styles = StyleSheet.create({
   
 });
 
-export default AllCarwashScreen;
+export default MealPlanScreen;

@@ -60,7 +60,7 @@ const FoodItem = ({ food, navigation, index, isFavorite1 = false }) => {
             source={imageMap[food.image] ? imageMap[food.image] : defaultImage}
           />
           <View style={styles.foodContent}>
-            <Text style={styles.foodName}>{food.name}</Text>
+            <Text style={styles.foodName}>{food.name} {food.isFavorite}</Text>
             <Text style={styles.foodDetails}>{food.calories} kcal | {food.cookingTime} mins</Text>
           </View>
 

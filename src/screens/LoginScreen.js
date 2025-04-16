@@ -3,7 +3,7 @@ import { View, Text, StyleSheet, Image, TouchableOpacity, TextInput, Alert, Acti
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import Ionicons from 'react-native-vector-icons/Ionicons';
 import { AuthContext } from '../context/AuthContext.js';
-import { login as loginApi } from '../api/user.js';
+import { login as loginApi, getUserById } from '../api/user.js';
 import LinearGradient from 'react-native-linear-gradient';
 
 
@@ -20,7 +20,24 @@ const LoginScreen = ({ navigation }) => {
     try {
       const data = await loginApi(emailOrPhoneNumber, password);
       await login(data.token, data.user);
-      navigation.navigate('Main');
+      // navigation.navigate('Main');
+
+      const fullUser = await getUserById(data.user.id);
+    console.log("fullUser info:", fullUser);
+
+    if (fullUser.healthInfo) {
+      //  HealthInfo байгаа бол
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Main' }]
+      });
+    } else {
+      //  HealthInfo байхгүй бол асуулгын дэлгэц рүү
+      navigation.reset({
+        index: 0,
+        routes: [{ name: 'Question' }]
+      });
+    }
     } catch (error) {
       Alert.alert('Error', 'Амжилтгүй. Та мэдээллээ шалгаад дахин оруулна уу.');
       console.log('Error msg:', error);

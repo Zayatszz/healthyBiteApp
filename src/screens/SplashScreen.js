@@ -5,7 +5,7 @@ import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityI
 import Ionicons from 'react-native-vector-icons/Ionicons';
 
 const { width, height } = Dimensions.get('window');
-const logoImg = require('../../assets/logoo.png');
+const logoImg = require('../../assets/logo1.png');
 
 const SplitAnimation = () => {
   const [isShowIcon, setShowIcon] = useState(false);

@@ -30,19 +30,34 @@ const FavFoodScreen = ({ navigation }) => {
   const [mealTime, setMealTime] = useState('Өглөө');
  
 
-  useEffect(() => {
-    const fetchFavorites = async () => {
-      try {
-        const data = await getFavoriteFoods(userInfo.id);
-        setFavoriteFoods(data);
-      } catch (error) {
-        console.error('Failed to fetch favorite foods:', error);
-      }
-    };
+  // useEffect(() => {
+  //   const fetchFavorites = async () => {
+  //     try {
+  //       const data = await getFavoriteFoods(userInfo.id);
+  //       setFavoriteFoods(data);
+  //     } catch (error) {
+  //       console.error('Failed to fetch favorite foods:', error);
+  //     }
+  //   };
   
-    fetchFavorites();
-  }, []);
+  //   fetchFavorites();
+  // }, []);
 
+  useFocusEffect(
+    useCallback(() => {
+      const fetchFavorites = async () => {
+        try {
+          const data = await getFavoriteFoods(userInfo.id);
+          setFavoriteFoods(data);
+        } catch (error) {
+          console.error('Failed to fetch favorite foods:', error);
+        }
+      };
+  
+      fetchFavorites();
+    }, [userInfo.id])
+  );
+  
   useEffect(() => {
     filterFavoriteFoodsByName();
   }, [searchText, favoriteFoods]);

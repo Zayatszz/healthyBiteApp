@@ -19,8 +19,10 @@ import { ProgressBar } from 'react-native-paper';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes , fetchFoodList as fetchFoodListApi } from '../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes , fetchMealPlan, fetchFoodList as fetchFoodListApi, getUserById } from '../api/user';
 import { AuthContext } from '../context/AuthContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 const logoImg = require('../../assets/logoo.png');
   
 
@@ -36,6 +38,29 @@ const HomeScreen = ({ navigation }) => {
   const [foodList, setFoodList] = useState([]);
   const { token, logout, userInfo, setUserInfo } = useContext(AuthContext);
 
+  const [healthData, setHealthData] = useState(null);
+
+  useFocusEffect(
+    useCallback(() => {
+      if (userInfo?.id) {
+        fetchUserInfo();
+        fetchFoodList();
+      }
+    }, [userInfo?.id])
+  );
+  
+const fetchUserInfo = async () => {
+  try {
+    const fullUser = await getUserById(userInfo.id);
+    // id-aar ni avah ym bndaa
+    if (fullUser.healthInfo?.healthData) {
+      setHealthData(fullUser.healthInfo.healthData);
+    }
+  } catch (error) {
+    console.error("Хэрэглэгчийн health info авахад алдаа:", error);
+  }
+};
+
   useEffect(() => {
     if (userInfo?.id) {
       fetchFoodList();
@@ -48,7 +73,7 @@ const HomeScreen = ({ navigation }) => {
   const fetchFoodList = async () => {
     setLoading(true);
     try {
-      const data = await fetchFoodListApi(userInfo.id);
+      const data = await fetchMealPlan(userInfo.id);
       // console.log("zaa check2", data)
       setFoodList(data);
     } catch (error) {
@@ -110,6 +135,11 @@ const HomeScreen = ({ navigation }) => {
                 {() => (
                   <View style={{ alignItems: 'center' }}>
                     <Text style={styles.centerValue}>2000</Text>
+                    {/* <Text style={styles.centerValue}>
+                      {healthData?.dailyCalories ?? '...'}
+                    </Text> */}
+
+
                     <Text style={styles.metricLabel}>ккал үлдсэн</Text>
                   </View>
                 )}
@@ -118,6 +148,11 @@ const HomeScreen = ({ navigation }) => {
 
             <View style={styles.metricBlock}>
               <Text style={styles.metricValueGreen}>1 л</Text>
+              {/* <Text style={styles.metricValueGreen}>
+                {healthData?.dailyWaterIntake
+                  ? `${(healthData.dailyWaterIntake / 1000).toFixed(1)} л`
+                  : '...'}
+              </Text> */}
               <Text style={styles.metricLabel}>Ус уусан</Text>
             </View>
           </View>
