@@ -10,7 +10,7 @@ import mainNavigation from './mainNavigation';
 import MealPlanScreen from '../screens/MealPlanScreen';
 import FavFoodScreen from '../screens/FavFoodScreen';
 import SplashScreen from '../screens/SplashScreen';
-
+import HomeScreen from '../screens/HomeScreen';
 
 import EditProfileScreen from '../screens/EditProfileScreen';
 import ChangePasswordScreen from '../screens/ChangePasswordScreen';
@@ -21,7 +21,8 @@ import QuestionnaireScreen from '../screens/QuestionnaireScreen';
 const Stack = createNativeStackNavigator();
 
 const AppNavigator = () => {
-  const { token, loading } = useContext(AuthContext);
+  const { token, loading, userInfo } = useContext(AuthContext);
+  // console.log("check health: ",userInfo.healthInfo)
   const [isShowSplash, setShowSplash] = useState(true);
 
   useEffect(() => {
@@ -41,42 +42,42 @@ const AppNavigator = () => {
   }
 
   return (
-    <Stack.Navigator
-      // screenOptions={{
-      //   headerStyle:{
-      //     backgroundColor:"yellow"
-      //   }
-      // }}
-    >  
-      {isShowSplash ? (
-        <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
-       
-      ) : (
-       
-         token ? (
-          <>
-          <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
-          <Stack.Screen name="Question" component={QuestionnaireScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="DetailFood" component={DetailFoodScreen} options={{ headerShown: false }} />
-          
-          <Stack.Screen name="AllCarwash" component={MealPlanScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name="FavFood" component={FavFoodScreen} options={{ headerShown: false }}/>
-      
-        
-          <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name="Statistics" component={StatisticsScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name="ChangePass" component={ChangePasswordScreen} options={{ headerShown: false }}/>
-          <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }}/>
-        </>
-          
-        ) : (
-          <>
-          <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
-          <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
-        </>
-        )
-      )}
-    </Stack.Navigator>
+    <Stack.Navigator>
+  {isShowSplash ? (
+    <Stack.Screen name="Splash" component={SplashScreen} options={{ headerShown: false }} />
+  ) : token ? (
+    userInfo?.healthInfo ? (
+      <>
+        <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
+        <Stack.Screen name="DetailFood" component={DetailFoodScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MealPlan" component={MealPlanScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="FavFood" component={FavFoodScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Statistics" component={StatisticsScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="ChangePass" component={ChangePasswordScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }}/>
+      </>
+    ) : (
+      <>
+        <Stack.Screen name="Question" component={QuestionnaireScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="Main" component={mainNavigation} options={{ headerShown: false }} />
+        <Stack.Screen name="DetailFood" component={DetailFoodScreen} options={{ headerShown: false }} />
+        <Stack.Screen name="MealPlan" component={MealPlanScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="FavFood" component={FavFoodScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="EditProfile" component={EditProfileScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Statistics" component={StatisticsScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="ChangePass" component={ChangePasswordScreen} options={{ headerShown: false }}/>
+        <Stack.Screen name="Notification" component={NotificationScreen} options={{ headerShown: false }}/>
+      </>
+    )
+  ) : (
+    <>
+      <Stack.Screen name="Login" component={LoginScreen} options={{ headerShown: false }} />
+      <Stack.Screen name="Signup" component={SignupScreen} options={{ headerShown: false }} />
+    </>
+  )}
+</Stack.Navigator>
+
   );
 };
 

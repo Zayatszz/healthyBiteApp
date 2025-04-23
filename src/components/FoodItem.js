@@ -6,7 +6,7 @@ import { AuthContext } from '../context/AuthContext';
 import { toggleFavoriteFood } from '../api/user';
 
 import { logFood } from '../api/user';
-const FoodItem = ({ food, navigation, index, isFavorite1 = false }) => {
+const FoodItem =  ({ food, navigation, index, mealType, isFavorite1 = false }) => {
   const defaultImage = require('../../assets/images/peanut-butter-toast.jpg');
 
   const imageMap = {
@@ -37,25 +37,33 @@ const FoodItem = ({ food, navigation, index, isFavorite1 = false }) => {
     }
   };
 
-  const handleRegisterFood = async () => {
+  // const handleRegisterFood = async () => {
+  //     try {
+  //       await logFood(userInfo.id, food.id, 'BREAKFAST'); // mealType
+  //       setIsLogged(true)
+  //       // alert('Хоол амжилттай бүртгэгдлээ!');
+  //       // navigation.goBack(); 
+  //     } catch (error) {
+  //       console.error('Хоол бүртгэхэд алдаа гарлаа:', error);
+  //       alert('Алдаа гарлаа. Дахин оролдоно уу.');
+  //     }
+  //   };
+    const handleRegisterFood = async () => {
       try {
-        await logFood(userInfo.id, food.id, 'BREAKFAST'); // mealType
-        setIsLogged(true)
-        // alert('Хоол амжилттай бүртгэгдлээ!');
-        // navigation.goBack(); 
+        await logFood(userInfo.id, food.id, mealType); // mealType дамжуулна
+        setIsLogged(true);
       } catch (error) {
         console.error('Хоол бүртгэхэд алдаа гарлаа:', error);
         alert('Алдаа гарлаа. Дахин оролдоно уу.');
       }
     };
 
-
   return (
     <Animated.View entering={FadeInDown.delay(200 * index)}>
       <TouchableOpacity onPress={() => navigation.navigate('DetailFood', { food })}>
         <View style={styles.foodItem}>
-          <Animated.Image
-            sharedTransitionTag={food.id.toString()}
+          <Image
+            // sharedTransitionTag={food.id.toString()}
             style={styles.foodImage}
             source={imageMap[food.image] ? imageMap[food.image] : defaultImage}
           />

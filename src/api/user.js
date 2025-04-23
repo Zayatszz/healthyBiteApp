@@ -2,7 +2,7 @@
 
 // const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
 
-const API_URL =  'https://afb4-157-15-7-117.ngrok-free.app';
+const API_URL =  'https://a77d-157-15-7-117.ngrok-free.app';
 
 
 // const API_URL = 'http://192.168.100.37:3003';
@@ -12,22 +12,16 @@ const request = async (endpoint, method, body) => {
   const headers = {
     'Content-Type': 'application/json',
   };
-
   const config = {
     method,
     headers,
   };
-
-  // if (body) {
-  //   config.body = JSON.stringify(body);
-  // }
   if (method === 'POST' && body) {
     config.body = JSON.stringify(body);
   }
 
   try {
     const response = await fetch(`${API_URL}${endpoint}`, config);
-
     if (response.ok) {
       return await response.json();
     } else {
@@ -56,13 +50,15 @@ export const fetchFoodList = (userId) => {
   return request(`/foods?userId=${userId}`, 'GET');
 };
 
-export const fetchMealPlan = (userId) => {
-  return request(`/mealPlan?userId=${userId}`, 'GET');
+export const fetchMealPlan = (userId, mealType) => {
+  return request(`/mealPlan?userId=${userId}&mealType=${mealType}`, 'GET');
 };
 
 export const toggleFavoriteFood = (userId, foodId) => {
   return request('/favorite-foods/toggle', 'POST', { userId, foodId });
 };
+
+
 
 export const getFavoriteFoods = (userId) => {
   return request(`/favorite-foods/${userId}`, 'GET');
@@ -71,9 +67,10 @@ export const getFavoriteFoods = (userId) => {
 export const logFood = (userId, foodId, mealType) => {
   return request('/logged-foods', 'POST', { userId, foodId, mealType });
 };
-export const getLoggedFoods = (userId) => {
-  return request(`/logged-foods/${userId}`, 'GET');
+export const getLoggedFoods = (userId, startDate, endDate) => {
+  return request(`/logged-foods/filter?userId=${userId}&startDate=${startDate}&endDate=${endDate}`, 'GET');
 };
+
 export const deleteLoggedFood = (id) => {
   return request(`/logged-foods/${id}`, 'DELETE');
 };

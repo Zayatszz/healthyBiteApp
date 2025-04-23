@@ -1,32 +1,43 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { getUserById } from '../api/user'; // энэ оруулна
 
 export const AuthContext = createContext();
 
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
+  const [loading, setLoading] = useState(true); //app эхлэхэд ачаалж буй эсэх
 
   useEffect(() => {
-    const loadToken = async () => {
-      const storedToken = await AsyncStorage.getItem('token');
-      const storedUser = await AsyncStorage.getItem('user');
-      if (storedToken) {
-        setToken(storedToken);
-      }
-      if (storedUser) {
-        setUserInfo(JSON.parse(storedUser));
+    const loadUserData = async () => {
+      try {
+        const storedToken = await AsyncStorage.getItem('token');
+        const storedUser = await AsyncStorage.getItem('user');
+
+        if (storedToken && storedUser) {
+          setToken(storedToken);
+          const parsedUser = JSON.parse(storedUser);
+
+          // ✅ getUserById-аар backend-ээс бүрэн мэдээлэл (healthInfo гэх мэт) авч байна
+          const fullUser = await getUserById(parsedUser.id);
+          setUserInfo(fullUser);
+        }
+      } catch (err) {
+        console.error("Auto-login error:", err);
+      } finally {
+        setLoading(false);
       }
     };
 
-    loadToken();
+    loadUserData();
   }, []);
 
   const login = async (newToken, user) => {
     setToken(newToken);
     setUserInfo(user);
     await AsyncStorage.setItem('token', newToken);
-    await AsyncStorage.setItem('user', JSON.stringify(user)); // Convert user object to JSON string
+    await AsyncStorage.setItem('user', JSON.stringify(user));
   };
 
   const logout = async () => {
@@ -37,7 +48,7 @@ export const AuthProvider = ({ children }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ token, login, logout, userInfo, setUserInfo }}>
+    <AuthContext.Provider value={{ token, login, logout, userInfo, setUserInfo, loading }}>
       {children}
     </AuthContext.Provider>
   );

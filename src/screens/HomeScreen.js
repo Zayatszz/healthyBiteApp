@@ -19,7 +19,7 @@ import { ProgressBar } from 'react-native-paper';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes , fetchMealPlan, fetchFoodList as fetchFoodListApi, getUserById } from '../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes , fetchMealPlan, fetchFoodList as fetchFoodListApi, getUserById, getLoggedFoods } from '../api/user';
 import { AuthContext } from '../context/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
@@ -30,12 +30,16 @@ const HomeScreen = ({ navigation }) => {
   const screenWidth = Dimensions.get('window').width - 40;
   const [carwashList, setCarwashList] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [selectedCarType, setSelectedCarType] = useState(null);
-  const [selectedWashType, setSelectedWashType] = useState(null);
-  const [selectedProvince, setSelectedProvince] = useState(null);
-  const [selectedDistrict, setSelectedDistrict] = useState(null);
 
   const [foodList, setFoodList] = useState([]);
+  const [loggedFood, setLoggedFood] = useState([]);
+  const [nutrition, setNutrition] = useState({
+    kcal: 0,
+    fat: 0,
+    protein: 0,
+    carb: 0
+  });
+  
   const { token, logout, userInfo, setUserInfo } = useContext(AuthContext);
 
   const [healthData, setHealthData] = useState(null);
@@ -44,7 +48,8 @@ const HomeScreen = ({ navigation }) => {
     useCallback(() => {
       if (userInfo?.id) {
         fetchUserInfo();
-        fetchFoodList();
+        loadLoggedFoods(); 
+        // fetchFoodList();
       }
     }, [userInfo?.id])
   );
@@ -61,32 +66,85 @@ const fetchUserInfo = async () => {
   }
 };
 
-  useEffect(() => {
-    if (userInfo?.id) {
-      fetchFoodList();
-    }
-  }, [userInfo?.id]);
+  // useEffect(() => {
+  //   if (userInfo?.id) {
+  //     fetchFoodList();
+  //   }
+  // }, [userInfo?.id]);
   
 
 
 
-  const fetchFoodList = async () => {
-    setLoading(true);
+
+  const loadLoggedFoods = async () => {
     try {
-      const data = await fetchMealPlan(userInfo.id);
-      // console.log("zaa check2", data)
-      setFoodList(data);
-    } catch (error) {
-      console.error(error);
-    } finally {
-      setLoading(false);
+      const startDate = new Date().toISOString().split("T")[0];
+      console.log("startDate: "+startDate)
+      console.log("id: "+userInfo.id )
+      const res = await getLoggedFoods(userInfo.id, startDate, startDate);
+      console.log("unuudur burtgegdsen hoolnuud: ", res)
+      setLoggedFood(res); // set state to use in JSX
+
+      // Тэжээлийн тооцоолол энд хийж болно
+      const kcal = res.reduce((sum, f) => sum + f.food.calories, 0);
+      const fat = res.reduce((sum, f) => sum + f.food.fat, 0);
+      const protein = res.reduce((sum, f) => sum + f.food.protein, 0);
+      const carb = res.reduce((sum, f) => sum + f.food.carb, 0);
+
+      setNutrition({ kcal, fat, protein, carb });
+    } catch (e) {
+      console.error('Logged food fetch error:', e);
     }
   };
+  
+  useFocusEffect(
+    useCallback(() => {
 
+       
+      loadLoggedFoods();
+        if (userInfo?.id) {
+          loadLoggedFoods();
+        }
+     
+      
+    }, [userInfo?.id])
+  );
 
-  const handleViewAll = () => {
-    navigation.navigate('AllCarwash', { filteredList: foodList });
+ 
+
+  // const handleViewAll = () => {
+  //   fetchFoodList()
+  //   navigation.navigate('MealPlan', { filteredList: foodList });
+  // };
+  const handleViewAll = (mealType) => {
+    console.log("check mealType: ", mealType)
+    // fetchFoodList(mealType);
+    // navigation.navigate('MealPlan', { filteredList: foodList, mealType });
+    navigation.navigate('MealPlan', {  mealType: mealType });
   };
+  
+  const getMealCalories = (mealType) => {
+    const totalMap = {
+      BREAKFAST: healthData?.dailyBreakfastCal ?? 0,
+      LUNCH: healthData?.dailyLunchCal ?? 0,
+      DINNER: healthData?.dailyDinnerCal ?? 0
+    };
+  
+    const loggedMap = {
+      BREAKFAST: loggedFood
+        .filter(f => f.mealType === 'BREAKFAST')
+        .reduce((sum, f) => sum + f.food.calories, 0),
+      LUNCH: loggedFood
+        .filter(f => f.mealType === 'LUNCH')
+        .reduce((sum, f) => sum + f.food.calories, 0),
+      DINNER: loggedFood
+        .filter(f => f.mealType === 'DINNER')
+        .reduce((sum, f) => sum + f.food.calories, 0),
+    };
+  
+    return `${loggedMap[mealType]}/${totalMap[mealType]} ккал`;
+  };
+  
 
 
   return (
@@ -119,31 +177,33 @@ const fetchUserInfo = async () => {
         <View style={styles.card}>
           <View style={styles.cardTopRow}>
             <View style={styles.metricBlock}>
-              <Text style={styles.metricValueGreen}>186 ккал</Text>
+              <Text style={styles.metricValueGreen}>{nutrition.kcal ?? 0} ккал</Text>
               <Text style={styles.metricLabel}>Идсэн</Text>
             </View>
 
             <View style={styles.circularProgressContainer}>
-              <AnimatedCircularProgress
-                size={130}
-                width={10}
-                fill={50}
-                tintColor="#F4C92F"
-                backgroundColor="#F0F0F0"
-                lineCap="round"
-              >
-                {() => (
-                  <View style={{ alignItems: 'center' }}>
-                    <Text style={styles.centerValue}>2000</Text>
-                    {/* <Text style={styles.centerValue}>
-                      {healthData?.dailyCalories ?? '...'}
-                    </Text> */}
+            <AnimatedCircularProgress
+              size={130}
+              width={10}
+              fill={
+                healthData?.dailyCalories && healthData.dailyCalories > 0
+                  ? (nutrition.kcal / healthData.dailyCalories) * 100
+                  : 0
+              }
+              tintColor="#F4C92F"
+              backgroundColor="#F0F0F0"
+              lineCap="round"
+            >
+              {() => (
+                <View style={{ alignItems: 'center' }}>
+                  <Text style={styles.centerValue}>
+                  {healthData?.dailyCalories - nutrition.kcal} 
+                  </Text>
+                  <Text style={styles.metricLabel}>ккал үлдсэн</Text>
+                </View>
+              )}
+            </AnimatedCircularProgress>
 
-
-                    <Text style={styles.metricLabel}>ккал үлдсэн</Text>
-                  </View>
-                )}
-              </AnimatedCircularProgress>
             </View>
 
             <View style={styles.metricBlock}>
@@ -160,18 +220,28 @@ const fetchUserInfo = async () => {
           <View style={styles.nutrientsRowHorizontal}>
             <View style={styles.nutrientBlockHorizontal}>
               <Text style={styles.nutrientLabelBold}>Өөх тос</Text>
-              <ProgressBar progress={0.43} color="#50B86C" style={styles.progressBar} />
-              <Text style={styles.nutrientValue}>28/64 г</Text>
+              {/* <ProgressBar progress={0.43} color="#50B86C" style={styles.progressBar} />
+              <Text style={styles.nutrientValue}>{nutrition.fat}/{fatGoal}</Text> */}
+              <ProgressBar progress={
+                healthData?.dailyFat
+                  ? (nutrition.fat ?? 0) / healthData.dailyFat
+                  : 0
+              } color="#50B86C" style={styles.progressBar} />
+              <Text style={styles.nutrientValue}>  {(nutrition.fat ?? 0).toFixed(1)}/{(healthData?.dailyFat ?? 0).toFixed(1)} г</Text>
             </View>
             <View style={styles.nutrientBlockHorizontal}>
               <Text style={styles.nutrientLabelBold}>Уураг</Text>
-              <ProgressBar progress={0.76} color="#50B86C" style={styles.progressBar} />
-              <Text style={styles.nutrientValue}>200/264 г</Text>
+              {/* <ProgressBar progress={0.76} color="#50B86C" style={styles.progressBar} />
+              <Text style={styles.nutrientValue}>200/264 г</Text> */}
+              <ProgressBar progress={healthData?.dailyProtein?(nutrition.protein??0 )/ healthData.dailyProtein:0} color="#50B86C" style={styles.progressBar} />
+              <Text style={styles.nutrientValue}>{(nutrition.protein ?? 0).toFixed(1)}/{(healthData?.dailyProtein??0).toFixed(1)} г</Text>
             </View>
             <View style={styles.nutrientBlockHorizontal}>
               <Text style={styles.nutrientLabelBold}>Нүүрс ус</Text>
-              <ProgressBar progress={0.83} color="#50B86C" style={styles.progressBar} />
-              <Text style={styles.nutrientValue}>250/300 г</Text>
+              {/* <ProgressBar progress={0.83} color="#50B86C" style={styles.progressBar} />
+              <Text style={styles.nutrientValue}>250/300 г</Text> */}
+              <ProgressBar progress={healthData?.dailyCarb?(nutrition.carb ??0)/ healthData.dailyCarb:0} color="#50B86C" style={styles.progressBar} />
+              <Text style={styles.nutrientValue}>{(nutrition.carb ?? 0).toFixed(1)}/{(healthData?.dailyCarb??0).toFixed(1)} г</Text>
             </View>
           </View>
         </View>
@@ -179,32 +249,40 @@ const fetchUserInfo = async () => {
         <View style={styles.foodSection}>
         <Text style={styles.title}>Бүртгэгдсэн хоол</Text>
 
-{[{
-  title: 'Өглөөний цай',
-  value: '384/384 ккал',
-  icon: require('../../assets/breakfast.png')
-}, {
-  title: 'Өдрийн хоол',
-  value: '100/513 ккал',
-  icon: require('../../assets/lunch.png')
-}, {
-  title: 'Оройн хоол',
-  value: '0/320 ккал',
-  icon: require('../../assets/dinner.png')
-}].map((item, index) => (
+        {[
+  {
+    title: 'Өглөөний цай',
+    icon: require('../../assets/breakfast.png'),
+    mealType: 'BREAKFAST'
+  },
+  {
+    title: 'Өдрийн хоол',
+    icon: require('../../assets/lunch.png'),
+    mealType: 'LUNCH'
+  },
+  {
+    title: 'Оройн хоол',
+    icon: require('../../assets/dinner.png'),
+    mealType: 'DINNER'
+  }
+].map((item, index) => (
   <View key={index} style={styles.foodCard}>
     <View style={styles.foodLeft}>
       <Image source={item.icon} style={styles.foodIcon} />
       <View>
         <Text style={styles.foodTitle}>{item.title}</Text>
-        <Text style={styles.foodKcal}>{item.value}</Text>
+        <Text style={styles.foodKcal}>
+          {getMealCalories(item.mealType)}
+        </Text>
       </View>
     </View>
-    <TouchableOpacity onPress={handleViewAll}>
+    <TouchableOpacity onPress={() => handleViewAll(item.mealType)}>
       <Text style={styles.addIcon}>+</Text>
     </TouchableOpacity>
   </View>
 ))}
+
+
 
         </View>
 
@@ -214,7 +292,7 @@ const fetchUserInfo = async () => {
           
           <View style={styles.waterRow}>
             <View>
-            <Text style={styles.boldText}>1500 мл</Text>
+            <Text style={styles.boldText}>{healthData?.dailyWaterIntake+ ' мл' ?? '...'} </Text>
             <Text style={styles.foodKcal}>Сүүлийнх 12:41</Text>
             <View style={styles.waterRow }>
             <TouchableOpacity style={styles.waterBtn}><Text style={styles.waterBtnText}>-</Text></TouchableOpacity>

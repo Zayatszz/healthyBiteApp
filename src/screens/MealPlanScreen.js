@@ -1,5 +1,4 @@
-
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import {
   View,
   Text,
@@ -7,152 +6,152 @@ import {
   FlatList,
   ActivityIndicator,
   TextInput,
-  TouchableOpacity,
-  Image
+  TouchableOpacity
 } from 'react-native';
-import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import AntDesign from 'react-native-vector-icons/AntDesign';
 import FlexHeader from '../components/FlexHeader';
 import FoodItem from '../components/FoodItem';
-
-const defaultFoods = [
-  {
-    id: '1',
-    name: 'Scrambled egg breakfast',
-    kcal: 359,
-    time: '10 mins',
-    isSelected: false,
-    isFavorite: false,
-    image: require('../../assets/logoo.png')
-  },
-  {
-    id: '2',
-    name: 'Yogurt Parfait',
-    kcal: 415,
-    time: '5 mins',
-    isSelected: true,
-    isFavorite: true,
-    image: require('../../assets/logoo.png')
-  },
-  {
-    id: '3',
-    name: 'Spinach Banana Smoothie',
-    kcal: 415,
-    time: '5 mins',
-    isSelected: false,
-    isFavorite: true,
-    image: require('../../assets/logoo.png')
-  },
-  {
-    id: '4',
-    name: 'Breakfast sandwich',
-    kcal: 465,
-    time: '10 mins',
-    isSelected: false,
-    isFavorite: false,
-    image: require('../../assets/logoo.png')
-  },
-  {
-    id: '5',
-    name: 'Banana toast & egg',
-    kcal: 444,
-    time: '5 mins',
-    isSelected: false,
-    isFavorite: false,
-    image: require('../../assets/logoo.png')
-  },
-];
-
-const imageMap = {
-  "/images/avocado-toast.jpg": require('../../assets/images/avocado-toast.jpg'),
-  "/images/scrambled-eggs.jpg": require('../../assets/images/scrambled-eggs.jpg'),
-  // бусад зургууд...
-};
-
-
+import { fetchMealPlan } from '../api/user';
+import { AuthContext } from '../context/AuthContext';
+import { useFocusEffect } from '@react-navigation/native';
+import { useCallback } from 'react';
 
 const MealPlanScreen = ({ route, navigation }) => {
-
   const [searchText, setSearchText] = useState('');
   const [loading, setLoading] = useState(false);
-  const { filteredList } = route.params;
-  const [filteredFoodList, setFilteredFoodList] = useState(filteredList);
+  const [foodList, setFoodList] = useState([]);
+  const [originalFoodList, setOriginalFoodList] = useState([]);
+  const [mealTime, setMealTime] = useState('Өглөө');
+
+  const { userInfo } = useContext(AuthContext);
+
+  const mealTypeMap = {
+    'Өглөө': 'breakfast',
+    'Өдөр': 'lunch',
+    'Орой': 'dinner',
+  };
+
+  // const reverseMealTypeMap = {
+  //   'breakfast': 'Өглөө',
+  //   'lunch': 'Өдөр',
+  //   'dinner': 'Орой',
+  // };
+
+  const reverseMealTypeMap = {
+    'BREAKFAST': 'Өглөө',
+    'LUNCH': 'Өдөр',
+    'DINNER': 'Орой',
+  };
+  
+  // Тэгээд:
+ 
+  
 
   useEffect(() => {
-    filterCarwashesByName();
+    // Home-оос ирсэн mealType-ийг mealTime-д хөрвүүлж оноох
+    console.log("mealPlan mealType: "+route.params?.mealType)
+    if (route.params?.mealType) {
+      const initialMealTime = reverseMealTypeMap[route.params.mealType?.toUpperCase()];
+      if (initialMealTime) {
+        setMealTime(initialMealTime);
+      }
+    }
+  }, [route.params?.mealType]);
+
+  const fetchFoodList = async (mealType) => {
+    setLoading(true);
+    try {
+      const data = await fetchMealPlan(userInfo.id, mealType);
+      setFoodList(data);
+      setOriginalFoodList(data);
+    } catch (error) {
+      console.error('Food fetch error:', error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useFocusEffect(
+    useCallback(() => {
+      fetchFoodList(mealTypeMap[mealTime]);
+    }, [mealTime])
+  );
+
+  useEffect(() => {
+    if (searchText === '') {
+      setFoodList(originalFoodList);
+    } else {
+      const filtered = originalFoodList.filter(item =>
+        item.name.toLowerCase().includes(searchText.toLowerCase())
+      );
+      setFoodList(filtered);
+    }
   }, [searchText]);
 
-  const handleSearch = (text) => {
-    setSearchText(text);
-  };
-
-  const filterCarwashesByName = () => {
-    const filtered = filteredList.filter(carwash =>
-      carwash.name.toLowerCase().includes(searchText.toLowerCase())
-    );
-    setFilteredFoodList(filtered);
-    console.log(filtered)
-  };
-  const [mealTime, setMealTime] = useState('Өглөө'); // default
-
-
- 
-
-  console.log("Zaya's test", filteredFoodList)
   return (
     <View style={styles.container}>
-      <FlexHeader headerText={'Өглөөний хоол'} navigation={navigation} />
+      <FlexHeader headerText={`${mealTime}ийн хоол`} navigation={navigation} />
+
       <View style={styles.searchSection}>
-        <View style={styles.searchInputz}>
+        <View style={styles.searchInput}>
           <AntDesign name='search1' style={styles.searchIcon} />
           <TextInput
             placeholder="Хоолны нэрээр хайх"
             value={searchText}
-            onChangeText={handleSearch}
+            onChangeText={setSearchText}
           />
         </View>
       </View>
 
       <View style={styles.mealTimeTabs}>
-  {['Өглөө', 'Өдөр', 'Орой'].map((label) => (
-    <TouchableOpacity
-      key={label}
-      onPress={() => setMealTime(label)}
-      style={[
-        styles.mealTimeBtn,
-        mealTime === label && styles.mealTimeBtnActive
-      ]}
-    >
-      <Text
-        style={[
-          styles.mealTimeText,
-          mealTime === label && styles.mealTimeTextActive
-        ]}
-      >
-        {label}
-      </Text>
-    </TouchableOpacity>
-  ))}
-</View>
+        {['Өглөө', 'Өдөр', 'Орой'].map(label => (
+          <TouchableOpacity
+            key={label}
+            onPress={() => setMealTime(label)}
+            style={[
+              styles.mealTimeBtn,
+              mealTime === label && styles.mealTimeBtnActive
+            ]}
+          >
+            <Text style={[
+              styles.mealTimeText,
+              mealTime === label && styles.mealTimeTextActive
+            ]}>
+              {label}
+            </Text>
+          </TouchableOpacity>
+        ))}
+      </View>
 
-      
-            {loading ? (
-          <ActivityIndicator size="large" color="#0000ff" />
-        ) : (
-          filteredFoodList.length === 0 ? (
-            <Text style={styles.noResults}>Хоолны мэдээлэл олдсонгүй.</Text>
-          ) : (
-      <FlatList
-        data={filteredFoodList}
-        horizontal={false}
-        showsHorizontalScrollIndicator={false}
-       
-        renderItem={({ item, index }) => <FoodItem food={item} index={index} navigation={navigation} />}
-        contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
-        keyExtractor={item => item.id.toString()}
-      />
-    )
+      {loading ? (
+        <ActivityIndicator size="large" color="#50B86C" />
+      ) : foodList.length === 0 ? (
+        <Text style={styles.noResults}>Хоолны мэдээлэл олдсонгүй.</Text>
+      ) : (
+        // <FlatList
+        //   data={foodList}
+        //   renderItem={({ item, index }) => (
+        //     <FoodItem food={item} index={index} navigation={navigation} />
+        //   )}
+        //   keyExtractor={item => item.id.toString()}
+        //   contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
+        // />
+        <FlatList
+  data={foodList}
+  renderItem={({ item, index }) => (
+    <FoodItem
+      food={item}
+      index={index}
+      navigation={navigation}
+      mealType={mealTypeMap[mealTime]} // ЭНЭГЭЭР дамжуулна
+    />
   )}
+  keyExtractor={item => item.id.toString()}
+  contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
+/>
+
+        
+      )}
     </View>
   );
 };
@@ -166,54 +165,27 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
     marginBottom: 8
   },
-  searchInputz: {
+  searchInput: {
     height: 60,
-    borderColor: '#E0E0E0',
     backgroundColor: '#F4F6F9',
-    borderWidth: 1,
     borderRadius: 16,
     paddingHorizontal: 20,
-    width: '100%',
     flexDirection: 'row',
     alignItems: 'center',
+    borderWidth: 1,
+    borderColor: '#E0E0E0',
   },
   searchIcon: {
     fontSize: 20,
-    paddingRight: 15
+    paddingRight: 15,
+    color: '#666'
   },
-  foodItem: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    padding: 16,
-    backgroundColor: '#FFF',
-    borderRadius: 16,
-    borderWidth: 1,
-    borderColor: '#E6E6E6',
-    marginBottom: 16,
+  noResults: {
+    marginTop: 40,
+    textAlign: 'center',
+    color: '#888',
+    fontSize: 16
   },
-  foodImage: {
-    width: 50,
-    height: 50,
-    borderRadius: 10,
-    marginRight: 16,
-  },
-  foodContent: {
-    flex: 1,
-  },
-  foodName: {
-    fontSize: 16,
-    fontWeight: 'bold',
-    color: '#000',
-  },
-  foodDetails: {
-    fontSize: 14,
-    color: '#6D7074',
-    marginTop: 4,
-  },
-  actions: {
-    alignItems: 'center',
-  },
-  // tab section
   mealTimeTabs: {
     flexDirection: 'row',
     justifyContent: 'space-between',
@@ -225,7 +197,7 @@ const styles = StyleSheet.create({
   },
   mealTimeBtn: {
     flex: 1,
-    paddingVertical: 8,
+    paddingVertical: 10,
     alignItems: 'center',
     borderRadius: 12,
   },
@@ -240,7 +212,6 @@ const styles = StyleSheet.create({
   mealTimeTextActive: {
     color: '#fff',
   },
-  
 });
 
 export default MealPlanScreen;

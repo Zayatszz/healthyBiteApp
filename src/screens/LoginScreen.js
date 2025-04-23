@@ -10,7 +10,7 @@ import LinearGradient from 'react-native-linear-gradient';
 const logoImg = require('../../assets/logo1.png');
 
 const LoginScreen = ({ navigation }) => {
-  const { login } = useContext(AuthContext);
+  const { login, setUserInfo  } = useContext(AuthContext);
   const [emailOrPhoneNumber, setEmailOrPhoneNumber] = useState('');
   const [password, setPassword] = useState('');
   const [loading, setLoading] = useState(false); // Loading state
@@ -19,25 +19,12 @@ const LoginScreen = ({ navigation }) => {
     setLoading(true); // Start loading indicator
     try {
       const data = await loginApi(emailOrPhoneNumber, password);
-      await login(data.token, data.user);
+     
       // navigation.navigate('Main');
 
       const fullUser = await getUserById(data.user.id);
+      await login(data.token, fullUser);
     console.log("fullUser info:", fullUser);
-
-    if (fullUser.healthInfo) {
-      //  HealthInfo байгаа бол
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Main' }]
-      });
-    } else {
-      //  HealthInfo байхгүй бол асуулгын дэлгэц рүү
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Question' }]
-      });
-    }
     } catch (error) {
       Alert.alert('Error', 'Амжилтгүй. Та мэдээллээ шалгаад дахин оруулна уу.');
       console.log('Error msg:', error);

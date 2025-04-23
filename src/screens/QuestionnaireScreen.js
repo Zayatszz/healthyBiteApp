@@ -4,6 +4,7 @@ import { fetchQuestions } from '../api/user';
 import { submitUserHealthInfo } from '../api/user';
 import { useContext } from 'react';
 import { AuthContext } from '../context/AuthContext';
+import { Modal } from 'react-native';
 const QuestionnaireScreen = ({ navigation }) => {
   const [questions, setQuestions] = useState([]);
   const [answers, setAnswers] = useState({});
@@ -50,6 +51,8 @@ const QuestionnaireScreen = ({ navigation }) => {
   
 
   const { userInfo } = useContext(AuthContext); // userId авах
+  const [showSuccessModal, setShowSuccessModal] = useState(false);
+const [modalData, setModalData] = useState({ calories: 0, water: 0 });
 
 const handleNext = async () => {
   const currentQ = questions[currentIndex];
@@ -65,9 +68,26 @@ const handleNext = async () => {
   } else {
     try {
       const payload = buildHealthInfoPayload(userInfo.id, questions, answers);
-      await submitUserHealthInfo(payload);
-      Alert.alert("Амжилттай", "Таны мэдээлэл амжилттай хадгалагдлаа!");
-      navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
+      const response = await submitUserHealthInfo(payload);
+      console.log("response: ", response)
+      setModalData({
+        calories: response.calories,
+        water: response.waterIntake
+      });
+      setShowSuccessModal(true);
+
+      // Alert.alert(
+      //   "Амжилттай!",
+      //   `Таны мэдээлэлд үндэслэн хоолны төлөвлөгөө амжилттай үүслээ.\n\nӨдөрт авах илчлэгийн хэмжээ: ${response.calories} ккал\nУух усны хэмжээ: ${response.waterIntake} мл`,
+      //   [
+      //     {
+      //       text: "OK",
+      //       onPress: () => navigation.reset({ index: 0, routes: [{ name: 'Main' }] })
+      //     }
+      //   ]
+      // );
+      // Alert.alert("Амжилттай", "Таны мэдээлэл амжилттай хадгалагдлаа!");
+      // navigation.reset({ index: 0, routes: [{ name: 'Main' }] });
     } catch (err) {
       console.error('Хадгалах үед алдаа:', err);
       Alert.alert("Алдаа", "Мэдээлэл илгээх үед алдаа гарлаа.");
@@ -177,6 +197,43 @@ const handleNext = async () => {
   
   return (
     <View style={styles.container}>
+      <Modal
+  animationType="fade"
+  transparent={true}
+  visible={showSuccessModal}
+  onRequestClose={() => setShowSuccessModal(false)}
+>
+  <View style={styles.modalBackdrop}>
+    <View style={styles.modalContainer}>
+      <Text style={styles.modalTitle}>Амжилттай!</Text>
+      <Text style={styles.modalText}>
+        Таны мэдээлэлд үндэслэн хоолны төлөвлөгөө амжилттай үүслээ.
+      </Text>
+      <Text style={styles.modalHighlight}>
+        Өдөрт авах илчлэгийн хэмжээ: {modalData.calories} ккал
+      </Text>
+      <Text style={styles.modalHighlight}>
+        Уух усны хэмжээ: {modalData.water} мл
+      </Text>
+      <TouchableOpacity
+  onPress={() => {
+    setShowSuccessModal(false);
+    navigation.reset({
+      index: 0,
+      routes: [{ name: 'Main' }],
+    });
+    // navigation.replace('Main');
+
+  }}
+  style={styles.modalButton}
+>
+  <Text style={styles.modalButtonText}>OK</Text>
+</TouchableOpacity>
+
+    </View>
+  </View>
+</Modal>
+
       {/* Дээд хэсэг: category, progress bar */}
       <Text style={styles.categoryText}>
         {currentQuestion.category === 'GENERAL' && 'Ерөнхий Мэдээлэл'}
@@ -352,4 +409,52 @@ const styles = StyleSheet.create({
     fontSize: 16,
     fontWeight: 'bold',
   },
+
+
+  // modal
+  modalBackdrop: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.4)',
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  modalContainer: {
+    width: '80%',
+    backgroundColor: '#fff',
+    borderRadius: 20,
+    padding: 24,
+    alignItems: 'center',
+    elevation: 10,
+  },
+  modalTitle: {
+    fontSize: 22,
+    fontWeight: 'bold',
+    color: '#50B86C',
+    marginBottom: 10,
+  },
+  modalText: {
+    fontSize: 16,
+    textAlign: 'center',
+    marginBottom: 10,
+    color: '#333',
+  },
+  modalHighlight: {
+    fontSize: 15,
+    fontWeight: '600',
+    color: '#1B1C1E',
+    marginBottom: 6,
+  },
+  modalButton: {
+    marginTop: 20,
+    backgroundColor: '#50B86C',
+    borderRadius: 8,
+    paddingVertical: 10,
+    paddingHorizontal: 24,
+  },
+  modalButtonText: {
+    color: '#fff',
+    fontWeight: 'bold',
+    fontSize: 16,
+  }
+  
 });
