@@ -125,10 +125,12 @@ import HomeScreen from '../screens/HomeScreen';
 import ProfileScreen from '../screens/ProfileScreen';
 import FavoritesScreen from '../screens/FavFoodScreen';
 import StatsScreen from '../screens/StatisticsScreen';
-
+import { useNavigation } from '@react-navigation/native';
+import MealPlanScreen from '../screens/MealPlanScreen';
 const Tab = createBottomTabNavigator();
 
 const MainNav = () => {
+  const navigation = useNavigation();
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -166,12 +168,12 @@ const MainNav = () => {
 
       <Tab.Screen
         name="Add"
-        component={ProfileScreen}
+        component={MealPlanScreen}
         options={{
           tabBarButton: (props) => (
             <TouchableOpacity
               style={styles.addButton}
-              onPress={() => console.log("Add Pressed")}
+              onPress={() => navigation.navigate('MealPlan')}
             >
               <Feather name="plus" size={28} color="#fff" />
             </TouchableOpacity>

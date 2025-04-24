@@ -61,18 +61,19 @@ const EditProfileScreen = ({ navigation }) => {
           <Text style={styles.labelText}>Нэр</Text>
         </View>
         <View style={styles.inputContainer}>
-          <TextInput
-            style={styles.input}
-            placeholder="Хэрэглэгчийн нэр"
-            value={userName}
-            onChangeText={setUserName}
-            keyboardType="phone-pad"
-            autoCapitalize="none"
-            placeholderTextColor="#A9A9A9"
-            returnKeyType="next"
-            onSubmitEditing={() => phoneNumber.current.focus()}
-            ref={userNameRef}
-          />
+        <TextInput
+          style={styles.input}
+          placeholder="Хэрэглэгчийн нэр"
+          value={userName}
+          onChangeText={setUserName}
+          keyboardType="default" 
+          autoCapitalize="none"
+          placeholderTextColor="#A9A9A9"
+          returnKeyType="next"
+          onSubmitEditing={() => phoneNumberRef.current.focus()}
+          ref={userNameRef}
+        />
+
         </View>
         <View >
           <Text style={styles.labelText}>Утасны дугаар</Text>

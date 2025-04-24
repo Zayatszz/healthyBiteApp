@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useContext } from 'react';
+import React, { useState, useEffect,useCallback, useContext } from 'react';
 import { View, Text, StyleSheet, FlatList, Dimensions, TouchableOpacity, Image, ScrollView } from 'react-native';
 import { AuthContext } from '../context/AuthContext';
 import { fetchUserOrders as fetchUserOrdersApi } from '../api/user';
@@ -9,38 +9,107 @@ import DateTimePicker from '@react-native-community/datetimepicker';
 import moment from 'moment'; 
 import RegisteredMeals from '../components/RegisteredMeals';
 import { LineChart } from 'react-native-chart-kit';
+import { getLoggedFoods, getLoggedWater } from '../api/user';
+import { useFocusEffect } from '@react-navigation/native';
 const StatisticsScreen = ({ navigation }) => {
+
     const screenWidth = Dimensions.get('window').width - 40;
   const { userInfo } = useContext(AuthContext);
   const [isSuccessful, setIsSuccessful] = useState(true);
 
-  const groupedMeals = [
-    {
-      date: '2025-03-12',
-      meals: {
-        Өглөө: [{ id: 1, name: 'Scrambled egg breakfast', kcal: 359, time: '10 mins', image: require('../../assets/images/avocado-toast.jpg') }],
-        Өдөр: [{ id: 2, name: 'Banana toast & egg', kcal: 359, time: '10 mins', image: require('../../assets/images/scrambled-eggs.jpg') }],
-        Орой: [{ id: 3, name: 'Yogurt Parfait', kcal: 359, time: '10 mins', image: require('../../assets/images/chia-seed-pudding.jpg') }]
-      }
-    },
-    {
-      date: '2025-03-13',
-      meals: {
-        Өглөө: [{ id: 1, name: 'Scrambled egg breakfast', kcal: 359, time: '10 mins', image: require('../../assets/images/avocado-toast.jpg') }],
-        Өдөр: [{ id: 2, name: 'Banana toast & egg', kcal: 359, time: '10 mins', image: require('../../assets/images/scrambled-eggs.jpg') }],
-        Орой: [{ id: 3, name: 'Yogurt Parfait', kcal: 359, time: '10 mins', image: require('../../assets/images/chia-seed-pudding.jpg') }]
-      }
-    }
-  ];
+  const [startDate, setStartDate] = useState(new Date());
+  const [endDate, setEndDate] = useState(new Date());
+  const [showStartPicker, setShowStartPicker] = useState(false);
+  const [showEndPicker, setShowEndPicker] = useState(false);
   
+  const [weeklyWaterData, setWeeklyWaterData] = useState([]);
+
+  const [groupedMeals, setGroupedMeals] = useState([]);
+const [weeklyCalories, setWeeklyCalories] = useState([]);
+
+  useFocusEffect(
+    useCallback(() => {
+      console.log("orj bnuda")
+      if (userInfo?.id && startDate && endDate) {
+        fetchGroupedMealsDirect();
+        fetchWeeklyWater();
+      }
+    }, [startDate, endDate, userInfo?.id])
+  );
+
+
+
+const fetchGroupedMealsDirect = async (customStartDate, customEndDate) => {
+  try {
+    const start = moment(customStartDate || startDate).format('YYYY-MM-DD');
+    const end = moment(customEndDate || endDate).format('YYYY-MM-DD');
+
+    console.log("📅 Fetch range:", start, "to", end);
+
+    const foods = await getLoggedFoods(userInfo.id, start, end);
+
+    const grouped = {};
+    const dailyKcal = {};
+
+    foods.forEach(log => {
+      const date = log.loggedDate.slice(0, 10);
+      const type = log.mealType === 'BREAKFAST' ? 'Өглөө'
+                  : log.mealType === 'LUNCH' ? 'Өдөр'
+                  : 'Орой';
+
+      if (!grouped[date]) grouped[date] = { Өглөө: [], Өдөр: [], Орой: [] };
+      grouped[date][type].push({
+        id: log.food.id,
+        name: log.food.nameMn,
+        kcal: log.food.calories,
+        time: `${log.food.cookingTime} мин`,
+        image: { uri: log.food.image }
+      });
+
+      dailyKcal[date] = (dailyKcal[date] || 0) + log.food.calories;
+    });
+
+    const result = Object.entries(grouped).map(([date, meals]) => ({ date, meals }));
+    const calorieArray = Object.entries(dailyKcal).map(([date, kcal]) => ({ date, kcal }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    setGroupedMeals(result);
+    setWeeklyCalories(calorieArray);
+  } catch (err) {
+    console.error('fetchGroupedMeals error:', err);
+  }
+};
+
+const fetchWeeklyWater = async (customStartDate, customEndDate) => {
+  try {
+    const start = moment(customStartDate || startDate).format('YYYY-MM-DD');
+    const end = moment(customEndDate || endDate).format('YYYY-MM-DD');
+
+    const res = await getLoggedWater(userInfo.id, start, end); // таны API-г ашиглана
+
+    const dailyTotals = {};
+    res.forEach(entry => {
+      const date = entry.loggedDate.slice(0, 10);
+      dailyTotals[date] = (dailyTotals[date] || 0) + entry.amount;
+    });
+
+    const sorted = Object.entries(dailyTotals)
+      .map(([date, amount]) => ({ date, amount }))
+      .sort((a, b) => new Date(a.date) - new Date(b.date));
+
+    setWeeklyWaterData(sorted);
+  } catch (error) {
+    console.error("Water filter error:", error);
+  }
+};
+
+
   const [routes] = useState([
     { key: 'successful', title: 'Амжилттай' },
     { key: 'unsuccessful', title: 'Амжилтгүй' },
   ]);
  
-
-
- 
+  
   const SuccessfulOrders = () => (
     <View style={styles.tabContainer}>
       {/* <FlatList
@@ -65,20 +134,26 @@ const StatisticsScreen = ({ navigation }) => {
     successful: SuccessfulOrders,
     unsuccessful: UnsuccessfulOrders,
   });
-  const [startDate, setStartDate] = useState(new Date('2025-03-12'));
-  const [endDate, setEndDate] = useState(new Date('2025-03-13'));
-  const [showStartPicker, setShowStartPicker] = useState(false);
-  const [showEndPicker, setShowEndPicker] = useState(false);
-  
+
   const onStartChange = (event, selectedDate) => {
     setShowStartPicker(false);
-    if (selectedDate) setStartDate(selectedDate);
+    if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+      setStartDate(selectedDate); // ⬅️ Заавал шинэ Date болго
+    }
+    // fetchGroupedMealsDirect(selectedDate, endDate);
+    // fetchWeeklyWater(selectedDate, endDate)
   };
   
   const onEndChange = (event, selectedDate) => {
     setShowEndPicker(false);
-    if (selectedDate) setEndDate(selectedDate);
+    console.log("startDate: ",selectedDate)
+    if (selectedDate instanceof Date && !isNaN(selectedDate)) {
+      setEndDate(selectedDate); // ⬅️ Заавал шинэ Date болго
+    }
   };
+  
+  
+  
 
   return (
     <ScrollView contentContainerStyle={styles.contentContainer}>
@@ -86,12 +161,7 @@ const StatisticsScreen = ({ navigation }) => {
       <FlexHeader headerText={"Миний үзүүлэлтүүд"} navigation={navigation}/>
       <Switch isSuccessful={isSuccessful} setIsSuccessful={setIsSuccessful}/>
       <View style={styles.tabContainer}>
-     
-
-      <>
-      {isSuccessful && (
-        <View>
-            <View style={styles.dateContainer}>
+      <View style={styles.dateContainer}>
   <TouchableOpacity style={styles.dateBox} onPress={() => setShowStartPicker(true)}>
     <Text style={styles.dateText}>{moment(startDate).format('MM/DD/YYYY')}</Text>
   </TouchableOpacity>
@@ -118,6 +188,11 @@ const StatisticsScreen = ({ navigation }) => {
   />
 )}
 
+
+      <>
+      {isSuccessful && (
+        <View>
+ 
          
 
        
@@ -132,33 +207,33 @@ const StatisticsScreen = ({ navigation }) => {
             <Text style={{ color: '#000', fontSize:12, fontWeight:'bold' }}>2024/10/22-26</Text>
             {/* <Text style={{ fontWeight: 'bold', color: '#1B1C1E', fontSize:16 }}>7 Бүртгэл</Text> */}
           </View>
-          <LineChart
-            data={{
-              labels: ['1', '2', '3', '4', '5', '6', '7'],
-              datasets: [
-                {
-                  data: [200, 450, 300, 800, 1200, 600, 1100],
-                },
-              ],
-            }}
-            width={screenWidth-40}
-            height={200}
-            chartConfig={{
-              backgroundColor: '#fff',
-              backgroundGradientFrom: '#fff',
-              backgroundGradientTo: '#fff',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(65, 171, 248, ${opacity})`,
-              labelColor: () => '#000',
-              propsForDots: {
-                r: '4',
-                strokeWidth: '2',
-                stroke: '#4BC0C0',
-              },
-            }}
-            bezier
-            style={{ borderRadius: 8 }}
-          />
+      
+          {weeklyCalories && weeklyCalories.length > 0 ? (
+  <LineChart
+    data={{
+      labels: weeklyCalories.map(item => moment(item.date).format('MM/DD')),
+      datasets: [{ data: weeklyCalories.map(item => item.kcal) }]
+    }}
+    width={screenWidth - 40}
+    height={200}
+    chartConfig={{
+      backgroundColor: '#fff',
+      backgroundGradientFrom: '#fff',
+      backgroundGradientTo: '#fff',
+      decimalPlaces: 0,
+      color: (opacity = 1) => `rgba(65, 171, 248, ${opacity})`,
+      labelColor: () => '#000',
+      propsForDots: { r: '4', strokeWidth: '2', stroke: '#4BC0C0' },
+    }}
+    bezier
+    style={{ borderRadius: 8 }}
+  />
+) : (
+  <View style={{ padding: 20, alignItems: 'center' }}>
+    <Text style={{ color: '#888', fontSize: 14 }}>Мэдээлэл олдсонгүй</Text>
+  </View>
+)}
+
           <View style={styles.chartFooter}>
   <Text style={styles.chartLabel}>Дундаж калори</Text>
   <Text style={styles.chartValue}>1800 ккал</Text>
@@ -222,7 +297,7 @@ const StatisticsScreen = ({ navigation }) => {
         {/* <Text style={{ fontWeight: 'bold', color: '#1B1C1E', fontSize: 16 }}>7 Өдөр</Text> */}
       </View>
 
-      <LineChart
+      {/* <LineChart
         data={{
           labels: ['1', '2', '3', '4', '5', '6', '7'],
           datasets: [
@@ -248,12 +323,49 @@ const StatisticsScreen = ({ navigation }) => {
         }}
         bezier
         style={{ borderRadius: 8 }}
-      />
+      /> */}
+      {weeklyWaterData.length > 0 ? (
+        <LineChart
+          data={{
+            labels: weeklyWaterData.map(item => moment(item.date).format('MM/DD')),
+            datasets: [{ data: weeklyWaterData.map(item => item.amount) }]
+          }}
+          width={screenWidth - 40}
+          height={200}
+          chartConfig={{
+            backgroundColor: '#fff',
+            backgroundGradientFrom: '#fff',
+            backgroundGradientTo: '#fff',
+            decimalPlaces: 0,
+            color: (opacity = 1) => `rgba(77, 133, 255, ${opacity})`,
+            labelColor: () => '#000',
+            propsForDots: {
+              r: '4',
+              strokeWidth: '2',
+              stroke: '#4D85FF',
+            },
+          }}
+          bezier
+          style={{ borderRadius: 8 }}
+        />
+      ) : (
+        <Text style={{ textAlign: 'center', padding: 16 }}>Мэдээлэл олдсонгүй</Text>
+      )}
 
       <View style={styles.chartFooter}>
         <Text style={styles.chartLabel}>Дундаж усны хэмжээ</Text>
-        <Text style={styles.chartValue}>1230 мл</Text>
+        <Text style={styles.chartValue}>
+          {weeklyWaterData.length > 0
+            ? `${Math.round(weeklyWaterData.reduce((a, b) => a + b.amount, 0) / weeklyWaterData.length)} мл`
+            : '---'}
+        </Text>
       </View>
+   
+ 
+      {/* <View style={styles.chartFooter}>
+        <Text style={styles.chartLabel}>Дундаж усны хэмжээ</Text>
+        <Text style={styles.chartValue}>1230 мл</Text>
+      </View> */}
     </View>
   </View>
 )}
@@ -438,3 +550,4 @@ const styles = StyleSheet.create({
 });
 
 export default StatisticsScreen;
+

@@ -19,12 +19,15 @@ import { ProgressBar } from 'react-native-paper';
 import { AnimatedCircularProgress } from 'react-native-circular-progress';
 import { LineChart } from 'react-native-chart-kit';
 import { Dimensions } from 'react-native';
-import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes , fetchMealPlan, fetchFoodList as fetchFoodListApi, getUserById, getLoggedFoods } from '../api/user';
+import { fetchCarwashServiceList as fetchCarwashServiceListApi, filterCarwashes , fetchMealPlan,
+   fetchFoodList as fetchFoodListApi, getUserById, getLoggedFoods, getLoggedWater, logWater, getWeeklyLoggedFoods } from '../api/user';
 import { AuthContext } from '../context/AuthContext';
 import { useFocusEffect } from '@react-navigation/native';
 import { useCallback } from 'react';
+import { Modal } from 'react-native';
 const logoImg = require('../../assets/logoo.png');
-  
+const cupImage = require('../../assets/cup.png');
+
 
 const HomeScreen = ({ navigation }) => {
   const screenWidth = Dimensions.get('window').width - 40;
@@ -33,6 +36,8 @@ const HomeScreen = ({ navigation }) => {
 
   const [foodList, setFoodList] = useState([]);
   const [loggedFood, setLoggedFood] = useState([]);
+  const [cupSizeModalVisible, setCupSizeModalVisible] = useState(false);
+const [selectedCupSize, setSelectedCupSize] = useState(250);
   const [nutrition, setNutrition] = useState({
     kcal: 0,
     fat: 0,
@@ -49,10 +54,13 @@ const HomeScreen = ({ navigation }) => {
       if (userInfo?.id) {
         fetchUserInfo();
         loadLoggedFoods(); 
+        loadLoggedWaters();
+        loadWeeklyLoggedFoods();
         // fetchFoodList();
       }
     }, [userInfo?.id])
   );
+
   
 const fetchUserInfo = async () => {
   try {
@@ -72,9 +80,86 @@ const fetchUserInfo = async () => {
   //   }
   // }, [userInfo?.id]);
   
+const [weeklyChartData, setWeeklyChartData] = useState({
+  labels: [],
+  datasets: [{ data: [] }]
+});
+
+const loadWeeklyLoggedFoods = async () => {
+  try {
+    const res = await getWeeklyLoggedFoods(userInfo.id);
+
+    const labels = res.map(item => item.date.slice(5)); // 04-24
+    const data = res.map(item => {
+      const kcal = Number(item.totalKcal);
+      return isFinite(kcal) && !isNaN(kcal) ? kcal : 0;
+    });
+
+    setWeeklyChartData({
+      labels,
+      datasets: [{ data }]
+    });
+  } catch (error) {
+    console.error("Weekly food fetch error:", error);
+  }
+};
 
 
+const cleanChartEntries = weeklyChartData.labels
+  .map((label, i) => {
+    const val = weeklyChartData.datasets[0].data[i];
+    return (typeof label === 'string' && isFinite(val) && !isNaN(val))
+      ? { label, value: val }
+      : null;
+  })
+  .filter(item => item !== null);
 
+const safeLabels = cleanChartEntries.map(item => item.label);
+const safeData = cleanChartEntries.map(item => item.value);
+console.log("Labels:", weeklyChartData.labels);
+console.log("Raw data:", weeklyChartData.datasets[0].data);
+console.log("Safe Labels:", safeLabels);
+console.log("Safe Data:", safeData);
+
+
+  const [loggedWaters, setLoggedWaters] = useState([]);
+  const [totalWater, setTotalWater] = useState(0);
+  
+  // tuhain udurt burtgesen usnii hemjeeg avna.
+  const loadLoggedWaters = async () => {
+    try {
+      const startDate = new Date().toISOString().split("T")[0];
+      const res = await getLoggedWater(userInfo.id, startDate, startDate);
+      setLoggedWaters(res);
+  
+      const total = res.reduce((sum, item) => sum + item.amount, 0);
+      setTotalWater(total);
+    } catch (error) {
+      console.error("Water fetch error:", error);
+    }
+  };
+
+  // tuhain udurt burtgesen usiig nemeh hasah zergeer update hiine
+  const addWaterLog = async () => {
+    try {
+      await logWater(userInfo.id, selectedCupSize); // API call
+      loadLoggedWaters(); // Refresh
+    } catch (error) {
+      console.error("Add water error:", error);
+    }
+  };
+  
+  const removeWaterLog = async () => {
+    if (!userInfo?.id || totalWater === 0) return;
+  
+    try {
+      await logWater(userInfo.id, -selectedCupSize); // сөрөг утгаар
+      loadLoggedWaters(); // Refresh data
+    } catch (error) {
+      console.error("Remove water error:", error);
+    }
+  };
+  
 
   const loadLoggedFoods = async () => {
     try {
@@ -165,7 +250,7 @@ const fetchUserInfo = async () => {
             <Feather name='user' style={styles.userIcon} />
 
               </View>
-            <Text style={styles.greeting}>Сайн уу, Заяа!</Text>
+            <Text style={styles.greeting}>Сайн уу, {userInfo.userName}!</Text>
             <TouchableOpacity onPress={() => navigation.navigate('Notification')}>
               <Ionicons name='notifications' style={styles.bellIcon} />
             </TouchableOpacity>
@@ -288,78 +373,121 @@ const fetchUserInfo = async () => {
 
         
         <Text style={styles.title}>Уусан ус</Text>
-        <View style={styles.card}>
-          
-          <View style={styles.waterRow}>
-            <View>
-            <Text style={styles.boldText}>{healthData?.dailyWaterIntake+ ' мл' ?? '...'} </Text>
-            <Text style={styles.foodKcal}>Сүүлийнх 12:41</Text>
-            <View style={styles.waterRow }>
-            <TouchableOpacity style={styles.waterBtn}><Text style={styles.waterBtnText}>-</Text></TouchableOpacity>
-            <Text style={styles.waterAmount}>6</Text>
-            <TouchableOpacity style={styles.waterBtn}><Text style={styles.waterBtnText}>+</Text></TouchableOpacity>
-            
-            </View>
-            <Text style={styles.foodKcal}>2 аяга ус үлдсэн</Text>
-            
-            </View>
-            
-           
-            <View style={styles.waterGlass}>
-              <View style={styles.waterFill}><Text style={styles.waterPercent}>80%</Text></View>
-            </View>
-          </View>
-          
-          <View style={styles.waterRow}>
-            <TouchableOpacity><Text style={styles.linkText}>Аяганы хэмжээ тохируулах</Text></TouchableOpacity>
-           
-            {/* <Text style={styles.addIcon}>+</Text> */}
-            <View style={styles.waterRow }>
-            <TouchableOpacity style={styles.waterMeasureBtn}>
-              <Text style={styles.waterMeasureBtnText}>-</Text>
-              </TouchableOpacity>
-            <Text style={styles.waterMeasure}>250 мл</Text>
-            <TouchableOpacity style={styles.waterMeasureBtn}><Text style={styles.waterMeasureBtnText}>+</Text></TouchableOpacity>
-            
-            </View>
-            
-          </View>
-        </View>
+<View style={styles.card}>
+  <View style={styles.waterRow}>
+    <View>
+      <Text style={styles.boldText}>
+        {totalWater} мл / {healthData?.dailyWaterIntake ?? '...'} мл
+      </Text>
+      <Text style={styles.foodKcal}>
+        Сүүлийнх: {loggedWaters.at(-1)?.loggedDate?.slice(11, 16) ?? '--:--'}
+      </Text>
+      <View style={styles.waterRow}>
+        <TouchableOpacity style={styles.waterBtn} onPress={removeWaterLog}>
+          <Text style={styles.waterBtnText}>-</Text>
+        </TouchableOpacity>
+        <Text style={styles.waterAmount}>{loggedWaters.length}</Text>
+        <TouchableOpacity style={styles.waterBtn} onPress={addWaterLog}>
+          <Text style={styles.waterBtnText}>+</Text>
+        </TouchableOpacity>
+      </View>
+      <Text style={styles.foodKcal}>
+        {healthData?.dailyWaterIntake
+          ? `${Math.max(0, Math.ceil((healthData.dailyWaterIntake - totalWater) / selectedCupSize))} аяга ус үлдсэн`
+          : '...'}
+      </Text>
+    </View>
 
-        <Text style={styles.title}>Таны 7 хоногийн үзүүлэлт</Text>
-        <View style={[styles.card, { marginBottom: 100 }]}>
-          <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
-            <Text style={{ color: '#000', fontSize:12, fontWeight:'bold' }}>2024/10/22-26</Text>
-            <Text style={{ fontWeight: 'bold', color: '#1B1C1E', fontSize:16 }}>7 Бүртгэл</Text>
-          </View>
-          <LineChart
-            data={{
-              labels: ['1', '2', '3', '4', '5', '6', '7'],
-              datasets: [
-                {
-                  data: [200, 450, 300, 800, 1200, 600, 1100],
-                },
-              ],
-            }}
-            width={screenWidth-40}
-            height={200}
-            chartConfig={{
-              backgroundColor: '#fff',
-              backgroundGradientFrom: '#fff',
-              backgroundGradientTo: '#fff',
-              decimalPlaces: 0,
-              color: (opacity = 1) => `rgba(65, 171, 248, ${opacity})`,
-              labelColor: () => '#000',
-              propsForDots: {
-                r: '4',
-                strokeWidth: '2',
-                stroke: '#4BC0C0',
-              },
-            }}
-            bezier
-            style={{ borderRadius: 8 }}
-          />
+    <View style={styles.waterGlass}>
+      <View style={[styles.waterFill, { height: `${Math.min((totalWater / (healthData?.dailyWaterIntake ?? 1)) * 100, 100)}%` }]}>
+        <Text style={styles.waterPercent}>
+          {Math.min((totalWater / (healthData?.dailyWaterIntake ?? 1)) * 100, 100).toFixed(0)}%
+        </Text>
+      </View>
+    </View>
+  </View>
+
+  <View style={styles.waterRow}>
+    <Text>Aяганы хэмжээ: {selectedCupSize} мл</Text>
+    <TouchableOpacity onPress={() => setCupSizeModalVisible(true)}>
+      <Text style={styles.linkText}>Аяганы хэмжээ тохируулах</Text>
+    </TouchableOpacity>
+  </View>
+
+  <Modal
+    visible={cupSizeModalVisible}
+    transparent={true}
+    animationType="fade"
+    onRequestClose={() => setCupSizeModalVisible(false)}
+  >
+    <View style={styles.modalContainer}>
+      <View style={styles.modalContent}>
+        <Text style={styles.modalTitle}>Аяганы хэмжээ</Text>
+        <View style={styles.cupOptions}>
+          {[50, 100, 250, 400, 500, 1000].map(size => (
+            <TouchableOpacity
+              key={size}
+              style={[
+                styles.cupButton,
+                selectedCupSize === size && styles.selectedCupButton
+              ]}
+              onPress={() => {
+                setSelectedCupSize(size);
+                setCupSizeModalVisible(false);
+              }}
+            >
+              <Image source={cupImage} style={styles.cupImage} />
+              <Text style={styles.cupText}>{size} мл</Text>
+            </TouchableOpacity>
+          ))}
         </View>
+      </View>
+    </View>
+  </Modal>
+</View>
+
+
+<Text style={styles.title}>Таны 7 хоногийн үзүүлэлт</Text>
+<View style={[styles.card, { marginBottom: 100 }]}>
+  <View style={{ flexDirection: 'row', justifyContent: 'space-between', marginBottom: 10 }}>
+    <Text style={{ color: '#000', fontSize:12, fontWeight:'bold' }}>
+      {weeklyChartData.labels[0]} - {weeklyChartData.labels.at(-1)}
+    </Text>
+    <Text style={{ fontWeight: 'bold', color: '#1B1C1E', fontSize:16 }}>
+      {weeklyChartData.datasets[0].data.filter(k => k > 0).length} өдөр бүртгэлтэй
+    </Text>
+  </View>
+  {safeLabels.length === safeData.length && safeLabels.length > 0 ? (
+  <LineChart
+    data={{
+      labels: safeLabels,
+      datasets: [{ data: safeData }]
+    }}
+    width={screenWidth-40}
+    height={200}
+    chartConfig={{
+      backgroundColor: '#fff',
+      backgroundGradientFrom: '#fff',
+      backgroundGradientTo: '#fff',
+      decimalPlaces: 0,
+      color: (opacity = 1) => `rgba(65, 171, 248, ${opacity})`,
+      labelColor: () => '#000',
+      propsForDots: {
+        r: '4',
+        strokeWidth: '2',
+        stroke: '#4BC0C0',
+      },
+    }}
+    bezier
+    style={{ borderRadius: 8 }}
+  />
+) : (
+  <Text style={{ textAlign: 'center', padding: 16 }}>Өгөгдөл ачаалж байна...</Text>
+)}
+
+
+</View>
+
         
   </ScrollView>
 </View>
@@ -556,7 +684,61 @@ const styles = StyleSheet.create({
  fontSize: 18,  
     color: '#000',
      
+  },
+
+  // Modal style
+  modalContainer: {
+    flex: 1,
+    backgroundColor: 'rgba(0,0,0,0.5)',
+    justifyContent: 'center',
+    alignItems: 'center'
+  },
+  modalContent: {
+    backgroundColor: '#fff',
+    padding: 20,
+    borderRadius: 16,
+    width: '80%',
+    alignItems: 'center'
+  },
+  modalTitle: {
+    color: '#000', 
+    fontSize: 18,
+    fontWeight: 'bold',
+    marginBottom: 16
+  },
+  cupOptions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between'
+  },
+
+  cupImage: {
+    width: 30,
+    height: 40,
+    marginBottom: 6,
+  },
+  cupButton: {
+    width: 80,
+    height: 80,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: '#DADADA',
+    justifyContent: 'center',
+    alignItems: 'center',
+    margin: 6,
+    // backgroundColor: '#F9F9F9',
+  },
+  selectedCupButton: {
+    backgroundColor: '#E0F3FF',
+    borderColor: '#41ABF8',
+  },
+  cupText: {
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#000'
   }
+  
+  
 });
 
 export default HomeScreen;

@@ -2,7 +2,7 @@
 
 // const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
 
-const API_URL =  'https://a77d-157-15-7-117.ngrok-free.app';
+const API_URL =  'https://6228-157-15-7-117.ngrok-free.app';
 
 
 // const API_URL = 'http://192.168.100.37:3003';
@@ -45,6 +45,13 @@ export const login = (emailOrPhoneNumber, password) => {
 export const signup = (userData) => {
   return request('/users', 'POST', userData);
 };
+export const updateUser = async (token, userData) => {
+  console.log(userData, "userdatagaa shalgachihy")
+  return request(`/users/${userData.id}`, 'PUT', userData, {
+    'Authorization': `Bearer ${token}`,
+  });
+};
+
 
 export const fetchFoodList = (userId) => {
   return request(`/foods?userId=${userId}`, 'GET');
@@ -71,6 +78,20 @@ export const getLoggedFoods = (userId, startDate, endDate) => {
   return request(`/logged-foods/filter?userId=${userId}&startDate=${startDate}&endDate=${endDate}`, 'GET');
 };
 
+export const getWeeklyLoggedFoods = (userId) => {
+  return request(`/logged-foods/week?userId=${userId}`, 'GET');
+};
+
+
+export const logWater = (userId, amount) => {
+  return request('/logged-waters', 'POST', { userId, amount });
+};
+export const getLoggedWater = (userId, startDate, endDate) => {
+  return request(`/logged-waters/filter?userId=${userId}&startDate=${startDate}&endDate=${endDate}`, 'GET');
+};
+
+
+
 export const deleteLoggedFood = (id) => {
   return request(`/logged-foods/${id}`, 'DELETE');
 };
@@ -91,27 +112,6 @@ export const submitUserHealthInfo = (data) => {
 
 
 
-export const fetchCarwashList = () => {
-  return request('/carwashes', 'GET');
-};
-export const fetchCarwashServiceList = () => {
-  return request('/carwashservices', 'GET');
-};
-export const fetchCarwashService = (id) => {
-
-  return request(`/carwashservices/${id}`, 'GET');
-};
-
-export const orderCarwash = (orderDetails) => {
-  return request('/bookings', 'POST', orderDetails);
-};
-export const getBookings = (orderDetails) => {
-  return request('/bookings', 'POST', orderDetails);
-};
-export const getBookingStatus = (bookingId) => {
-
-  return request(`/bookings/status/${bookingId}`, 'GET');
-};
 
 export const fetchUserOrders = (userId) => {
   return request(`/user-orders/${userId}`, 'GET');
@@ -139,9 +139,4 @@ export const filterCarwashes = async (filters) => {
 //   return request(`/${userData.id}`, 'PUT', userData);
  
 // };
-export const updateUser = async (token, userData) => {
-  console.log(userData, "userdatagaa shalgachihy")
-  return request(`/users/${userData.id}`, 'PUT', userData, {
-    'Authorization': `Bearer ${token}`,
-  });
-};
+

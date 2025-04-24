@@ -90,7 +90,7 @@ const MealPlanScreen = ({ route, navigation }) => {
 
   return (
     <View style={styles.container}>
-      <FlexHeader headerText={`${mealTime}ийн хоол`} navigation={navigation} />
+      <FlexHeader headerText={`${mealTime}-н хоол`} navigation={navigation} />
 
       <View style={styles.searchSection}>
         <View style={styles.searchInput}>
