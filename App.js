@@ -204,10 +204,7 @@ import 'react-native-gesture-handler'
 const App = () => {
 
   return (
-
           <AppNavigation />
-
-
     // <SplashScreen/>
   );
 };
