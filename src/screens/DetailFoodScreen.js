@@ -5,28 +5,18 @@ import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import FlexHeader from '../components/FlexHeader';
 import { AuthContext } from '../context/AuthContext';
 import { logFood } from '../api/user';
+import {imageMap} from '../constants/imageMap'
 const DetailFoodScreen = ({ route, navigation }) => {
-  const { food } = route.params;
+  // const { food } = route.params;
   const { userInfo } = useContext(AuthContext); 
-  const imageMap = {
-    "/images/avocado-toast.jpg": require('../../assets/images/avocado-toast.jpg'),
-    "/images/scrambled-eggs.jpg": require('../../assets/images/scrambled-eggs.jpg'),
-    "/images/chia-seed-pudding.jpg": require('../../assets/images/chia-seed-pudding.jpg'),
-    "/images/cottage-cheese-with-berries.jpg": require('../../assets/images/cottage-cheese-with-berries.jpg'),
-    "/images/greek-yogurt-with-honey.jpg": require('../../assets/images/greek-yogurt-with-honey.jpg'),
-    "/images/low-potassium-porridge.jpg": require('../../assets/images/low-potassium-porridge.jpg'),
-    "/images/low-sodium-miso-soup.jpg": require('../../assets/images/low-sodium-miso-soup.jpg'),
-    "/images/tofu-and-veggie-bowl.jpg": require('../../assets/images/tofu-and-veggie-bowl.jpg'),
-    "/images/boiled-eggs.jpg": require('../../assets/images/boiled-eggs.jpg'),
-    "/images/peanut-butter-toast.jpg": require('../../assets/images/peanut-butter-toast.jpg'),
-  };
+  const { food, mealType } = route.params;
 
   const defaultImage = require('../../assets/images/peanut-butter-toast.jpg');
   const imageSource = imageMap[food.image] || defaultImage;
 
   const handleRegisterFood = async () => {
     try {
-      await logFood(userInfo.id, food.id, 'BREAKFAST'); // mealType
+      await logFood(userInfo.id, food.id, mealType); // mealType
       alert('Хоол амжилттай бүртгэгдлээ!');
       navigation.goBack(); 
     } catch (error) {
@@ -36,7 +26,8 @@ const DetailFoodScreen = ({ route, navigation }) => {
   };
 
   return (
-    <View style={styles.container}>
+    <View style={styles.container}> 
+         <ScrollView style={{ flex: 1 }} contentContainerStyle={styles.scrollContent}>
         <View style={styles.headerSection}>
         <FlexHeader headerText={''} navigation={navigation} />
         </View>
@@ -77,12 +68,28 @@ const DetailFoodScreen = ({ route, navigation }) => {
           <Text style={styles.timeText}> Хийх хугацаа: <Text style={{ color: '#F7C100' }}>{food.cookingTime} минут</Text></Text>
         </View>
 
+        <View style={styles.stepsContainer}>
+  <Text style={styles.stepsTitle}>Хоол хийх дараалал</Text>
+  {food.cookingSteps?.map((step, index) => (
+    <View key={index} style={styles.stepItem}>
+      <Text style={styles.stepNumber}>{index + 1}.</Text>
+      <Text style={styles.stepText}>{step}</Text>
+    </View>
+  ))}
+</View>
+
+
         {/* Register Button */}
-        <TouchableOpacity style={styles.registerButton} onPress={handleRegisterFood}>
+     
+      </View>
+    </ScrollView>
+         <View style={styles.fixedBottom}>
+    <TouchableOpacity style={styles.registerButton} onPress={handleRegisterFood}>
       <Text style={styles.registerButtonText}>Хоол бүртгэх</Text>
     </TouchableOpacity>
-      </View>
+  </View>
     </View>
+ 
   );
 };
 
@@ -173,6 +180,52 @@ const styles = StyleSheet.create({
       fontSize: 16,
       fontWeight: 'bold',
     },
+
+
+
+    stepsContainer: {
+      marginTop: 20,
+      marginBottom: 40,
+    },
+    stepsTitle: {
+      fontSize: 18,
+      fontWeight: 'bold',
+      color: '#000',
+      marginBottom: 12,
+    },
+    stepItem: {
+      flexDirection: 'row',
+      alignItems: 'flex-start',
+      marginBottom: 10,
+    },
+    stepNumber: {
+      fontWeight: 'bold',
+      fontSize: 16,
+      color: '#50B86C',
+      marginRight: 6,
+    },
+    stepText: {
+      flex: 1,
+      fontSize: 15,
+      color: '#333',
+      lineHeight: 20,
+    },
+    
+    scrollContent: {
+      paddingBottom: 100, // Бүртгэх товч дарагдахааргүй болгоно
+    },
+    
+    fixedBottom: {
+      position: 'absolute',
+      bottom: 0,
+      left: 0,
+      right: 0,
+      // backgroundColor: '#fff',
+      padding: 16,
+      // borderTopWidth: 1,
+      // borderColor: '#eee',
+    },
+    
   });
   
 

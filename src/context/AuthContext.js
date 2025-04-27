@@ -1,13 +1,12 @@
 import React, { createContext, useState, useEffect } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserById } from '../api/user'; // энэ оруулна
+import { getUserById } from '../api/user'; 
 
 export const AuthContext = createContext();
-
 export const AuthProvider = ({ children }) => {
   const [token, setToken] = useState(null);
   const [userInfo, setUserInfo] = useState(null);
-  const [loading, setLoading] = useState(true); //app эхлэхэд ачаалж буй эсэх
+  const [loading, setLoading] = useState(true); 
 
   useEffect(() => {
     const loadUserData = async () => {
@@ -18,8 +17,7 @@ export const AuthProvider = ({ children }) => {
         if (storedToken && storedUser) {
           setToken(storedToken);
           const parsedUser = JSON.parse(storedUser);
-
-          // ✅ getUserById-аар backend-ээс бүрэн мэдээлэл (healthInfo гэх мэт) авч байна
+          // getUserById-аар backend-ээс бүрэн мэдээлэл (healthInfo гэх мэт) авна.
           const fullUser = await getUserById(parsedUser.id);
           setUserInfo(fullUser);
         }

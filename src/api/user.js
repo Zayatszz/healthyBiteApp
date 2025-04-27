@@ -2,21 +2,24 @@
 
 // const API_URL = 'https://champion-flamingo-vaguely.ngrok-free.app';
 
-const API_URL =  'https://6228-157-15-7-117.ngrok-free.app';
+const API_URL =  'https://0891-2405-5700-587-3330-c08d-e14e-6941-c831.ngrok-free.app';
 
 
 // const API_URL = 'http://192.168.100.37:3003';
 // const API_URL = 'http://172.20.10.3:3003';
 
-const request = async (endpoint, method, body) => {
+const request = async (endpoint, method, body = null, extraHeaders = {}) => {
   const headers = {
     'Content-Type': 'application/json',
+    ...extraHeaders,
   };
+
   const config = {
     method,
     headers,
   };
-  if (method === 'POST' && body) {
+
+  if ((method === 'POST' || method === 'PUT') && body) {
     config.body = JSON.stringify(body);
   }
 
@@ -34,14 +37,13 @@ const request = async (endpoint, method, body) => {
   }
 };
 
+
 export const getUserById = (userId) => {
   return request(`/users/${userId}`, 'GET');
 };
-
 export const login = (emailOrPhoneNumber, password) => {
   return request('/login', 'POST', { emailOrPhoneNumber, password });
 };
-
 export const signup = (userData) => {
   return request('/users', 'POST', userData);
 };
@@ -52,25 +54,21 @@ export const updateUser = async (token, userData) => {
   });
 };
 
-
 export const fetchFoodList = (userId) => {
   return request(`/foods?userId=${userId}`, 'GET');
 };
-
-export const fetchMealPlan = (userId, mealType) => {
-  return request(`/mealPlan?userId=${userId}&mealType=${mealType}`, 'GET');
+export const fetchMealPlan = (userId, mealType, token) => {
+  // return request(`/mealPlan?userId=${userId}&mealType=${mealType}`, 'GET');
+  return request(`/mealPlan?userId=${userId}&mealType=${mealType}`, 'GET', null, {
+    Authorization: `Bearer ${token}`,
+  });
 };
-
 export const toggleFavoriteFood = (userId, foodId) => {
   return request('/favorite-foods/toggle', 'POST', { userId, foodId });
 };
-
-
-
 export const getFavoriteFoods = (userId) => {
   return request(`/favorite-foods/${userId}`, 'GET');
 };
-
 export const logFood = (userId, foodId, mealType) => {
   return request('/logged-foods', 'POST', { userId, foodId, mealType });
 };

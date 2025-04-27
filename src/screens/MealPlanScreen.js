@@ -23,7 +23,7 @@ const MealPlanScreen = ({ route, navigation }) => {
   const [originalFoodList, setOriginalFoodList] = useState([]);
   const [mealTime, setMealTime] = useState('Өглөө');
 
-  const { userInfo } = useContext(AuthContext);
+  const { token, userInfo } = useContext(AuthContext);
 
   const mealTypeMap = {
     'Өглөө': 'breakfast',
@@ -31,21 +31,12 @@ const MealPlanScreen = ({ route, navigation }) => {
     'Орой': 'dinner',
   };
 
-  // const reverseMealTypeMap = {
-  //   'breakfast': 'Өглөө',
-  //   'lunch': 'Өдөр',
-  //   'dinner': 'Орой',
-  // };
-
   const reverseMealTypeMap = {
     'BREAKFAST': 'Өглөө',
     'LUNCH': 'Өдөр',
     'DINNER': 'Орой',
   };
-  
-  // Тэгээд:
- 
-  
+
 
   useEffect(() => {
     // Home-оос ирсэн mealType-ийг mealTime-д хөрвүүлж оноох
@@ -61,7 +52,7 @@ const MealPlanScreen = ({ route, navigation }) => {
   const fetchFoodList = async (mealType) => {
     setLoading(true);
     try {
-      const data = await fetchMealPlan(userInfo.id, mealType);
+      const data = await fetchMealPlan(userInfo.id, mealType, token);
       setFoodList(data);
       setOriginalFoodList(data);
     } catch (error) {
@@ -102,7 +93,6 @@ const MealPlanScreen = ({ route, navigation }) => {
           />
         </View>
       </View>
-
       <View style={styles.mealTimeTabs}>
         {['Өглөө', 'Өдөр', 'Орой'].map(label => (
           <TouchableOpacity
@@ -122,35 +112,24 @@ const MealPlanScreen = ({ route, navigation }) => {
           </TouchableOpacity>
         ))}
       </View>
-
       {loading ? (
         <ActivityIndicator size="large" color="#50B86C" />
       ) : foodList.length === 0 ? (
         <Text style={styles.noResults}>Хоолны мэдээлэл олдсонгүй.</Text>
       ) : (
-        // <FlatList
-        //   data={foodList}
-        //   renderItem={({ item, index }) => (
-        //     <FoodItem food={item} index={index} navigation={navigation} />
-        //   )}
-        //   keyExtractor={item => item.id.toString()}
-        //   contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
-        // />
         <FlatList
-  data={foodList}
-  renderItem={({ item, index }) => (
-    <FoodItem
-      food={item}
-      index={index}
-      navigation={navigation}
-      mealType={mealTypeMap[mealTime]} // ЭНЭГЭЭР дамжуулна
-    />
-  )}
-  keyExtractor={item => item.id.toString()}
-  contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
-/>
-
-        
+          data={foodList}
+          renderItem={({ item, index }) => (
+            <FoodItem
+              food={item}
+              index={index}
+              navigation={navigation}
+              mealType={mealTypeMap[mealTime]} 
+            />
+          )}
+          keyExtractor={item => item.id.toString()}
+          contentContainerStyle={{ paddingHorizontal: 20, paddingBottom: 40 }}
+        />
       )}
     </View>
   );

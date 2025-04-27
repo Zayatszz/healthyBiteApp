@@ -1,22 +1,8 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image } from 'react-native';
-
+import {imageMap} from '../constants/imageMap'
 const RegisteredMeals = ({ groupedMeals }) => {
   const defaultImage = require('../../assets/images/peanut-butter-toast.jpg');
-
-  const imageMap = {
-    "/images/avocado-toast.jpg": require('../../assets/images/avocado-toast.jpg'),
-    "/images/scrambled-eggs.jpg": require('../../assets/images/scrambled-eggs.jpg'),
-    "/images/chia-seed-pudding.jpg": require('../../assets/images/chia-seed-pudding.jpg'),
-    "/images/cottage-cheese-with-berries.jpg": require('../../assets/images/cottage-cheese-with-berries.jpg'),
-    "/images/greek-yogurt-with-honey.jpg": require('../../assets/images/greek-yogurt-with-honey.jpg'),
-    "/images/low-potassium-porridge.jpg": require('../../assets/images/low-potassium-porridge.jpg'),
-    "/images/low-sodium-miso-soup.jpg": require('../../assets/images/low-sodium-miso-soup.jpg'),
-    "/images/tofu-and-veggie-bowl.jpg": require('../../assets/images/tofu-and-veggie-bowl.jpg'),
-    "/images/boiled-eggs.jpg": require('../../assets/images/boiled-eggs.jpg'),
-    "/images/peanut-butter-toast.jpg": require('../../assets/images/peanut-butter-toast.jpg'),
-  };
-
   return (
     <View style={styles.registeredContainer}>
       {groupedMeals.map((item, index) => (
@@ -32,6 +18,7 @@ const RegisteredMeals = ({ groupedMeals }) => {
                       style={styles.foodImage}
                       source={imageMap[food.image] || defaultImage}
                     />
+                    
                     <View style={{ flex: 1 }}>
                       <Text style={styles.foodName}>{food.name}</Text>
                       <Text style={styles.foodDetail}>{food.kcal} kcal  |  {food.time}</Text>

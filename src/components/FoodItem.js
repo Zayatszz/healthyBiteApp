@@ -4,24 +4,11 @@ import Animated, { FadeInDown } from "react-native-reanimated";
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
 import { AuthContext } from '../context/AuthContext';
 import { toggleFavoriteFood } from '../api/user';
+import {imageMap} from '../constants/imageMap'
 
 import { logFood } from '../api/user';
 const FoodItem =  ({ food, navigation, index, mealType, isFavorite1 = false }) => {
   const defaultImage = require('../../assets/images/peanut-butter-toast.jpg');
-
-  const imageMap = {
-    "/images/avocado-toast.jpg": require('../../assets/images/avocado-toast.jpg'),
-    "/images/scrambled-eggs.jpg": require('../../assets/images/scrambled-eggs.jpg'),
-    "/images/chia-seed-pudding.jpg": require('../../assets/images/chia-seed-pudding.jpg'),
-    "/images/cottage-cheese-with-berries.jpg": require('../../assets/images/cottage-cheese-with-berries.jpg'),
-    "/images/greek-yogurt-with-honey.jpg": require('../../assets/images/greek-yogurt-with-honey.jpg'),
-    "/images/low-potassium-porridge.jpg": require('../../assets/images/low-potassium-porridge.jpg'),
-    "/images/low-sodium-miso-soup.jpg": require('../../assets/images/low-sodium-miso-soup.jpg'),
-    "/images/tofu-and-veggie-bowl.jpg": require('../../assets/images/tofu-and-veggie-bowl.jpg'),
-    "/images/boiled-eggs.jpg": require('../../assets/images/boiled-eggs.jpg'),
-    "/images/peanut-butter-toast.jpg": require('../../assets/images/peanut-butter-toast.jpg'),
-  };
-
   const { userInfo } = useContext(AuthContext);
   // const [isFavorite, setIsFavorite] = useState(food.isFavorite || false);
 
@@ -36,18 +23,6 @@ const FoodItem =  ({ food, navigation, index, mealType, isFavorite1 = false }) =
       console.error('Failed to toggle favorite:', error);
     }
   };
-
-  // const handleRegisterFood = async () => {
-  //     try {
-  //       await logFood(userInfo.id, food.id, 'BREAKFAST'); // mealType
-  //       setIsLogged(true)
-  //       // alert('Хоол амжилттай бүртгэгдлээ!');
-  //       // navigation.goBack(); 
-  //     } catch (error) {
-  //       console.error('Хоол бүртгэхэд алдаа гарлаа:', error);
-  //       alert('Алдаа гарлаа. Дахин оролдоно уу.');
-  //     }
-  //   };
     const handleRegisterFood = async () => {
       try {
         await logFood(userInfo.id, food.id, mealType); // mealType дамжуулна
@@ -60,10 +35,9 @@ const FoodItem =  ({ food, navigation, index, mealType, isFavorite1 = false }) =
 
   return (
     <Animated.View entering={FadeInDown.delay(200 * index)}>
-      <TouchableOpacity onPress={() => navigation.navigate('DetailFood', { food })}>
+     <TouchableOpacity onPress={() => navigation.navigate('DetailFood', { food, mealType })}>
         <View style={styles.foodItem}>
           <Image
-            // sharedTransitionTag={food.id.toString()}
             style={styles.foodImage}
             source={imageMap[food.image] ? imageMap[food.image] : defaultImage}
           />
@@ -79,8 +53,6 @@ const FoodItem =  ({ food, navigation, index, mealType, isFavorite1 = false }) =
               <FontAwesome name="circle-thin" size={28} color="#F4C92F" />
             )}
           </TouchableOpacity>
-
-
           <TouchableOpacity onPress={toggleFavorite} style={styles.heartIcon}>
             {isFavorite ? (
               <FontAwesome name="heart" size={16} color="#EF5A5A" />

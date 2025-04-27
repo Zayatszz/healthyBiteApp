@@ -180,7 +180,6 @@ const MainNav = () => {
           )
         }}
       />
-
       <Tab.Screen name="Stats" component={StatsScreen} options={{ headerShown: false }} />
       <Tab.Screen name="Profile" component={ProfileScreen} options={{ headerShown: false }} />
     </Tab.Navigator>
